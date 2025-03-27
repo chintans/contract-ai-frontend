@@ -1,0 +1,50 @@
+:host {
+  display: block;
+}
+
+.risk-card {
+  margin-bottom: 1rem;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.risk-type-indicator {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+  margin-top: 0.5rem;
+  margin-right: 0.5rem;
+
+  &.high {
+    background-color: #ef4444;
+  }
+
+  &.medium {
+    background-color: #f59e0b;
+  }
+
+  &.low {
+    background-color: #10b981;
+  }
+}
+
+.filter-container {
+  display: flex;
+  gap: 1rem;
+}
+
+.risk-description {
+  color: #374151;
+}
+
+.risk-recommendation {
+  color: #4b5563;
+  margin-top: 0.5rem;
+}
+
+.risk-notes {
+  color: #4b5563;
+  margin-top: 0.5rem;
+} 

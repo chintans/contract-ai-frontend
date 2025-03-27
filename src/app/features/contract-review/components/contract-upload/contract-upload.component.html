@@ -1,0 +1,66 @@
+<div class="p-6">
+  <div class="max-w-3xl mx-auto">
+    <h2 class="text-2xl font-semibold mb-6">Upload Contract</h2>
+    
+    <mat-form-field appearance="outline" class="w-full mb-6">
+      <mat-label>Contract Type</mat-label>
+      <mat-select [(ngModel)]="contractType">
+        <mat-option value="service">Service Agreement</mat-option>
+        <mat-option value="employment">Employment Contract</mat-option>
+        <mat-option value="nda">Non-Disclosure Agreement</mat-option>
+        <mat-option value="license">License Agreement</mat-option>
+        <mat-option value="other">Other</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <div class="mb-6">
+      <ngx-file-drop
+        [multiple]="false"
+        (onFileDrop)="dropped($event)"
+        (onFileOver)="fileOver($event)"
+        (onFileLeave)="fileLeave($event)"
+        accept=".pdf,.doc,.docx"
+      >
+        <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
+          <div class="upload-area" [class.drag-over]="isDragging">
+            <div class="space-y-4">
+              <p class="text-gray-600">
+                Drag and drop your contract file here, or
+                <button type="button" (click)="openFileSelector()" class="text-blue-600 hover:text-blue-800">
+                  browse
+                </button>
+              </p>
+              <p class="text-sm text-gray-500">
+                Supported formats: PDF, DOC, DOCX
+              </p>
+            </div>
+          </div>
+        </ng-template>
+      </ngx-file-drop>
+    </div>
+
+    <div *ngIf="selectedFile" class="file-info">
+      <div>
+        <p class="font-medium">{{ selectedFile.name }}</p>
+        <p class="text-sm text-gray-500">{{ formatFileSize(selectedFile.size) }}</p>
+      </div>
+      <button mat-icon-button color="warn" (click)="removeFile()">
+        <span class="material-icons">close</span>
+      </button>
+    </div>
+
+    <div *ngIf="isUploading" class="progress-bar">
+      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+      <p class="text-sm text-gray-600 mt-2">Analyzing contract...</p>
+    </div>
+
+    <div class="flex justify-end">
+      <button mat-raised-button
+              color="primary"
+              [disabled]="!selectedFile || !contractType || isUploading"
+              (click)="onSubmit()">
+        Upload and Analyze
+      </button>
+    </div>
+  </div>
+</div> 
