@@ -25,6 +25,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
+  declarations: [],
   imports: [
     CommonModule,
     SharedModule,
@@ -35,6 +36,7 @@ const routes: Routes = [
     RiskFlagsComponent,
     ClauseSummaryComponent,
     LegalQAComponent
-  ]
+  ],
+  exports: [RouterModule]
 })
 export class ContractReviewModule { } 

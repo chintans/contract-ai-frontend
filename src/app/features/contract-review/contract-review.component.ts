@@ -1,11 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { MatStepperModule } from '@angular/material/stepper';
+import { MatStepperModule, MatStepper } from '@angular/material/stepper';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { SharedModule } from '../../shared/shared.module';
-import { MatStepper } from '@angular/material/stepper';
 
 @Component({
   selector: 'app-contract-review',
@@ -21,7 +20,11 @@ import { MatStepper } from '@angular/material/stepper';
   templateUrl: './contract-review.component.html',
   styleUrls: ['./contract-review.component.scss']
 })
-export class ContractReviewComponent {
+export class ContractReviewComponent implements AfterViewInit {
+  @ViewChild('stepper') stepper!: MatStepper;
+  currentStepIndex = 0;
+  totalSteps = 5; // Total number of steps in the stepper
+
   // Form controls will be added here
   uploadForm: any;
   analysisForm: any;
@@ -29,21 +32,31 @@ export class ContractReviewComponent {
   summaryForm: any;
   qaForm: any;
 
-  constructor(private stepper: MatStepper) {}
+  ngAfterViewInit() {
+    if (this.stepper) {
+      this.stepper.selectionChange.subscribe(event => {
+        this.currentStepIndex = event.selectedIndex;
+      });
+    }
+  }
 
   previous(): void {
-    this.stepper.previous();
+    if (this.stepper) {
+      this.stepper.previous();
+    }
   }
 
   next(): void {
-    this.stepper.next();
+    if (this.stepper) {
+      this.stepper.next();
+    }
   }
 
   hasPrevious(): boolean {
-    return this.stepper.selectedIndex > 0;
+    return this.currentStepIndex > 0;
   }
 
   hasNext(): boolean {
-    return this.stepper.selectedIndex < this.stepper._steps.length - 1;
+    return this.currentStepIndex < this.totalSteps - 1;
   }
 } 
