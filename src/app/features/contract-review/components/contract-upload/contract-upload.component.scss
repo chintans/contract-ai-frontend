@@ -2,6 +2,32 @@
   display: block;
 }
 
+::ng-deep {
+  .mat-mdc-form-field {
+    width: 100%;
+    
+    .mdc-text-field--outlined {
+      --mdc-outlined-text-field-container-height: 56px;
+    }
+    
+    .mat-mdc-form-field-flex {
+      background-color: white;
+    }
+  }
+
+  .ngx-file-drop__drop-zone {
+    border: none !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    background: transparent !important;
+  }
+
+  .ngx-file-drop__content {
+    width: 100% !important;
+    height: auto !important;
+  }
+}
+
 .upload-area {
   border: 2px dashed #ccc;
   border-radius: 8px;
@@ -9,6 +35,7 @@
   text-align: center;
   cursor: pointer;
   transition: all 0.3s ease;
+  background-color: white;
 
   &:hover {
     border-color: #666;

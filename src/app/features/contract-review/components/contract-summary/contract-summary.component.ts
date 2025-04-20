@@ -7,6 +7,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ContractAnalysisService, ContractAnalysis } from '../../services/contract-analysis.service';
 import { Observable } from 'rxjs';
 import { firstValueFrom } from 'rxjs';
@@ -21,7 +22,8 @@ import { firstValueFrom } from 'rxjs';
     MatListModule,
     MatIconModule,
     MatButtonModule,
-    MatExpansionModule
+    MatExpansionModule,
+    MatProgressSpinnerModule
   ],
   template: `
     <div class="p-6">

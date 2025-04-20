@@ -3,23 +3,23 @@
   
   <mat-stepper linear #stepper>
     <mat-step [stepControl]="uploadForm" label="Upload Contract">
-      <router-outlet name="upload"></router-outlet>
+      <router-outlet></router-outlet>
     </mat-step>
     
     <mat-step [stepControl]="analysisForm" label="Analysis">
-      <router-outlet name="analysis"></router-outlet>
+      <router-outlet></router-outlet>
     </mat-step>
     
     <mat-step [stepControl]="risksForm" label="Risk Flags">
-      <router-outlet name="risks"></router-outlet>
+      <router-outlet></router-outlet>
     </mat-step>
     
     <mat-step [stepControl]="summaryForm" label="Summary">
-      <router-outlet name="summary"></router-outlet>
+      <router-outlet></router-outlet>
     </mat-step>
     
     <mat-step [stepControl]="qaForm" label="Legal Q&A">
-      <router-outlet name="qa"></router-outlet>
+      <router-outlet></router-outlet>
     </mat-step>
   </mat-stepper>
 

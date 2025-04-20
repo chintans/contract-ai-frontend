@@ -2,9 +2,9 @@
   <div class="max-w-3xl mx-auto">
     <h2 class="text-2xl font-semibold mb-6">Upload Contract</h2>
     
-    <mat-form-field appearance="outline" class="w-full mb-6">
+    <mat-form-field appearance="fill" class="w-full mb-6">
       <mat-label>Contract Type</mat-label>
-      <mat-select [(ngModel)]="contractType">
+      <mat-select [(ngModel)]="contractType" required>
         <mat-option value="service">Service Agreement</mat-option>
         <mat-option value="employment">Employment Contract</mat-option>
         <mat-option value="nda">Non-Disclosure Agreement</mat-option>
