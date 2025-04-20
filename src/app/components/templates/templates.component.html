@@ -1,0 +1,112 @@
+<!-- Loading State -->
+<div *ngIf="isLoading" class="flex justify-center items-center h-64">
+  <mat-spinner diameter="48"></mat-spinner>
+</div>
+
+<!-- Content -->
+<div *ngIf="!isLoading" class="container mx-auto p-6">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title class="flex justify-between items-center w-full">
+        <span>Templates</span>
+        <button mat-raised-button color="primary" (click)="resetForm()">
+          <mat-icon>add</mat-icon>
+          Create New Template
+        </button>
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <!-- Templates List -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
+        <mat-card *ngFor="let template of templates" 
+                 class="cursor-pointer"
+                 [class.bg-blue-50]="selectedTemplate?.id === template.id"
+                 (click)="onSelect(template)">
+          <mat-card-header>
+            <mat-card-title>{{template.name}}</mat-card-title>
+            <mat-card-subtitle>{{template.type}}</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <p *ngIf="template.jurisdiction" class="text-sm text-gray-600">
+              Jurisdiction: {{template.jurisdiction}}
+            </p>
+          </mat-card-content>
+          <mat-card-actions align="end">
+            <button mat-icon-button color="warn" 
+                    (click)="$event.stopPropagation(); onDelete(template.id)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="templates.length === 0" class="text-center py-8">
+        <p class="text-gray-500">No templates found. Create your first template!</p>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Template Form -->
+  <mat-card class="mt-6">
+    <mat-card-header>
+      <mat-card-title>{{isEditing ? 'Edit Template' : 'Create New Template'}}</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="templateForm" (ngSubmit)="onSubmit()" class="grid grid-cols-1 gap-4 mt-4">
+        <mat-form-field appearance="outline">
+          <mat-label>Name</mat-label>
+          <input matInput formControlName="name" placeholder="Enter template name">
+          <mat-error *ngIf="templateForm.get('name')?.invalid && templateForm.get('name')?.touched">
+            Name is required
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Type</mat-label>
+          <input matInput formControlName="type" placeholder="Enter template type">
+          <mat-error *ngIf="templateForm.get('type')?.invalid && templateForm.get('type')?.touched">
+            Type is required
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Content</mat-label>
+          <textarea matInput formControlName="content" rows="6" placeholder="Enter template content"></textarea>
+          <mat-error *ngIf="templateForm.get('content')?.invalid && templateForm.get('content')?.touched">
+            Content is required
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Jurisdiction</mat-label>
+          <input matInput formControlName="jurisdiction" placeholder="Enter jurisdiction">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Version</mat-label>
+          <input matInput formControlName="version" placeholder="Enter version">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Description</mat-label>
+          <textarea matInput formControlName="description" rows="3" placeholder="Enter description"></textarea>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Metadata (JSON)</mat-label>
+          <textarea matInput formControlName="metadata" rows="3" placeholder="Enter metadata in JSON format"></textarea>
+        </mat-form-field>
+
+        <div class="flex justify-end space-x-3">
+          <button mat-button type="button" (click)="resetForm()">
+            Cancel
+          </button>
+          <button mat-raised-button color="primary" type="submit" [disabled]="templateForm.invalid">
+            {{isEditing ? 'Update' : 'Create'}}
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div> 

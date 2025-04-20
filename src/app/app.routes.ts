@@ -1,12 +1,14 @@
 import { Routes } from '@angular/router';
 import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { ContractReviewComponent } from './features/contract-review/contract-review.component';
-import { TemplatesComponent } from './features/templates/templates.component';
+import { StandardClauseListComponent } from './features/standard-clauses/standard-clause-list/standard-clause-list.component';
+import { StandardClauseFormComponent } from './features/standard-clauses/standard-clause-form/standard-clause-form.component';
+import { TemplatesComponent } from './components/templates/templates.component';
 
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'dashboard',
+    redirectTo: '/dashboard',
     pathMatch: 'full'
   },
   {
@@ -51,6 +53,28 @@ export const routes: Routes = [
   },
   {
     path: 'templates',
-    component: TemplatesComponent
+    loadChildren: () => [
+      {
+        path: '',
+        component: TemplatesComponent
+      }
+    ]
+  },
+  {
+    path: 'standard-clauses',
+    children: [
+      {
+        path: '',
+        component: StandardClauseListComponent
+      },
+      {
+        path: 'new',
+        component: StandardClauseFormComponent
+      },
+      {
+        path: ':id',
+        component: StandardClauseFormComponent
+      }
+    ]
   }
 ];

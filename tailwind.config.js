@@ -3,6 +3,7 @@ module.exports = {
   content: [
     "./src/**/*.{html,ts}",
   ],
+  important: true,
   theme: {
     extend: {
       colors: {
@@ -19,9 +20,15 @@ module.exports = {
           900: '#0c4a6e',
         },
       },
+      spacing: {
+        '64px': '64px',
+      },
     },
   },
   plugins: [
     require('@tailwindcss/forms'),
   ],
+  corePlugins: {
+    preflight: false,
+  },
 } 
