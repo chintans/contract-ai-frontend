@@ -3,7 +3,6 @@ import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { ContractReviewComponent } from './features/contract-review/contract-review.component';
 import { StandardClauseListComponent } from './features/standard-clauses/standard-clause-list/standard-clause-list.component';
 import { StandardClauseFormComponent } from './features/standard-clauses/standard-clause-form/standard-clause-form.component';
-import { TemplatesComponent } from './components/templates/templates.component';
 
 export const routes: Routes = [
   {
@@ -53,12 +52,7 @@ export const routes: Routes = [
   },
   {
     path: 'templates',
-    loadChildren: () => [
-      {
-        path: '',
-        component: TemplatesComponent
-      }
-    ]
+    loadChildren: () => import('./features/templates/templates.module').then(m => m.TemplatesModule)
   },
   {
     path: 'standard-clauses',
