@@ -7,8 +7,19 @@ import { RouterModule, Routes } from '@angular/router';
 const routes: Routes = [
   {
     path: '',
-    // component: TemplatesComponent // Standalone, imported via routing
-    loadComponent: () => import('./templates.component').then(m => m.TemplatesComponent)
+    loadComponent: () => import('./template-admin-page.component').then(m => m.TemplateAdminPageComponent)
+  },
+  {
+    path: 'new',
+    loadComponent: () => import('./template-wizard.component').then(m => m.TemplateWizardComponent)
+  },
+  {
+    path: ':id',
+    loadComponent: () => import('./template-wizard.component').then(m => m.TemplateWizardComponent)
+  },
+  {
+    path: ':id/versions/:vid/compare',
+    loadComponent: () => import('./diff-version-dialog.component').then(m => m.DiffVersionDialogComponent)
   }
 ];
 

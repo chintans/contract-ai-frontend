@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Output, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 export interface Template {
   id: string;
@@ -11,6 +12,7 @@ export interface Template {
 @Component({
   selector: 'app-template-table',
   standalone: true,
+  imports: [CommonModule],
   template: `
     <div *ngIf="loading" class="text-center py-8">Loading...</div>
     <table *ngIf="!loading" class="min-w-full bg-white border border-gray-200 rounded">

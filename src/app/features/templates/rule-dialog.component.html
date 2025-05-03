@@ -1,0 +1,35 @@
+<div class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+  <div class="bg-white rounded shadow-lg w-full max-w-md p-6 relative">
+    <h2 class="text-xl font-bold mb-4">Edit Clause Rule</h2>
+    <form (ngSubmit)="save.emit(rule)">
+      <div class="mb-4">
+        <label class="block mb-1">Enforcement</label>
+        <select class="w-full border px-2 py-1 rounded" [(ngModel)]="rule.enforcement" name="enforcement">
+          <option value="MUST_HAVE">Must Have</option>
+          <option value="NICE_TO_HAVE">Nice to Have</option>
+          <option value="FORBIDDEN">Forbidden</option>
+        </select>
+      </div>
+      <div class="mb-4">
+        <label class="block mb-1">Severity</label>
+        <select class="w-full border px-2 py-1 rounded" [(ngModel)]="rule.severity" name="severity">
+          <option value="LOW">Low</option>
+          <option value="MEDIUM">Medium</option>
+          <option value="HIGH">High</option>
+        </select>
+      </div>
+      <div class="mb-4">
+        <label class="block mb-1">Allowed Deviation (%)</label>
+        <input type="number" class="w-full border px-2 py-1 rounded" [(ngModel)]="rule.allowedDeviation" name="allowedDeviation" />
+      </div>
+      <div class="mb-4">
+        <label class="block mb-1">Forbidden Patterns (comma separated)</label>
+        <input class="w-full border px-2 py-1 rounded" [(ngModel)]="rule.forbiddenPatterns" name="forbiddenPatterns" />
+      </div>
+      <div class="flex justify-end gap-2">
+        <button type="button" class="px-4 py-2 rounded bg-gray-200" (click)="cancel.emit()">Cancel</button>
+        <button type="submit" class="px-4 py-2 rounded bg-blue-600 text-white">Save</button>
+      </div>
+    </form>
+  </div>
+</div> 

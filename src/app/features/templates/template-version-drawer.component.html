@@ -1,0 +1,22 @@
+<div *ngIf="open" class="fixed inset-0 z-50 flex">
+  <div class="bg-white w-96 h-full shadow-xl p-6 overflow-y-auto relative">
+    <button class="absolute top-2 right-2 text-gray-500" (click)="onClose()" aria-label="Close version drawer">&times;</button>
+    <h2 class="text-xl font-bold mb-4">Version History</h2>
+    <ul class="space-y-4">
+      <li *ngFor="let v of versions" [class.font-bold]="v.isActive">
+        <div class="flex items-center justify-between">
+          <div>
+            <div>v{{ v.versionNo }} <span *ngIf="v.isActive" class="text-green-600 ml-2">(Active)</span></div>
+            <div class="text-xs text-gray-500">{{ v.createdAt | date:'short' }} by {{ v.createdBy }}</div>
+            <div class="text-xs text-gray-400" *ngIf="v.notes">{{ v.notes }}</div>
+          </div>
+          <div class="flex flex-col gap-1">
+            <button class="text-blue-600 hover:underline" (click)="onCompare(v.versionId)">Compare</button>
+            <button class="text-green-600 hover:underline" [disabled]="v.isActive" (click)="onActivate(v.versionId)">Activate</button>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div class="flex-1 bg-black bg-opacity-30" (click)="onClose()"></div>
+</div> 

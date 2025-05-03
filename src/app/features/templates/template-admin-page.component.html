@@ -1,0 +1,7 @@
+<div class="p-4">
+  <h1 class="text-2xl font-bold mb-4">Template Playbooks</h1>
+  <button class="bg-blue-600 text-white px-4 py-2 rounded mb-4" (click)="onNewTemplate()" aria-label="Create new template">
+    New Template
+  </button>
+  <app-template-table [templates]="templates()" (editTemplate)="onEditTemplate($event)"></app-template-table>
+</div> 
