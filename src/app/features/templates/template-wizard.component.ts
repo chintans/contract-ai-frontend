@@ -7,6 +7,7 @@ import { StandardClauseSelectorComponent } from './standard-clause-selector.comp
 import { StandardClause } from '../../services/standard-clause.service';
 import { StandardClauseFormDialogComponent } from './standard-clause-form-dialog.component';
 import { CreateStandardClauseDto } from '../../services/standard-clause.service';
+import { MockStandardClauseService } from '../../services/mock-standard-clause.service';
 
 type StateCities = { [state: string]: string[] };
 type CountryStates = { [country: string]: StateCities };
@@ -71,6 +72,8 @@ export class TemplateWizardComponent {
   showStandardClauseSelector = false;
   showStandardClauseFormDialog = false;
 
+  constructor(private standardClauseService: MockStandardClauseService) {}
+
   onAddClause() {
     this.editingClause = {
       clauseId: Math.random().toString(36).substring(2, 10),
@@ -93,22 +96,30 @@ export class TemplateWizardComponent {
   }
 
   onStandardClauseFormSave(clause: CreateStandardClauseDto) {
-    // Map CreateStandardClauseDto to VersionedClause
-    const mapped: VersionedClause = {
-      clauseId: Math.random().toString(36).substring(2, 10),
-      clauseType: clause.type,
-      title: clause.name,
-      body: clause.text,
-      ruleJson: {
-        enforcement: 'MUST_HAVE',
-        severity: 'MEDIUM',
-        allowedDeviation: 0,
-        forbiddenPatterns: []
+    this.standardClauseService.create(clause).subscribe({
+      next: (createdClause) => {
+        // Map the created standard clause to a versioned clause
+        const versionedClause: VersionedClause = {
+          clauseId: createdClause.id.toString(),
+          clauseType: createdClause.type,
+          title: createdClause.name,
+          body: createdClause.text,
+          ruleJson: {
+            enforcement: 'MUST_HAVE',
+            severity: 'MEDIUM',
+            allowedDeviation: 0,
+            forbiddenPatterns: []
+          },
+          orderIdx: this.clauses().length
+        };
+        this.clauses.update(clauses => [...clauses, versionedClause]);
+        this.showStandardClauseFormDialog = false;
       },
-      orderIdx: this.clauses().length
-    };
-    this.clauses.set([...this.clauses(), mapped]);
-    this.showStandardClauseFormDialog = false;
+      error: (error) => {
+        console.error('Error creating standard clause:', error);
+        // You might want to show an error message to the user here
+      }
+    });
   }
 
   onStandardClauseFormCancel() {

@@ -71,9 +71,18 @@
     <div *ngIf="step() === 1">
       <!-- Clause Library Step -->
       <h3 class="text-xl font-semibold mb-4">Clause Library</h3>
-      <p class="text-gray-500 mb-2">Add or edit clauses for this template version.</p>
-      <div class="mb-4 flex flex-col md:flex-row gap-2 justify-end">
-        <button type="button" class="px-4 py-2 rounded bg-indigo-600 text-white font-semibold" (click)="onCreateStandardClause()">Create New Standard Clause</button>
+      <p class="text-gray-500 mb-4">Add standard clauses to your template or create new ones.</p>
+      <div class="mb-6 flex flex-col md:flex-row gap-2 justify-end">
+        <button 
+          type="button" 
+          class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold flex items-center justify-center"
+          (click)="onCreateStandardClause()"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+          </svg>
+          Create New Standard Clause
+        </button>
       </div>
       <div *ngIf="clauses().length === 0" class="text-gray-400 text-center py-8">No clauses added yet.</div>
       <div class="grid gap-4">
