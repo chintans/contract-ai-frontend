@@ -70,5 +70,9 @@ export const routes: Routes = [
         component: StandardClauseFormComponent
       }
     ]
+  },
+  {
+    path: 'rules',
+    loadChildren: () => import('./features/rules/rules.module').then(m => m.RulesModule)
   }
 ];

@@ -72,46 +72,77 @@
       <!-- Clause Library Step -->
       <h3 class="text-xl font-semibold mb-4">Clause Library</h3>
       <p class="text-gray-500 mb-4">Add standard clauses to your template or create new ones.</p>
-      <div class="mb-6 flex flex-col md:flex-row gap-2 justify-end">
+      
+      <!-- Error Alert -->
+      <div *ngIf="error()" class="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+        <span class="block sm:inline">{{ error() }}</span>
         <button 
-          type="button" 
-          class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold flex items-center justify-center"
-          (click)="onCreateStandardClause()"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+          class="absolute top-0 bottom-0 right-0 px-4 py-3"
+          (click)="error.set(null)">
+          <span class="sr-only">Dismiss</span>
+          <svg class="h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+            <title>Close</title>
+            <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/>
           </svg>
-          Create New Standard Clause
         </button>
       </div>
-      <div *ngIf="clauses().length === 0" class="text-gray-400 text-center py-8">No clauses added yet.</div>
-      <div class="grid gap-4">
-        <div *ngFor="let clause of clauses(); let i = index" class="bg-white border rounded-lg p-4 flex flex-col md:flex-row md:items-center md:justify-between">
-          <div class="flex-1">
-            <div class="font-semibold text-lg">{{ clause.title || 'Untitled Clause' }}</div>
-            <div class="text-xs text-gray-500 mb-2">Type: {{ clause.clauseType || 'N/A' }}</div>
-            <div class="text-gray-700 line-clamp-2">{{ clause.body }}</div>
-          </div>
-          <div class="flex gap-2 mt-2 md:mt-0 md:ml-4">
-            <button type="button" class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300" (click)="onEditClause(clause, i)">Edit</button>
-            <button type="button" class="px-3 py-1 rounded bg-red-100 text-red-700 hover:bg-red-200" (click)="onDeleteClause(i)">Delete</button>
-          </div>
-        </div>
+
+      <!-- Add New Clause Button -->
+      <div class="mb-6 flex justify-end">
+        <button 
+          type="button" 
+          class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
+          (click)="onAddNewClause()"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+          </svg>
+          Add New Standard Clause
+        </button>
       </div>
-      <div *ngIf="editingClause" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-        <div class="bg-white rounded shadow-lg w-full max-w-2xl p-6 relative">
-          <app-clause-card-editor [clause]="editingClause" (save)="onSaveClause($event)" (cancel)="onCancelClause()"></app-clause-card-editor>
-        </div>
+
+      <!-- Loading State -->
+      <div *ngIf="isLoadingClauses()" class="flex justify-center items-center py-12">
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
       </div>
-      <app-standard-clause-selector *ngIf="showStandardClauseSelector" (select)="onStandardClauseSelected($event)" (cancel)="onStandardClauseCancel()"></app-standard-clause-selector>
-      <app-standard-clause-form-dialog *ngIf="showStandardClauseFormDialog" (save)="onStandardClauseFormSave($event)" (cancel)="onStandardClauseFormCancel()"></app-standard-clause-form-dialog>
+
+      <!-- Empty State -->
+      <div *ngIf="!isLoadingClauses() && standardClauses().length === 0" class="text-center py-12 bg-gray-50 rounded-lg">
+        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+        </svg>
+        <h3 class="mt-2 text-sm font-medium text-gray-900">No standard clauses</h3>
+        <p class="mt-1 text-sm text-gray-500">Get started by creating a new standard clause.</p>
+      </div>
+
+      <!-- Clause List -->
+      <div *ngIf="!isLoadingClauses() && standardClauses().length > 0" class="space-y-4">
+        <app-standard-clause-card
+          *ngFor="let clause of standardClauses()"
+          [clause]="clause"
+        ></app-standard-clause-card>
+      </div>
+
+      <!-- Add Clause Dialog -->
+      <app-add-standard-clause
+        *ngIf="showAddClauseDialog()"
+        [contractType]="meta().contractType"
+        (save)="onClauseSaved($event)"
+        (cancel)="onClauseCancel()"
+      ></app-add-standard-clause>
     </div>
 
     <div *ngIf="step() === 2">
       <!-- Rules Step -->
       <h3 class="text-xl font-semibold mb-4">Rules</h3>
-      <p class="text-gray-500 mb-2">Edit enforcement, allowed deviation, and forbidden patterns for each clause.</p>
-      <div class="border rounded p-4 bg-gray-50">(Rule editor coming soon...)</div>
+      <p class="text-gray-500 mb-4">Edit enforcement, allowed deviation, and forbidden patterns for each clause.</p>
+      
+      <app-template-rules-step
+        [clausesData]="clausesForRules()"
+        (rulesChange)="onRulesChange($event)"
+        (onBack)="prevStep()"
+        (onNext)="nextStep()"
+      ></app-template-rules-step>
     </div>
 
     <div *ngIf="step() === 3">

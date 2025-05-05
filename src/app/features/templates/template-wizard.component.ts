@@ -1,13 +1,13 @@
-import { Component, signal } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { VersionedClause, ClauseRule } from './template-version.model';
-import { ClauseCardEditorComponent } from './clause-card-editor.component';
-import { StandardClauseSelectorComponent } from './standard-clause-selector.component';
-import { StandardClause } from '../../services/standard-clause.service';
-import { StandardClauseFormDialogComponent } from './standard-clause-form-dialog.component';
-import { CreateStandardClauseDto } from '../../services/standard-clause.service';
+import { VersionedClause } from './template-version.model';
+import { StandardClause, CreateStandardClauseDto } from '../../services/standard-clause.service';
+import { StandardClauseCardComponent, StandardClauseCardData } from './standard-clause-card.component';
+import { AddStandardClauseComponent, NewStandardClause } from './add-standard-clause.component';
 import { MockStandardClauseService } from '../../services/mock-standard-clause.service';
+import { TemplateRulesStepComponent } from '../standard-clauses/components/template-wizard/template-rules-step.component';
+import { ClauseRule } from '../standard-clauses/models/rule.model';
 
 type StateCities = { [state: string]: string[] };
 type CountryStates = { [country: string]: StateCities };
@@ -15,12 +15,31 @@ type CountryStates = { [country: string]: StateCities };
 @Component({
   selector: 'app-template-wizard',
   standalone: true,
-  imports: [CommonModule, FormsModule, ClauseCardEditorComponent, StandardClauseSelectorComponent, StandardClauseFormDialogComponent],
+  imports: [
+    CommonModule, 
+    FormsModule,
+    StandardClauseCardComponent,
+    AddStandardClauseComponent,
+    TemplateRulesStepComponent
+  ],
   templateUrl: './template-wizard.component.html',
   styleUrls: ['./template-wizard.component.scss']
 })
 export class TemplateWizardComponent {
   step = signal(0);
+  showAddClauseDialog = signal(false);
+  standardClauses = signal<StandardClauseCardData[]>([]);
+  isLoadingClauses = signal(false);
+  error = signal<string | null>(null);
+  clauseRules = signal<Record<string, ClauseRule>>({});
+
+  clausesForRules = computed(() => 
+    this.standardClauses().map(clause => ({
+      id: clause.id,
+      title: clause.name,
+      text: clause.text
+    }))
+  );
 
   indiaStates = [
     'Delhi', 'Maharashtra', 'Karnataka', 'Tamil Nadu', 'West Bengal', 'Gujarat', 'Uttar Pradesh', 'Rajasthan', 'Telangana', 'Kerala'
@@ -73,6 +92,75 @@ export class TemplateWizardComponent {
   showStandardClauseFormDialog = false;
 
   constructor(private standardClauseService: MockStandardClauseService) {}
+
+  ngOnInit() {
+    this.loadStandardClauses();
+  }
+
+  loadStandardClauses() {
+    if (!this.meta().contractType) return;
+    
+    this.isLoadingClauses.set(true);
+    this.error.set(null);
+    
+    this.standardClauseService.getByContractType(this.meta().contractType).subscribe({
+      next: (clauses: StandardClause[]) => {
+        this.standardClauses.set(clauses.map(clause => ({
+          id: clause.id.toString(),
+          name: clause.name,
+          type: clause.type,
+          text: clause.text,
+          jurisdiction: clause.jurisdiction,
+          allowedDeviations: clause.allowedDeviations,
+          version: clause.version
+        })));
+        this.isLoadingClauses.set(false);
+      },
+      error: (err: Error) => {
+        console.error('Error loading clauses:', err);
+        this.error.set('Failed to load standard clauses. Please try again.');
+        this.isLoadingClauses.set(false);
+      }
+    });
+  }
+
+  onAddNewClause() {
+    this.showAddClauseDialog.set(true);
+  }
+
+  onClauseSaved(newClause: NewStandardClause) {
+    const createDto = {
+      ...newClause,
+      contractType: this.meta().contractType,
+      version: '1.0'
+    };
+
+    this.standardClauseService.create(createDto).subscribe({
+      next: (createdClause) => {
+        this.standardClauses.update(clauses => [
+          ...clauses,
+          {
+            id: createdClause.id.toString(),
+            name: createdClause.name,
+            type: createdClause.type,
+            text: createdClause.text,
+            jurisdiction: createdClause.jurisdiction,
+            allowedDeviations: createdClause.allowedDeviations,
+            version: createdClause.version
+          }
+        ]);
+        this.showAddClauseDialog.set(false);
+      },
+      error: (err: Error) => {
+        console.error('Error creating clause:', err);
+        this.error.set('Failed to create standard clause. Please try again.');
+      }
+    });
+  }
+
+  onClauseCancel() {
+    this.showAddClauseDialog.set(false);
+  }
 
   onAddClause() {
     this.editingClause = {
@@ -190,15 +278,40 @@ export class TemplateWizardComponent {
     return (this.citiesByState[country as keyof CountryStates] as StateCities)?.[state] || [];
   }
 
-  // Step 3: Rules (handled per clause)
+  // Step 3: Rules
+  onRulesChange(rules: Record<string, ClauseRule>) {
+    this.clauseRules.set(rules);
+  }
 
   // Step 4: Review & Activate
 
   nextStep() {
+    if (this.step() === 0) {
+      // When moving from step 1 to step 2, load the clauses
+      this.loadStandardClauses();
+    }
     this.step.update(s => s + 1);
   }
 
   prevStep() {
     this.step.update(s => s - 1);
+  }
+
+  handleClauseCreated(createdClause: StandardClause): void {
+    // ... existing code ...
+  }
+
+  createStandardClause(newClause: NewStandardClause): void {
+    const createDto: CreateStandardClauseDto & { contractType: string } = {
+      ...newClause,
+      version: '1.0',
+      contractType: this.meta().contractType
+    };
+    // ... existing code ...
+  }
+
+  handleError(error: Error): void {
+    console.error('Error:', error);
+    // ... existing error handling code ...
   }
 } 

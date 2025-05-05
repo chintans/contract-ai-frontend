@@ -8,9 +8,10 @@ export interface StandardClause {
   name: string;
   type: string;
   text: string;
-  jurisdiction?: string;
-  version?: string;
-  allowedDeviations?: string;
+  jurisdiction: string;
+  allowedDeviations: number;
+  contractType: string;
+  version: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -19,9 +20,10 @@ export interface CreateStandardClauseDto {
   name: string;
   type: string;
   text: string;
-  jurisdiction?: string;
-  version?: string;
-  allowedDeviations?: string;
+  jurisdiction: string;
+  allowedDeviations: number;
+  contractType: string;
+  version: string;
 }
 
 @Injectable({

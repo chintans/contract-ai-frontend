@@ -17,7 +17,8 @@ export class MockStandardClauseService {
       text: 'Each party agrees to maintain the confidentiality of all information.',
       jurisdiction: 'India',
       version: '1.0',
-      allowedDeviations: 'Minor modifications allowed'
+      allowedDeviations: 10,
+      contractType: 'NDA'
     }).subscribe();
   }
 
@@ -38,15 +39,26 @@ export class MockStandardClauseService {
     return of(filtered).pipe(delay(500));
   }
 
-  create(clause: CreateStandardClauseDto): Observable<StandardClause> {
+  getByContractType(contractType: string): Observable<StandardClause[]> {
+    return of(this.clauses.filter(clause => clause.contractType === contractType));
+  }
+
+  create(dto: CreateStandardClauseDto & { contractType: string }): Observable<StandardClause> {
+    const now = new Date();
     const newClause: StandardClause = {
       id: this.nextId++,
-      ...clause,
-      createdAt: new Date(),
-      updatedAt: new Date()
+      name: dto.name,
+      type: dto.type,
+      text: dto.text,
+      jurisdiction: dto.jurisdiction,
+      allowedDeviations: dto.allowedDeviations,
+      contractType: dto.contractType,
+      version: dto.version,
+      createdAt: now,
+      updatedAt: now
     };
     this.clauses.push(newClause);
-    return of(newClause).pipe(delay(500));
+    return of(newClause);
   }
 
   update(id: number, clause: Partial<CreateStandardClauseDto>): Observable<StandardClause> {

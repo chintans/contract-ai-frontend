@@ -1,0 +1,151 @@
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+
+export interface NewStandardClause {
+  name: string;
+  type: string;
+  text: string;
+  jurisdiction: string;
+  allowedDeviations: number;
+}
+
+@Component({
+  selector: 'app-add-standard-clause',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule],
+  template: `
+    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <div class="p-6">
+          <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold">Add New Standard Clause</h2>
+            <button 
+              (click)="onCancel()" 
+              class="text-gray-500 hover:text-gray-700"
+              aria-label="Close">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+              <input 
+                type="text" 
+                formControlName="name"
+                class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter clause name" />
+              <div *ngIf="form.get('name')?.touched && form.get('name')?.errors?.['required']" class="text-red-500 text-sm mt-1">
+                Name is required
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Clause Type</label>
+              <select 
+                formControlName="type"
+                class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+                <option value="">Select type</option>
+                <option value="GENERAL">General</option>
+                <option value="CONFIDENTIALITY">Confidentiality</option>
+                <option value="INTELLECTUAL_PROPERTY">Intellectual Property</option>
+                <option value="LIABILITY">Liability</option>
+                <option value="TERMINATION">Termination</option>
+                <option value="PAYMENT">Payment</option>
+                <option value="GOVERNING_LAW">Governing Law</option>
+              </select>
+              <div *ngIf="form.get('type')?.touched && form.get('type')?.errors?.['required']" class="text-red-500 text-sm mt-1">
+                Type is required
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Jurisdiction</label>
+              <input 
+                type="text" 
+                formControlName="jurisdiction"
+                class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter jurisdiction" />
+              <div *ngIf="form.get('jurisdiction')?.touched && form.get('jurisdiction')?.errors?.['required']" class="text-red-500 text-sm mt-1">
+                Jurisdiction is required
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Allowed Deviations (%)</label>
+              <input 
+                type="number" 
+                formControlName="allowedDeviations"
+                class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                min="0"
+                max="100"
+                placeholder="Enter allowed deviations percentage" />
+              <div *ngIf="form.get('allowedDeviations')?.touched && form.get('allowedDeviations')?.errors?.['required']" class="text-red-500 text-sm mt-1">
+                Allowed deviations is required
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Clause Text</label>
+              <textarea 
+                formControlName="text"
+                rows="6"
+                class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter clause text"></textarea>
+              <div *ngIf="form.get('text')?.touched && form.get('text')?.errors?.['required']" class="text-red-500 text-sm mt-1">
+                Clause text is required
+              </div>
+            </div>
+
+            <div class="flex justify-end gap-4 pt-4">
+              <button 
+                type="button"
+                (click)="onCancel()"
+                class="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200">
+                Cancel
+              </button>
+              <button 
+                type="submit"
+                [disabled]="form.invalid || isSubmitting"
+                class="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50">
+                {{ isSubmitting ? 'Adding...' : 'Add Clause' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  `
+})
+export class AddStandardClauseComponent {
+  @Input() contractType = '';
+  @Output() save = new EventEmitter<NewStandardClause>();
+  @Output() cancel = new EventEmitter<void>();
+
+  form: FormGroup;
+  isSubmitting = false;
+
+  constructor(private fb: FormBuilder) {
+    this.form = this.fb.group({
+      name: ['', Validators.required],
+      type: ['', Validators.required],
+      text: ['', Validators.required],
+      jurisdiction: ['', Validators.required],
+      allowedDeviations: [0, [Validators.required, Validators.min(0), Validators.max(100)]]
+    });
+  }
+
+  onSubmit(): void {
+    if (this.form.valid) {
+      this.isSubmitting = true;
+      this.save.emit(this.form.value);
+    }
+  }
+
+  onCancel(): void {
+    this.cancel.emit();
+  }
+} 
