@@ -1,18 +1,25 @@
-import { Component, Input, Output, EventEmitter, signal } from '@angular/core';
+import { Component, Input, Output, EventEmitter, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { MatSelectModule } from '@angular/material/select';
+import { MatIconModule } from '@angular/material/icon';
 import { RuleEditorComponent } from '../rule-editor/rule-editor.component';
 import { RulePreviewComponent } from '../rule-preview/rule-preview.component';
 import { ClauseRule } from '../../models/rule.model';
+import { RulesService, RuleWithMetadata } from '../../../rules/rules.service';
+import { RuleDialogComponent } from '../../../rules/rule-dialog.component';
 
 interface ClauseWithRule {
   id: string;
   title: string;
   text: string;
   rule: ClauseRule | null;
+  ruleId?: string;
 }
 
 @Component({
@@ -20,10 +27,14 @@ interface ClauseWithRule {
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     MatStepperModule,
     MatButtonModule,
     MatDividerModule,
     MatCheckboxModule,
+    MatDialogModule,
+    MatSelectModule,
+    MatIconModule,
     RuleEditorComponent,
     RulePreviewComponent
   ],
@@ -36,11 +47,36 @@ interface ClauseWithRule {
         </p>
       </div>
 
+      <!-- Rules List and Add Button -->
+      <div class="mb-6">
+        <div class="flex items-center justify-between mb-2">
+          <h4 class="font-semibold">Available Rules</h4>
+          <button mat-stroked-button color="primary" (click)="addRule()">
+            <mat-icon>add</mat-icon> Add Rule
+          </button>
+        </div>
+        <div *ngIf="rules().length === 0" class="text-gray-500">No rules defined yet.</div>
+        <div *ngFor="let rule of rules()" class="border rounded p-2 mb-2 bg-gray-50">
+          <div class="font-medium">{{rule.name}}</div>
+          <div class="text-xs text-gray-600">{{rule.description}}</div>
+        </div>
+      </div>
+
       <div class="clauses-list">
         <div *ngFor="let clause of clauses(); let i = index" class="clause-item">
           <div class="clause-header">
             <h3>{{clause.title}}</h3>
             <span class="clause-number">#{{i + 1}}</span>
+          </div>
+
+          <div class="mb-2">
+            <mat-form-field appearance="fill" class="w-full">
+              <mat-label>Associate Rule</mat-label>
+              <mat-select [(ngModel)]="clause.ruleId" (selectionChange)="onRuleSelect(clause.id, $event.value)">
+                <mat-option [value]="null">None</mat-option>
+                <mat-option *ngFor="let rule of rules()" [value]="rule.id">{{rule.name}}</mat-option>
+              </mat-select>
+            </mat-form-field>
           </div>
 
           <div class="rule-configuration">
@@ -143,11 +179,17 @@ interface ClauseWithRule {
   `]
 })
 export class TemplateRulesStepComponent {
+  private rulesService = inject(RulesService);
+  private dialog = inject(MatDialog);
+
+  rules = this.rulesService.rules;
+
   @Input() set clausesData(value: { id: string, title: string, text: string }[]) {
     if (value) {
       this._clauses.set(value.map(clause => ({
         ...clause,
-        rule: null
+        rule: null,
+        ruleId: undefined
       })));
     }
   }
@@ -159,23 +201,48 @@ export class TemplateRulesStepComponent {
   private _clauses = signal<ClauseWithRule[]>([]);
   clauses = this._clauses.asReadonly();
 
-  onRuleChange(clauseId: string, rule: ClauseRule) {
-    this._clauses.update(clauses => 
-      clauses.map(clause => 
-        clause.id === clauseId 
-          ? { ...clause, rule } 
+  addRule() {
+    const dialogRef = this.dialog.open(RuleDialogComponent, {
+      width: '800px',
+      data: {}
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.rulesService.createRule(result);
+      }
+    });
+  }
+
+  onRuleSelect(clauseId: string, ruleId: string) {
+    const rule = this.rules().find(r => r.id === ruleId) || null;
+    this._clauses.update(clauses =>
+      clauses.map(clause =>
+        clause.id === clauseId
+          ? { ...clause, rule: rule } // assign the selected rule object
           : clause
       )
     );
+    this.emitRulesChange();
+  }
 
-    // Emit updated rules map
+  onRuleChange(clauseId: string, rule: ClauseRule) {
+    this._clauses.update(clauses =>
+      clauses.map(clause =>
+        clause.id === clauseId
+          ? { ...clause, rule }
+          : clause
+      )
+    );
+    this.emitRulesChange();
+  }
+
+  emitRulesChange() {
     const rulesMap = this._clauses().reduce((acc, clause) => {
       if (clause.rule) {
         acc[clause.id] = clause.rule;
       }
       return acc;
     }, {} as Record<string, ClauseRule>);
-
     this.rulesChange.emit(rulesMap);
   }
 
