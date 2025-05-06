@@ -2,6 +2,8 @@ import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testin
 import { TemplateWizardComponent } from './template-wizard.component';
 import { MockStandardClauseService } from '../../services/mock-standard-clause.service';
 import { of, throwError } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import { TemplatesService } from '../../services/templates.service';
 
 const mockClauses = [
   { id: 1, name: 'Clause 1', type: 'TypeA', text: 'Text 1', jurisdiction: 'IN', allowedDeviations: 0, version: '1.0', contractType: 'NDA', createdAt: new Date(), updatedAt: new Date(), severity: 'MEDIUM' },
@@ -14,10 +16,14 @@ describe('TemplateWizardComponent', () => {
   let mockService: jasmine.SpyObj<MockStandardClauseService>;
 
   beforeEach(async () => {
+    const activatedRouteStub = { snapshot: { paramMap: { get: () => null } } };
+    const templatesServiceStub = { getOne: () => ({ subscribe: (cb: any) => cb({}) }) };
     const spy = jasmine.createSpyObj('MockStandardClauseService', ['getByContractType', 'create']);
     await TestBed.configureTestingModule({
       imports: [TemplateWizardComponent],
       providers: [
+        { provide: ActivatedRoute, useValue: activatedRouteStub },
+        { provide: TemplatesService, useValue: templatesServiceStub },
         { provide: MockStandardClauseService, useValue: spy }
       ]
     }).compileComponents();

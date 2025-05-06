@@ -148,7 +148,13 @@
     <div *ngIf="step() === 3">
       <!-- Review & Activate Step -->
       <h3 class="text-xl font-semibold mb-4">Review & Activate</h3>
-      <div class="border rounded p-4 bg-gray-50">(Review summary coming soon...)</div>
+      <div class="border rounded p-4 bg-gray-50">
+        <div class="mb-2"><strong>Name:</strong> {{ meta().name }}</div>
+        <div class="mb-2"><strong>Contract Type:</strong> {{ meta().contractType }}</div>
+        <div class="mb-2"><strong>Jurisdiction:</strong> {{ formatMetaJurisdiction() }}</div>
+        <div class="mb-2"><strong>Clauses:</strong> {{ standardClauses().length }}</div>
+        <div class="text-gray-500 text-sm">(Review summary coming soon...)</div>
+      </div>
     </div>
 
     <div class="mt-10 flex flex-col md:flex-row justify-between gap-4">

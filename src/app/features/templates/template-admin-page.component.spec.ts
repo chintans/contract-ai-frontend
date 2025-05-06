@@ -31,7 +31,7 @@ describe('TemplateAdminPageComponent', () => {
   });
 
   it('should navigate to edit template on onEditTemplate', () => {
-    const template: Template = { id: '123', name: 'Test', contractType: 'NDA', jurisdiction: 'Global', activeVersion: '1.0' };
+    const template: Template = { id: '123', name: 'Test', contractType: 'NDA', jurisdiction: { isGlobal: true }, activeVersion: '1.0' };
     component.onEditTemplate(template);
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/templates', '123']);
   });

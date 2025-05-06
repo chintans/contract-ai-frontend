@@ -8,6 +8,9 @@ import { AddStandardClauseComponent, NewStandardClause } from './add-standard-cl
 import { MockStandardClauseService } from '../../services/mock-standard-clause.service';
 import { TemplateRulesStepComponent } from '../standard-clauses/components/template-wizard/template-rules-step.component';
 import { ClauseRule } from '../standard-clauses/models/rule.model';
+import { Template, Jurisdiction } from './template-table.component';
+import { ActivatedRoute } from '@angular/router';
+import { TemplatesService } from '../../services/templates.service';
 
 type StateCities = { [state: string]: string[] };
 type CountryStates = { [country: string]: StateCities };
@@ -91,10 +94,31 @@ export class TemplateWizardComponent {
   showStandardClauseSelector = false;
   showStandardClauseFormDialog = false;
 
-  constructor(private standardClauseService: MockStandardClauseService) {}
+  constructor(
+    private standardClauseService: MockStandardClauseService,
+    private route: ActivatedRoute,
+    private templatesService: TemplatesService
+  ) {}
 
   ngOnInit() {
-    this.loadStandardClauses();
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id && id !== 'new') {
+      // Edit mode: fetch template by id
+      this.templatesService.getOne(id).subscribe(template => {
+        const jurisdictionObj = this.parseJurisdiction(template.jurisdiction);
+        this.meta.set({
+          name: template.name,
+          contractType: template.type,
+          country: jurisdictionObj.country || '',
+          state: jurisdictionObj.state || '',
+          city: jurisdictionObj.city || '',
+          isGlobal: jurisdictionObj.isGlobal || false
+        });
+        // TODO: Load clauses if available in template
+      });
+    } else {
+      this.loadStandardClauses();
+    }
   }
 
   loadStandardClauses() {
@@ -313,5 +337,37 @@ export class TemplateWizardComponent {
   handleError(error: Error): void {
     console.error('Error:', error);
     // ... existing error handling code ...
+  }
+
+  buildTemplate(): Template {
+    const meta = this.meta();
+    const jurisdiction: Jurisdiction = {
+      country: meta.country,
+      state: meta.state,
+      city: meta.city,
+      isGlobal: meta.isGlobal
+    };
+    return {
+      id: '', // to be set when saving/creating
+      name: meta.name,
+      contractType: meta.contractType,
+      jurisdiction,
+      activeVersion: '1.0' // or as appropriate
+    };
+  }
+
+  formatMetaJurisdiction(): string {
+    const meta = this.meta();
+    if (meta.isGlobal) {
+      return 'Global';
+    }
+    return [meta.country, meta.state, meta.city].filter(x => !!x).join('/');
+  }
+
+  private parseJurisdiction(jurisdiction?: string): Jurisdiction {
+    if (!jurisdiction) return {};
+    if (jurisdiction === 'Global') return { isGlobal: true };
+    const [country, state, city] = jurisdiction.split('/');
+    return { country, state, city, isGlobal: false };
   }
 } 

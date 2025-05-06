@@ -1,0 +1,25 @@
+<div *ngIf="loading" class="text-center py-8">Loading...</div>
+<table *ngIf="!loading" class="min-w-full bg-white border border-gray-200 rounded">
+  <thead>
+    <tr>
+      <th class="px-4 py-2">Name</th>
+      <th class="px-4 py-2">Contract Type</th>
+      <th class="px-4 py-2">Jurisdiction</th>
+      <th class="px-4 py-2">Active Version</th>
+      <th class="px-4 py-2">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let t of templates">
+      <td class="px-4 py-2">{{ t.name }}</td>
+      <td class="px-4 py-2">{{ t.contractType }}</td>
+      <td class="px-4 py-2">
+        {{ formatJurisdiction(t.jurisdiction) }}
+      </td>
+      <td class="px-4 py-2">{{ t.activeVersion }}</td>
+      <td class="px-4 py-2">
+        <button class="bg-gray-200 px-2 py-1 rounded" (click)="editTemplate.emit(t)">Edit</button>
+      </td>
+    </tr>
+  </tbody>
+</table> 
