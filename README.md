@@ -36,23 +36,24 @@ ng build
 
 This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
 
-## Running unit tests
+## Testing
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+### Unit Tests (Karma)
+Run all unit tests:
 
-```bash
-ng test
+```
+pnpm run test
 ```
 
-## Running end-to-end tests
+### E2E Tests (Cypress)
+Open the Cypress test runner:
 
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
+```
+pnpm run e2e
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+- Cypress tests are located in the `cypress/` directory.
+- For more info, see [Angular Testing Guide](https://angular.dev/guide/testing) and [Cypress Docs](https://docs.cypress.io/).
 
 ## Additional Resources
 
