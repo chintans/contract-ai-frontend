@@ -1,6 +1,7 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { StandardClause, StandardClauseService } from '../../services/standard-clause.service';
+import { IStandardClauseService, StandardClause } from '../standard-clauses/models/standard-clause.model';
+import { STANDARD_CLAUSE_SERVICE_TOKEN } from '../standard-clauses/standard-clauses.module';
 
 @Component({
   selector: 'app-standard-clause-selector',
@@ -17,7 +18,9 @@ export class StandardClauseSelectorComponent {
   @Output() select = new EventEmitter<StandardClause>();
   @Output() cancel = new EventEmitter<void>();
 
-  constructor(private standardClauseService: StandardClauseService) {
+  private standardClauseService = inject<IStandardClauseService>(STANDARD_CLAUSE_SERVICE_TOKEN);
+
+  constructor() {
     this.loadStandardClauses();
   }
 

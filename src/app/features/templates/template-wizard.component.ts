@@ -1,19 +1,26 @@
-import { Component, computed, signal, inject } from '@angular/core';
+import { Component, computed, signal, inject, Provider, InjectionToken } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { VersionedClause } from './template-version.model';
 import { StandardClause, CreateStandardClauseDto, IStandardClauseService } from '../standard-clauses/models/standard-clause.model';
 import { StandardClauseCardComponent, StandardClauseCardData } from './standard-clause-card.component';
 import { AddStandardClauseComponent, NewStandardClause } from './add-standard-clause.component';
-import { STANDARD_CLAUSE_SERVICE_TOKEN } from '../standard-clauses/standard-clauses.module';
 import { TemplateRulesStepComponent } from '../standard-clauses/components/template-wizard/template-rules-step.component';
 import { ClauseRule } from '../standard-clauses/models/rule.model';
 import { Template, Jurisdiction } from './template-table.component';
 import { ActivatedRoute } from '@angular/router';
 import { TemplatesService } from '../../services/templates.service';
+import { StandardClauseService } from '../standard-clauses/services/standard-clause.service';
+import { MockStandardClauseService } from '../standard-clauses/services/mock-standard-clause.service';
+import { environment } from '../../../environments/environment';
 
 type StateCities = { [state: string]: string[] };
 type CountryStates = { [country: string]: StateCities };
+const STANDARD_CLAUSE_SERVICE_TOKEN = new InjectionToken<IStandardClauseService>('StandardClauseService');
+
+const standardClauseProvider: Provider = environment.mockData
+  ? { provide: STANDARD_CLAUSE_SERVICE_TOKEN, useClass: MockStandardClauseService }
+  : { provide: STANDARD_CLAUSE_SERVICE_TOKEN, useClass: StandardClauseService };
 
 @Component({
   selector: 'app-template-wizard',
@@ -26,7 +33,8 @@ type CountryStates = { [country: string]: StateCities };
     TemplateRulesStepComponent
   ],
   templateUrl: './template-wizard.component.html',
-  styleUrls: ['./template-wizard.component.scss']
+  styleUrls: ['./template-wizard.component.scss'],
+  providers: [standardClauseProvider]
 })
 export class TemplateWizardComponent {
   step = signal(0);

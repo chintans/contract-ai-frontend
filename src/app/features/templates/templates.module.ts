@@ -1,8 +1,10 @@
-import { NgModule } from '@angular/core';
+import { InjectionToken, NgModule, Provider } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 // import { TemplatesComponent } from './templates.component';
 // import { TemplateTableComponent } from './template-table.component';
+
+
 
 const routes: Routes = [
   {
@@ -26,10 +28,10 @@ const routes: Routes = [
 @NgModule({
   imports: [
     CommonModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes)    
     // TemplatesComponent is standalone and imported via routing
     // TemplateTableComponent is standalone and imported in the parent component
   ],
-  exports: [RouterModule]
+  exports: [RouterModule]    
 })
 export class TemplatesModule { } 
