@@ -1,8 +1,5 @@
 import { Routes } from '@angular/router';
 import { DashboardComponent } from './features/dashboard/dashboard.component';
-import { ContractReviewComponent } from './features/contract-review/contract-review.component';
-import { StandardClauseListComponent } from './features/standard-clauses/standard-clause-list/standard-clause-list.component';
-import { StandardClauseFormComponent } from './features/standard-clauses/standard-clause-form/standard-clause-form.component';
 
 export const routes: Routes = [
   {
@@ -16,39 +13,7 @@ export const routes: Routes = [
   },
   {
     path: 'contract-review',
-    component: ContractReviewComponent,
-    children: [
-      {
-        path: '',
-        redirectTo: 'upload',
-        pathMatch: 'full'
-      },
-      {
-        path: 'upload',
-        loadComponent: () => import('./features/contract-review/components/contract-upload/contract-upload.component')
-          .then(m => m.ContractUploadComponent)
-      },
-      {
-        path: 'analysis',
-        loadComponent: () => import('./features/contract-review/components/contract-analysis/contract-analysis.component')
-          .then(m => m.ContractAnalysisComponent)
-      },
-      {
-        path: 'risk-flags',
-        loadComponent: () => import('./features/contract-review/components/risk-flags/risk-flags.component')
-          .then(m => m.RiskFlagsComponent)
-      },
-      {
-        path: 'summary',
-        loadComponent: () => import('./features/contract-review/components/contract-summary/contract-summary.component')
-          .then(m => m.ContractSummaryComponent)
-      },
-      {
-        path: 'qa',
-        loadComponent: () => import('./features/contract-review/components/legal-qa/legal-qa.component')
-          .then(m => m.LegalQAComponent)
-      }
-    ]
+    loadChildren: () => import('./features/contract-review/contract-review.module').then(m => m.ContractReviewModule)
   },
   {
     path: 'templates',
@@ -56,20 +21,7 @@ export const routes: Routes = [
   },
   {
     path: 'standard-clauses',
-    children: [
-      {
-        path: '',
-        component: StandardClauseListComponent
-      },
-      {
-        path: 'new',
-        component: StandardClauseFormComponent
-      },
-      {
-        path: ':id',
-        component: StandardClauseFormComponent
-      }
-    ]
+    loadChildren: () => import('./features/standard-clauses/standard-clauses.module').then(m => m.StandardClausesModule)
   },
   {
     path: 'rules',

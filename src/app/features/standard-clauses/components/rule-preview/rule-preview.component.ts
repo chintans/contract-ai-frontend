@@ -9,15 +9,15 @@ import { ClauseRule, Severity } from '../../models/rule.model';
   standalone: true,
   imports: [CommonModule, MatCardModule, MatIconModule],
   template: `
-    <mat-card class="preview-card">
+    <mat-card class="preview-card" role="region" aria-labelledby="rule-preview-title">
       <mat-card-header>
-        <mat-icon [class]="severityClass()">{{severityIcon()}}</mat-icon>
-        <mat-card-title>Rule Preview</mat-card-title>
+        <mat-icon [class]="severityClass()" aria-hidden="true">{{severityIcon()}}</mat-icon>
+        <mat-card-title id="rule-preview-title">Rule Preview</mat-card-title>
       </mat-card-header>
       
       <mat-card-content>
         <div class="preview-content">
-          <p class="preview-message">{{previewMessage()}}</p>
+          <p class="preview-message" role="status" aria-live="polite">{{previewMessage()}}</p>
           
           <div class="clause-text" *ngIf="clauseText">
             <h4>Sample Clause</h4>
@@ -26,7 +26,7 @@ import { ClauseRule, Severity } from '../../models/rule.model';
 
           <div class="analysis-result" *ngIf="analysisResult()">
             <h4>Analysis</h4>
-            <p [class]="severityClass()">{{analysisResult()}}</p>
+            <p [class]="severityClass()" role="alert" aria-live="assertive">{{analysisResult()}}</p>
           </div>
         </div>
       </mat-card-content>
