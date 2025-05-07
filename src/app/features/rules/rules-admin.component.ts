@@ -21,56 +21,8 @@ import { RuleDialogComponent } from './rule-dialog.component';
     MatDialogModule,
     RulePreviewComponent
   ],
-  template: `
-    <div class="p-6">
-      <div class="max-w-7xl mx-auto">
-        <div class="flex justify-between items-center mb-6">
-          <h1 class="text-2xl font-bold">Rules Management</h1>
-          <button mat-raised-button color="primary" (click)="createRule()">
-            <mat-icon>add</mat-icon>
-            Create Rule
-          </button>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <mat-card *ngFor="let rule of rulesService.rules()">
-            <mat-card-header>
-              <mat-card-title>{{rule.name}}</mat-card-title>
-              <mat-card-subtitle>{{rule.description}}</mat-card-subtitle>
-            </mat-card-header>
-            <mat-card-content>
-              <app-rule-preview [rule]="rule" [clauseText]="rule.sampleText"></app-rule-preview>
-            </mat-card-content>
-            <mat-card-actions>
-              <button mat-button color="primary" (click)="editRule(rule)">
-                <mat-icon>edit</mat-icon>
-                Edit
-              </button>
-              <button mat-button color="warn" (click)="deleteRule(rule)">
-                <mat-icon>delete</mat-icon>
-                Delete
-              </button>
-            </mat-card-actions>
-          </mat-card>
-        </div>
-      </div>
-    </div>
-  `,
-  styles: [`
-    :host {
-      display: block;
-    }
-
-    mat-card {
-      margin-bottom: 1rem;
-    }
-
-    mat-card-actions {
-      display: flex;
-      justify-content: flex-end;
-      padding: 1rem;
-    }
-  `]
+  templateUrl: './rules-admin.component.html',
+  styleUrls: ['./rules-admin.component.scss']
 })
 export class RulesAdminComponent {
   rulesService = inject(RulesService);
