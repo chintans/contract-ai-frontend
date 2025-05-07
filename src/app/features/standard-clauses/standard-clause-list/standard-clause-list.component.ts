@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { StandardClause } from '../../../services/standard-clause.service';
-import { MockStandardClauseService } from '../../../services/mock-standard-clause.service';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { finalize } from 'rxjs';
+import { STANDARD_CLAUSE_SERVICE_TOKEN } from '../standard-clauses.module';
+import { IStandardClauseService, StandardClause } from '../models/standard-clause.model';
 
 @Component({
   selector: 'app-standard-clause-list',
@@ -17,7 +17,7 @@ export class StandardClauseListComponent implements OnInit {
   error: string | null = null;
   isDeletingId: number | null = null;
 
-  constructor(private standardClauseService: MockStandardClauseService) {}
+  private standardClauseService = inject<IStandardClauseService>(STANDARD_CLAUSE_SERVICE_TOKEN);
 
   ngOnInit(): void {
     this.loadStandardClauses();
@@ -26,7 +26,7 @@ export class StandardClauseListComponent implements OnInit {
   loadStandardClauses(): void {
     this.isLoading = true;
     this.error = null;
-    
+    console.log('loadStandardClauses');
     this.standardClauseService.getAll().pipe(
       finalize(() => this.isLoading = false)
     ).subscribe({
@@ -52,7 +52,7 @@ export class StandardClauseListComponent implements OnInit {
       finalize(() => this.isDeletingId = null)
     ).subscribe({
       next: () => {
-        this.standardClauses = this.standardClauses.filter(clause => clause.id !== id);
+        this.loadStandardClauses();
       },
       error: (error) => {
         console.error('Error deleting standard clause:', error);

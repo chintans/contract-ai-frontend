@@ -1,11 +1,11 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { VersionedClause } from './template-version.model';
-import { StandardClause, CreateStandardClauseDto } from '../../services/standard-clause.service';
+import { StandardClause, CreateStandardClauseDto, IStandardClauseService } from '../standard-clauses/models/standard-clause.model';
 import { StandardClauseCardComponent, StandardClauseCardData } from './standard-clause-card.component';
 import { AddStandardClauseComponent, NewStandardClause } from './add-standard-clause.component';
-import { MockStandardClauseService } from '../../services/mock-standard-clause.service';
+import { STANDARD_CLAUSE_SERVICE_TOKEN } from '../standard-clauses/standard-clauses.module';
 import { TemplateRulesStepComponent } from '../standard-clauses/components/template-wizard/template-rules-step.component';
 import { ClauseRule } from '../standard-clauses/models/rule.model';
 import { Template, Jurisdiction } from './template-table.component';
@@ -96,8 +96,9 @@ export class TemplateWizardComponent {
   showStandardClauseSelector = false;
   showStandardClauseFormDialog = false;
 
+  private standardClauseService = inject<IStandardClauseService>(STANDARD_CLAUSE_SERVICE_TOKEN);
+
   constructor(
-    private standardClauseService: MockStandardClauseService,
     private route: ActivatedRoute,
     private templatesService: TemplatesService
   ) {}
@@ -142,7 +143,7 @@ export class TemplateWizardComponent {
         })));
         this.isLoadingClauses.set(false);
       },
-      error: (err: Error) => {
+      error: (err: unknown) => {
         console.error('Error loading clauses:', err);
         this.error.set('Failed to load standard clauses. Please try again.');
         this.isLoadingClauses.set(false);
@@ -162,7 +163,7 @@ export class TemplateWizardComponent {
     };
 
     this.standardClauseService.create(createDto).subscribe({
-      next: (createdClause) => {
+      next: (createdClause: StandardClause) => {
         this.standardClauses.update(clauses => [
           ...clauses,
           {
@@ -177,7 +178,7 @@ export class TemplateWizardComponent {
         ]);
         this.showAddClauseDialog.set(false);
       },
-      error: (err: Error) => {
+      error: (err: unknown) => {
         console.error('Error creating clause:', err);
         this.error.set('Failed to create standard clause. Please try again.');
       }

@@ -1,41 +1,18 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../environments/environment';
-
-export interface StandardClause {
-  id: number;
-  name: string;
-  type: string;
-  text: string;
-  jurisdiction: string;
-  allowedDeviations: number;
-  contractType: string;
-  version: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface CreateStandardClauseDto {
-  name: string;
-  type: string;
-  text: string;
-  jurisdiction: string;
-  allowedDeviations: number;
-  contractType: string;
-  version: string;
-}
+import { environment } from '../../../../environments/environment';
+import { StandardClause, CreateStandardClauseDto, IStandardClauseService } from '../models/standard-clause.model';
 
 @Injectable({
   providedIn: 'root'
 })
-export class StandardClauseService {
+export class StandardClauseService implements IStandardClauseService {
   private apiUrl = `${environment.apiUrl}/standard-clauses`;
 
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<StandardClause[]> {
-    console.log('getAll', this.apiUrl);
     return this.http.get<StandardClause[]>(this.apiUrl);
   }
 
