@@ -2,10 +2,20 @@
   <h2 class="text-3xl font-bold mb-8">Template Wizard</h2>
   <div class="mb-8">
     <nav aria-label="Wizard steps" class="flex flex-wrap gap-4 items-center justify-between bg-gray-100 rounded-lg px-4 py-3">
-      <span [class.text-blue-600]="step() === 0" class="font-semibold flex items-center"><span class="mr-2">1.</span>Meta</span>
-      <span [class.text-blue-600]="step() === 1" class="font-semibold flex items-center"><span class="mr-2">2.</span>Clause Library</span>
-      <span [class.text-blue-600]="step() === 2" class="font-semibold flex items-center"><span class="mr-2">3.</span>Rules</span>
-      <span [class.text-blue-600]="step() === 3" class="font-semibold flex items-center"><span class="mr-2">4.</span>Review & Activate</span>
+      <ol class="flex flex-wrap gap-4 items-center w-full" role="list">
+        <li role="listitem">
+          <span [attr.aria-current]="step() === 0 ? 'step' : null" [class.text-blue-600]="step() === 0" class="font-semibold flex items-center"><span class="mr-2">1.</span>Meta</span>
+        </li>
+        <li role="listitem">
+          <span [attr.aria-current]="step() === 1 ? 'step' : null" [class.text-blue-600]="step() === 1" class="font-semibold flex items-center"><span class="mr-2">2.</span>Clause Library</span>
+        </li>
+        <li role="listitem">
+          <span [attr.aria-current]="step() === 2 ? 'step' : null" [class.text-blue-600]="step() === 2" class="font-semibold flex items-center"><span class="mr-2">3.</span>Rules</span>
+        </li>
+        <li role="listitem">
+          <span [attr.aria-current]="step() === 3 ? 'step' : null" [class.text-blue-600]="step() === 3" class="font-semibold flex items-center"><span class="mr-2">4.</span>Review & Activate</span>
+        </li>
+      </ol>
     </nav>
   </div>
 
@@ -15,30 +25,33 @@
       <div>
         <h3 class="text-xl font-semibold mb-4">Template Meta</h3>
         <div class="mb-6">
-          <label class="block mb-1 font-medium">Name</label>
-          <input class="w-full border px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500" [(ngModel)]="meta().name" name="name" aria-label="Template Name" />
+          <label class="block mb-1 font-medium" for="template-name">Name</label>
+          <input id="template-name" class="w-full border px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500" [(ngModel)]="meta().name" name="name" aria-label="Template Name" aria-required="true" [attr.aria-invalid]="!meta().name ? 'true' : 'false'" />
+          <div *ngIf="metaTouched() && !meta().name" class="text-red-600 text-sm mt-1" role="alert" aria-live="assertive">Name is required</div>
         </div>
         <div class="mb-6">
-          <label class="block mb-1 font-medium">Contract Type</label>
-          <select class="w-full border px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500" [(ngModel)]="meta().contractType" name="contractType" aria-label="Contract Type">
-            <option value="" disabled selected>Select contract type</option>
+          <label class="block mb-1 font-medium" for="contract-type">Contract Type</label>
+          <select id="contract-type" class="w-full border px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500" [(ngModel)]="meta().contractType" name="contractType" aria-label="Contract Type" aria-required="true" [attr.aria-invalid]="!meta().contractType ? 'true' : 'false'">
+            <option value="" disabled>Select contract type</option>
             <option value="MSA">Master Services Agreement (MSA)</option>
             <option value="NDA">Non-Disclosure Agreement (NDA)</option>
             <option value="Employment">Employment</option>
             <option value="SaaS">SaaS Subscription</option>
             <option value="Sales">Sales Contract</option>
           </select>
+          <div *ngIf="metaTouched() && !meta().contractType" class="text-red-600 text-sm mt-1" role="alert" aria-live="assertive">Contract type is required</div>
         </div>
         <div class="mb-6">
-          <label class="block mb-1 font-medium">Jurisdiction</label>
+          <label class="block mb-1 font-medium" for="country">Jurisdiction</label>
           <div class="flex flex-col gap-2">
-            <select class="border px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500" [(ngModel)]="meta().country" name="country" aria-label="Country" (change)="onCountryChange()">
-              <option value="" disabled selected>Select country</option>
+            <select id="country" class="border px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500" [(ngModel)]="meta().country" name="country" aria-label="Country" aria-required="true" [attr.aria-invalid]="!meta().country ? 'true' : 'false'" (change)="onCountryChange()">
+              <option value="" disabled>Select country</option>
               <option value="India">India</option>
               <option value="USA">USA</option>
             </select>
-            <select class="border px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500" [(ngModel)]="meta().state" name="state" aria-label="State" [disabled]="!meta().country">
-              <option value="" disabled selected>Select state</option>
+            <div *ngIf="metaTouched() && !meta().country" class="text-red-600 text-sm mt-1" role="alert" aria-live="assertive">Country is required</div>
+            <select id="state" class="border px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500" [(ngModel)]="meta().state" name="state" aria-label="State" [disabled]="!meta().country" aria-required="true" [attr.aria-invalid]="!meta().state && meta().country ? 'true' : 'false'">
+              <option value="" disabled>Select state</option>
               <ng-container *ngIf="meta().country === 'India'">
                 <option *ngFor="let s of indiaStates" [value]="s">{{ s }}</option>
               </ng-container>
@@ -46,20 +59,22 @@
                 <option *ngFor="let s of usaStates" [value]="s">{{ s }}</option>
               </ng-container>
             </select>
-            <select class="border px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500" [(ngModel)]="meta().city" name="city" aria-label="City" [disabled]="!meta().state">
-              <option value="" disabled selected>Select city</option>
+            <div *ngIf="metaTouched() && meta().country && !meta().state" class="text-red-600 text-sm mt-1" role="alert" aria-live="assertive">State is required</div>
+            <select id="city" class="border px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500" [(ngModel)]="meta().city" name="city" aria-label="City" [disabled]="!meta().state" aria-required="true" [attr.aria-invalid]="!meta().city && meta().state ? 'true' : 'false'">
+              <option value="" disabled>Select city</option>
               <option *ngFor="let c of getCities(meta().country, meta().state)" [value]="c">{{ c }}</option>
             </select>
+            <div *ngIf="metaTouched() && meta().state && !meta().city" class="text-red-600 text-sm mt-1" role="alert" aria-live="assertive">City is required</div>
           </div>
         </div>
         <div class="mb-6 flex items-center gap-2">
-          <label class="inline-flex items-center font-medium">
-            <input type="checkbox" [(ngModel)]="meta().isGlobal" name="isGlobal" aria-label="Global Template" />
+          <label class="inline-flex items-center font-medium" for="is-global">
+            <input id="is-global" type="checkbox" [(ngModel)]="meta().isGlobal" name="isGlobal" aria-label="Global Template" />
             <span class="ml-2">Global</span>
           </label>
-          <span class="ml-1 cursor-pointer relative group" tabindex="0" aria-label="What does Global mean?">
+          <span class="ml-1 cursor-pointer relative group" tabindex="0" aria-label="What does Global mean?" aria-describedby="global-tooltip">
             <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-            <span class="absolute left-6 top-0 z-10 hidden group-hover:block group-focus:block bg-white border border-gray-300 rounded shadow-lg px-3 py-2 text-xs text-gray-700 w-64">
+            <span id="global-tooltip" class="absolute left-6 top-0 z-10 hidden group-hover:block group-focus:block bg-white border border-gray-300 rounded shadow-lg px-3 py-2 text-xs text-gray-700 w-64">
               Global templates are not restricted to a specific country or jurisdiction. Use this for contracts that are intended for international or cross-border use.
             </span>
           </span>
@@ -74,13 +89,14 @@
       <p class="text-gray-500 mb-4">Add standard clauses to your template or create new ones.</p>
       
       <!-- Error Alert -->
-      <div *ngIf="error()" class="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+      <div *ngIf="error()" class="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert" aria-live="assertive">
         <span class="block sm:inline">{{ error() }}</span>
         <button 
           class="absolute top-0 bottom-0 right-0 px-4 py-3"
-          (click)="error.set(null)">
+          (click)="error.set(null)"
+          aria-label="Dismiss error message">
           <span class="sr-only">Dismiss</span>
-          <svg class="h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+          <svg class="h-6 w-6 text-red-500" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
             <title>Close</title>
             <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/>
           </svg>
@@ -93,8 +109,9 @@
           type="button" 
           class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
           (click)="onAddNewClause()"
+          aria-label="Add new standard clause"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
             <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
           </svg>
           Add New Standard Clause
@@ -102,13 +119,13 @@
       </div>
 
       <!-- Loading State -->
-      <div *ngIf="isLoadingClauses()" class="flex justify-center items-center py-12">
+      <div *ngIf="isLoadingClauses()" class="flex justify-center items-center py-12" aria-busy="true" aria-live="polite">
         <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
       </div>
 
       <!-- Empty State -->
-      <div *ngIf="!isLoadingClauses() && standardClauses().length === 0" class="text-center py-12 bg-gray-50 rounded-lg">
-        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div *ngIf="!isLoadingClauses() && standardClauses().length === 0" class="text-center py-12 bg-gray-50 rounded-lg" aria-live="polite">
+        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
         </svg>
         <h3 class="mt-2 text-sm font-medium text-gray-900">No standard clauses</h3>
@@ -129,6 +146,9 @@
         [contractType]="meta().contractType"
         (save)="onClauseSaved($event)"
         (cancel)="onClauseCancel()"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Add Standard Clause Dialog"
       ></app-add-standard-clause>
     </div>
 
@@ -158,8 +178,8 @@
     </div>
 
     <div class="mt-10 flex flex-col md:flex-row justify-between gap-4">
-      <button class="px-6 py-3 rounded-lg bg-gray-200 text-lg font-medium" (click)="prevStep()" [disabled]="step() === 0">Back</button>
-      <button class="px-6 py-3 rounded-lg bg-blue-600 text-white text-lg font-semibold" (click)="nextStep()" [disabled]="step() === 3">Next</button>
+      <button type="button" class="px-6 py-3 rounded-lg bg-gray-200 text-lg font-medium" (click)="prevStep()" [disabled]="step() === 0" aria-label="Back to previous step">Back</button>
+      <button type="button" class="px-6 py-3 rounded-lg bg-blue-600 text-white text-lg font-semibold" (click)="nextStep()" [disabled]="step() === 3" aria-label="Next step">Next</button>
     </div>
   </form>
 </div> 

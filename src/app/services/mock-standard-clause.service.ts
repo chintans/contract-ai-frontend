@@ -40,7 +40,7 @@ export class MockStandardClauseService {
   }
 
   getByContractType(contractType: string): Observable<StandardClause[]> {
-    return of(this.clauses.filter(clause => clause.contractType === contractType));
+    return of(this.clauses.filter(clause => clause.contractType === contractType)).pipe(delay(500));
   }
 
   create(dto: CreateStandardClauseDto & { contractType: string }): Observable<StandardClause> {
