@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -34,7 +34,8 @@ export class ContractUploadComponent {
 
   constructor(
     private contractAnalysisService: ContractAnalysisService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   dropped(files: NgxFileDropEntry[]): void {
@@ -74,7 +75,7 @@ export class ContractUploadComponent {
     this.isUploading = true;
     try {
       await this.contractAnalysisService.uploadContract(this.selectedFile);
-      this.router.navigate(['contract-review', 'analysis']);
+      this.router.navigate(['/contract-review/analysis']);  
     } catch (error) {
       console.error('Error uploading contract:', error);
     } finally {
