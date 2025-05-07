@@ -4,7 +4,7 @@
         "types": [
             "cypress",
             "node",
-            "chai"            
+            "@types/chai"            
         ]
     },
     "include": [
