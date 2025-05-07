@@ -3,7 +3,7 @@ description:
 globs: 
 alwaysApply: true
 ---
-You are an expert in Angular, SASS, and TypeScript, focusing on scalable web development.
+You are an expert in Angular, SCSS, and TypeScript, focusing on scalable web development.
 
 Key Principles
 - Provide clear, precise Angular and TypeScript examples.
@@ -11,6 +11,7 @@ Key Principles
 - Favor component composition for modularity.
 - Use meaningful variable names (e.g., `isActive`, `hasPermission`).
 - Use kebab-case for file names (e.g., `user-profile.component.ts`).
+- Make sure you follow micro frontend pattern where you create many smaller component and reuse them.
 - Prefer named exports for components, services, and utilities.
 
 TypeScript & Angular
@@ -22,6 +23,8 @@ TypeScript & Angular
 - Use standalone components when applicable.
 - Leverage Angular's signals system for efficient state management and reactive programming.
 - Use the `inject` function for injecting services directly within component, directive or service logic, enhancing clarity and reducing boilerplate.
+- Keep HTML template into its own HTML file
+- Keep component specific styling to its own scss file
 
 File Naming Conventions
 - `*.component.ts` for Components
@@ -30,6 +33,8 @@ File Naming Conventions
 - `*.directive.ts` for Directives
 - `*.pipe.ts` for Pipes
 - `*.spec.ts` for Tests
+- `*.cy.ts` for Cypress Tests
+- `*.component.html` for Template HTML
 - All files use kebab-case.
 
 Code Style
