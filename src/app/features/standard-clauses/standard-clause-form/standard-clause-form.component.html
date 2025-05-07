@@ -1,17 +1,18 @@
 <!-- When used in dialog mode, we don't need the outer container padding -->
-<div [class.container]="!isDialog" [class.mx-auto]="!isDialog" [class.px-4]="!isDialog" [class.py-8]="!isDialog">
+<div [class.container]="!isDialog" [class.mx-auto]="!isDialog" [class.px-4]="!isDialog" [class.py-8]="!isDialog" role="main" aria-labelledby="standard-clause-form-heading">
   <div [class.max-w-2xl]="!isDialog" [class.mx-auto]="!isDialog">
-    <h1 class="text-2xl font-bold mb-6">{{ isEditMode ? 'Edit' : 'Create' }} Standard Clause</h1>
+    <h1 id="standard-clause-form-heading" class="text-2xl font-bold mb-6">{{ isEditMode ? 'Edit' : 'Create' }} Standard Clause</h1>
 
     <!-- Error Alert -->
-    <div *ngIf="error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-6" role="alert">
+    <div *ngIf="error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-6" role="alert" aria-live="assertive">
       <strong class="font-bold">Error!</strong>
       <span class="block sm:inline"> {{ error }}</span>
       <button 
         class="absolute top-0 bottom-0 right-0 px-4 py-3"
-        (click)="error = null">
+        (click)="error = null"
+        aria-label="Dismiss error message">
         <span class="sr-only">Dismiss</span>
-        <svg class="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+        <svg class="fill-current h-6 w-6 text-red-500" role="img" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
           <title>Close</title>
           <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/>
         </svg>
@@ -19,30 +20,39 @@
     </div>
 
     <!-- Loading State -->
-    <div *ngIf="isLoading" class="flex justify-center items-center py-4">
-      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+    <div *ngIf="isLoading" class="flex justify-center items-center py-4" role="status" aria-live="polite">
+      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500" aria-label="Loading"></div>
     </div>
     
-    <form *ngIf="!isLoading" [formGroup]="clauseForm" (ngSubmit)="onSubmit()" class="space-y-4">
+    <form *ngIf="!isLoading" [formGroup]="clauseForm" (ngSubmit)="onSubmit()" class="space-y-4" aria-describedby="form-description">
+      <div id="form-description" class="sr-only">All fields marked with * are required.</div>
       <div>
-        <label class="block text-sm font-medium text-gray-700">Name</label>
+        <label class="block text-sm font-medium text-gray-700" for="clause-name">Name<span aria-hidden="true">*</span></label>
         <input
+          id="clause-name"
           type="text"
           formControlName="name"
           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
           [ngClass]="{'border-red-500': clauseForm.get('name')?.invalid && clauseForm.get('name')?.touched}"
+          aria-required="true"
+          [attr.aria-invalid]="clauseForm.get('name')?.invalid && clauseForm.get('name')?.touched ? 'true' : 'false'"
+          aria-describedby="clause-name-error"
         >
-        <div *ngIf="clauseForm.get('name')?.invalid && clauseForm.get('name')?.touched" class="text-red-500 text-sm mt-1">
+        <div *ngIf="clauseForm.get('name')?.invalid && clauseForm.get('name')?.touched" class="text-red-500 text-sm mt-1" id="clause-name-error" role="alert">
           Name is required
         </div>
       </div>
 
       <div>
-        <label class="block text-sm font-medium text-gray-700">Type</label>
+        <label class="block text-sm font-medium text-gray-700" for="clause-type">Type<span aria-hidden="true">*</span></label>
         <select
+          id="clause-type"
           formControlName="type"
           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
           [ngClass]="{'border-red-500': clauseForm.get('type')?.invalid && clauseForm.get('type')?.touched}"
+          aria-required="true"
+          [attr.aria-invalid]="clauseForm.get('type')?.invalid && clauseForm.get('type')?.touched ? 'true' : 'false'"
+          aria-describedby="clause-type-error"
         >
           <option value="" disabled>Select clause type</option>
           <option value="Confidentiality">Confidentiality</option>
@@ -52,27 +62,32 @@
           <option value="Payment Terms">Payment Terms</option>
           <option value="Governing Law">Governing Law</option>
         </select>
-        <div *ngIf="clauseForm.get('type')?.invalid && clauseForm.get('type')?.touched" class="text-red-500 text-sm mt-1">
+        <div *ngIf="clauseForm.get('type')?.invalid && clauseForm.get('type')?.touched" class="text-red-500 text-sm mt-1" id="clause-type-error" role="alert">
           Type is required
         </div>
       </div>
 
       <div>
-        <label class="block text-sm font-medium text-gray-700">Text</label>
+        <label class="block text-sm font-medium text-gray-700" for="clause-text">Text<span aria-hidden="true">*</span></label>
         <textarea
+          id="clause-text"
           formControlName="text"
           rows="4"
           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
           [ngClass]="{'border-red-500': clauseForm.get('text')?.invalid && clauseForm.get('text')?.touched}"
+          aria-required="true"
+          [attr.aria-invalid]="clauseForm.get('text')?.invalid && clauseForm.get('text')?.touched ? 'true' : 'false'"
+          aria-describedby="clause-text-error"
         ></textarea>
-        <div *ngIf="clauseForm.get('text')?.invalid && clauseForm.get('text')?.touched" class="text-red-500 text-sm mt-1">
+        <div *ngIf="clauseForm.get('text')?.invalid && clauseForm.get('text')?.touched" class="text-red-500 text-sm mt-1" id="clause-text-error" role="alert">
           Text is required
         </div>
       </div>
 
       <div>
-        <label class="block text-sm font-medium text-gray-700">Jurisdiction</label>
+        <label class="block text-sm font-medium text-gray-700" for="clause-jurisdiction">Jurisdiction</label>
         <select
+          id="clause-jurisdiction"
           formControlName="jurisdiction"
           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
         >
@@ -83,8 +98,9 @@
       </div>
 
       <div>
-        <label class="block text-sm font-medium text-gray-700">Version</label>
+        <label class="block text-sm font-medium text-gray-700" for="clause-version">Version</label>
         <input
+          id="clause-version"
           type="text"
           formControlName="version"
           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
@@ -93,8 +109,9 @@
       </div>
 
       <div>
-        <label class="block text-sm font-medium text-gray-700">Allowed Deviations</label>
+        <label class="block text-sm font-medium text-gray-700" for="clause-allowed-deviations">Allowed Deviations</label>
         <textarea
+          id="clause-allowed-deviations"
           formControlName="allowedDeviations"
           rows="2"
           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
@@ -108,6 +125,7 @@
           (click)="onCancel()"
           class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
           [disabled]="isSubmitting"
+          aria-label="Cancel"
         >
           Cancel
         </button>
@@ -115,6 +133,8 @@
           type="submit"
           [disabled]="clauseForm.invalid || isSubmitting"
           class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:opacity-50"
+          [attr.aria-busy]="isSubmitting ? 'true' : null"
+          aria-label="Submit form"
         >
           {{ isSubmitting ? 'Saving...' : (isEditMode ? 'Update' : 'Create') }}
         </button>

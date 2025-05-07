@@ -35,6 +35,7 @@ export class StandardClauseService {
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<StandardClause[]> {
+    console.log('getAll', this.apiUrl);
     return this.http.get<StandardClause[]>(this.apiUrl);
   }
 
@@ -44,6 +45,10 @@ export class StandardClauseService {
 
   getByType(type: string): Observable<StandardClause[]> {
     return this.http.get<StandardClause[]>(`${this.apiUrl}/type/${type}`);
+  }
+
+  getByContractType(contractType: string): Observable<StandardClause[]> {
+    return this.http.get<StandardClause[]>(`${this.apiUrl}/contract-type/${contractType}`);
   }
 
   create(clause: CreateStandardClauseDto): Observable<StandardClause> {

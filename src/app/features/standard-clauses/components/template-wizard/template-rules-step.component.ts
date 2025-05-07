@@ -39,10 +39,10 @@ interface ClauseWithRule {
     RulePreviewComponent
   ],
   template: `
-    <div class="rules-step">
+    <div class="rules-step" role="main" aria-labelledby="configure-rules-heading">
       <div class="step-header">
-        <h2>Configure Rules</h2>
-        <p class="step-description">
+        <h2 id="configure-rules-heading">Configure Rules</h2>
+        <p class="step-description" id="configure-rules-desc">
           Set enforcement rules and validation criteria for each clause in your template.
         </p>
       </div>
@@ -51,11 +51,11 @@ interface ClauseWithRule {
       <div class="mb-6">
         <div class="flex items-center justify-between mb-2">
           <h4 class="font-semibold">Available Rules</h4>
-          <button mat-stroked-button color="primary" (click)="addRule()">
-            <mat-icon>add</mat-icon> Add Rule
+          <button mat-stroked-button color="primary" (click)="addRule()" aria-label="Add Rule">
+            <mat-icon aria-hidden="true">add</mat-icon> Add Rule
           </button>
         </div>
-        <div *ngIf="rules().length === 0" class="text-gray-500">No rules defined yet.</div>
+        <div *ngIf="rules().length === 0" class="text-gray-500" role="status" aria-live="polite">No rules defined yet.</div>
         <div *ngFor="let rule of rules()" class="border rounded p-2 mb-2 bg-gray-50">
           <div class="font-medium">{{rule.name}}</div>
           <div class="text-xs text-gray-600">{{rule.description}}</div>
@@ -63,16 +63,16 @@ interface ClauseWithRule {
       </div>
 
       <div class="clauses-list">
-        <div *ngFor="let clause of clauses(); let i = index" class="clause-item">
+        <div *ngFor="let clause of clauses(); let i = index" class="clause-item" tabindex="0" [attr.aria-labelledby]="'clause-title-' + i">
           <div class="clause-header">
-            <h3>{{clause.title}}</h3>
+            <h3 id="clause-title-{{i}}">{{clause.title}}</h3>
             <span class="clause-number">#{{i + 1}}</span>
           </div>
 
           <div class="mb-2">
             <mat-form-field appearance="fill" class="w-full">
               <mat-label>Associate Rule</mat-label>
-              <mat-select [(ngModel)]="clause.ruleId" (selectionChange)="onRuleSelect(clause.id, $event.value)">
+              <mat-select [(ngModel)]="clause.ruleId" (selectionChange)="onRuleSelect(clause.id, $event.value)" aria-label="Associate Rule">
                 <mat-option [value]="null">None</mat-option>
                 <mat-option *ngFor="let rule of rules()" [value]="rule.id">{{rule.name}}</mat-option>
               </mat-select>
@@ -102,10 +102,11 @@ interface ClauseWithRule {
       </div>
 
       <div class="step-actions">
-        <button mat-button (click)="onBack.emit()">Back</button>
+        <button mat-button (click)="onBack.emit()" aria-label="Back">Back</button>
         <button mat-raised-button color="primary" 
                 [disabled]="!allRulesValid()"
-                (click)="onNext.emit()">
+                (click)="onNext.emit()"
+                aria-label="Next">
           Next
         </button>
       </div>

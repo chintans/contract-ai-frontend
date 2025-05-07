@@ -29,12 +29,12 @@ import { RuleValidationService } from '../../services/rule-validation.service';
     MatTooltipModule
   ],
   template: `
-    <form [formGroup]="ruleForm" class="rule-editor">
+    <form [formGroup]="ruleForm" class="rule-editor" role="form" aria-label="Rule Editor">
       <!-- Enforcement -->
       <div class="enforcement-section">
-        <label class="section-label">Enforcement Level</label>
-        <mat-radio-group formControlName="enforcement">
-          <mat-radio-button *ngFor="let type of enforcements" [value]="type">
+        <label class="section-label" id="enforcement-label">Enforcement Level</label>
+        <mat-radio-group formControlName="enforcement" aria-labelledby="enforcement-label">
+          <mat-radio-button *ngFor="let type of enforcements" [value]="type" [attr.aria-label]="type">
             {{type}}
           </mat-radio-button>
         </mat-radio-group>
@@ -43,9 +43,9 @@ import { RuleValidationService } from '../../services/rule-validation.service';
       <!-- Severity -->
       <div class="severity-section">
         <mat-form-field>
-          <mat-label>Severity</mat-label>
-          <mat-select formControlName="severity">
-            <mat-option *ngFor="let level of severityLevels" [value]="level">
+          <mat-label id="severity-label">Severity</mat-label>
+          <mat-select formControlName="severity" aria-labelledby="severity-label">
+            <mat-option *ngFor="let level of severityLevels" [value]="level" [attr.aria-label]="level">
               {{level}}
             </mat-option>
           </mat-select>
@@ -55,16 +55,18 @@ import { RuleValidationService } from '../../services/rule-validation.service';
       <!-- Similarity Settings -->
       <div class="similarity-section" *ngIf="showSimilarityControls()">
         <mat-form-field>
-          <mat-label>Similarity Threshold (%)</mat-label>
+          <mat-label id="similarity-threshold-label">Similarity Threshold (%)</mat-label>
           <input matInput type="number" formControlName="similarityThreshold"
                  min="0" max="100"
-                 matTooltip="Exact text match = 100%. Lower this if you permit paraphrasing.">
+                 matTooltip="Exact text match = 100%. Lower this if you permit paraphrasing."
+                 aria-labelledby="similarity-threshold-label">
         </mat-form-field>
 
         <mat-form-field>
-          <mat-label>Allowed Deviation (%)</mat-label>
+          <mat-label id="allowed-deviation-label">Allowed Deviation (%)</mat-label>
           <input matInput type="number" formControlName="deviationAllowedPct"
-                 min="0" max="100">
+                 min="0" max="100"
+                 aria-labelledby="allowed-deviation-label">
         </mat-form-field>
       </div>
 
@@ -72,59 +74,61 @@ import { RuleValidationService } from '../../services/rule-validation.service';
       <div class="patterns-section" *ngIf="showPatternControls()">
         <!-- Forbidden Patterns -->
         <mat-form-field class="full-width">
-          <mat-label>Forbidden Patterns</mat-label>
-          <mat-chip-grid #forbiddenChipGrid aria-label="Forbidden patterns">
+          <mat-label id="forbidden-patterns-label">Forbidden Patterns</mat-label>
+          <mat-chip-grid #forbiddenChipGrid aria-labelledby="forbidden-patterns-label">
             <mat-chip-row *ngFor="let pattern of forbiddenPatterns()"
                          (removed)="removePattern('forbidden', pattern)">
               {{pattern}}
-              <button matChipRemove>
+              <button matChipRemove aria-label="Remove pattern">
                 <mat-icon>cancel</mat-icon>
               </button>
             </mat-chip-row>
           </mat-chip-grid>
           <input placeholder="Add pattern..."
                  [matChipInputFor]="forbiddenChipGrid"
-                 (matChipInputTokenEnd)="addPattern('forbidden', $event)">
+                 (matChipInputTokenEnd)="addPattern('forbidden', $event)"
+                 aria-label="Add forbidden pattern">
         </mat-form-field>
 
         <!-- Required Patterns -->
         <mat-form-field class="full-width">
-          <mat-label>Required Patterns</mat-label>
-          <mat-chip-grid #requiredChipGrid aria-label="Required patterns">
+          <mat-label id="required-patterns-label">Required Patterns</mat-label>
+          <mat-chip-grid #requiredChipGrid aria-labelledby="required-patterns-label">
             <mat-chip-row *ngFor="let pattern of requiredPatterns()"
                          (removed)="removePattern('required', pattern)">
               {{pattern}}
-              <button matChipRemove>
+              <button matChipRemove aria-label="Remove pattern">
                 <mat-icon>cancel</mat-icon>
               </button>
             </mat-chip-row>
           </mat-chip-grid>
           <input placeholder="Add pattern..."
                  [matChipInputFor]="requiredChipGrid"
-                 (matChipInputTokenEnd)="addPattern('required', $event)">
+                 (matChipInputTokenEnd)="addPattern('required', $event)"
+                 aria-label="Add required pattern">
         </mat-form-field>
       </div>
 
       <!-- Additional Settings -->
       <div class="additional-settings">
         <mat-form-field>
-          <mat-label>Statutory Reference</mat-label>
-          <input matInput formControlName="statutoryReference">
+          <mat-label id="statutory-reference-label">Statutory Reference</mat-label>
+          <input matInput formControlName="statutoryReference" aria-labelledby="statutory-reference-label">
         </mat-form-field>
 
         <mat-form-field>
-          <mat-label>Score Weight</mat-label>
-          <input matInput type="number" formControlName="scoreWeight" min="0">
+          <mat-label id="score-weight-label">Score Weight</mat-label>
+          <input matInput type="number" formControlName="scoreWeight" min="0" aria-labelledby="score-weight-label">
         </mat-form-field>
 
-        <mat-checkbox formControlName="autoSuggest">
+        <mat-checkbox formControlName="autoSuggest" aria-label="Enable Auto-Suggest">
           Enable Auto-Suggest
         </mat-checkbox>
       </div>
 
       <!-- Validation Errors -->
       <div class="validation-errors" *ngIf="validationErrors().length">
-        <p *ngFor="let error of validationErrors()" class="error-message">
+        <p *ngFor="let error of validationErrors()" class="error-message" role="alert">
           {{error}}
         </p>
       </div>

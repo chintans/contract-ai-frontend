@@ -3,11 +3,6 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { SharedModule } from '../../shared/shared.module';
 import { ContractReviewComponent } from './contract-review.component';
-import { ContractUploadComponent } from './components/contract-upload/contract-upload.component';
-import { ContractAnalysisComponent } from './components/contract-analysis/contract-analysis.component';
-import { RiskFlagsComponent } from './components/risk-flags/risk-flags.component';
-import { ClauseSummaryComponent } from './components/clause-summary/clause-summary.component';
-import { LegalQAComponent } from './components/legal-qa/legal-qa.component';
 
 const routes: Routes = [
   {
@@ -15,27 +10,21 @@ const routes: Routes = [
     component: ContractReviewComponent,
     children: [
       { path: '', redirectTo: 'upload', pathMatch: 'full' },
-      { path: 'upload', component: ContractUploadComponent },
-      { path: 'analysis', component: ContractAnalysisComponent },
-      { path: 'risks', component: RiskFlagsComponent },
-      { path: 'summary', component: ClauseSummaryComponent },
-      { path: 'qa', component: LegalQAComponent }
+      { path: 'upload', loadComponent: () => import('./components/contract-upload/contract-upload.component').then(m => m.ContractUploadComponent) },
+      { path: 'analysis', loadComponent: () => import('./components/contract-analysis/contract-analysis.component').then(m => m.ContractAnalysisComponent) },
+      { path: 'risk-flags', loadComponent: () => import('./components/risk-flags/risk-flags.component').then(m => m.RiskFlagsComponent) },
+      { path: 'summary', loadComponent: () => import('./components/contract-summary/contract-summary.component').then(m => m.ContractSummaryComponent) },
+      { path: 'qa', loadComponent: () => import('./components/legal-qa/legal-qa.component').then(m => m.LegalQAComponent) }
     ]
   }
 ];
 
 @NgModule({
-  declarations: [],
   imports: [
     CommonModule,
     SharedModule,
     RouterModule.forChild(routes),
-    ContractReviewComponent,
-    ContractUploadComponent,
-    ContractAnalysisComponent,
-    RiskFlagsComponent,
-    ClauseSummaryComponent,
-    LegalQAComponent
+    ContractReviewComponent
   ],
   exports: [RouterModule]
 })
