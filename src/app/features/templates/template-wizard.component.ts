@@ -36,6 +36,8 @@ export class TemplateWizardComponent {
   error = signal<string | null>(null);
   clauseRules = signal<Record<string, ClauseRule>>({});
 
+  metaTouched = signal(false);
+
   clausesForRules = computed(() => 
     this.standardClauses().map(clause => ({
       id: clause.id,
@@ -311,6 +313,10 @@ export class TemplateWizardComponent {
 
   nextStep() {
     if (this.step() === 0) {
+      this.metaTouched.set(true);
+      if (!this.isMetaValid()) {
+        return;
+      }
       // When moving from step 1 to step 2, load the clauses
       this.loadStandardClauses();
     }
@@ -369,5 +375,10 @@ export class TemplateWizardComponent {
     if (jurisdiction === 'Global') return { isGlobal: true };
     const [country, state, city] = jurisdiction.split('/');
     return { country, state, city, isGlobal: false };
+  }
+
+  isMetaValid(): boolean {
+    const m = this.meta();
+    return !!(m.name && m.contractType && m.country && m.state && m.city);
   }
 } 
