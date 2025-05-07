@@ -1,5 +1,6 @@
 name: Cypress Tests
 on: [push, pull_request]
+permissions: read-all
 jobs:
   cypress-run:
     runs-on: ubuntu-latest
