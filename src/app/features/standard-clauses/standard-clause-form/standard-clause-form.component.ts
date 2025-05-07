@@ -1,9 +1,9 @@
-import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { CreateStandardClauseDto } from '../../../services/standard-clause.service';
-import { MockStandardClauseService } from '../../../services/mock-standard-clause.service';
+import { CreateStandardClauseDto, IStandardClauseService, StandardClause } from '../models/standard-clause.model';
+import { STANDARD_CLAUSE_SERVICE_TOKEN } from '../standard-clauses.module';
 import { finalize } from 'rxjs';
 
 @Component({
@@ -24,9 +24,10 @@ export class StandardClauseFormComponent implements OnInit {
   @Output() save = new EventEmitter<CreateStandardClauseDto>();
   @Output() cancel = new EventEmitter<void>();
 
+  private standardClauseService = inject<IStandardClauseService>(STANDARD_CLAUSE_SERVICE_TOKEN);
+
   constructor(
     private fb: FormBuilder,
-    private standardClauseService: MockStandardClauseService,
     private router: Router,
     private route: ActivatedRoute
   ) {
@@ -36,7 +37,8 @@ export class StandardClauseFormComponent implements OnInit {
       text: ['', Validators.required],
       jurisdiction: [''],
       version: [''],
-      allowedDeviations: ['']
+      allowedDeviations: [''],
+      contractType: ['']
     });
   }
 
@@ -56,17 +58,18 @@ export class StandardClauseFormComponent implements OnInit {
       this.standardClauseService.getOne(this.clauseId).pipe(
         finalize(() => this.isLoading = false)
       ).subscribe({
-        next: (clause) => {
+        next: (clause: StandardClause) => {
           this.clauseForm.patchValue({
             name: clause.name,
             type: clause.type,
             text: clause.text,
             jurisdiction: clause.jurisdiction,
             version: clause.version,
-            allowedDeviations: clause.allowedDeviations
+            allowedDeviations: clause.allowedDeviations,
+            contractType: clause.contractType
           });
         },
-        error: (error) => {
+        error: (error: unknown) => {
           console.error('Error loading clause:', error);
           this.error = 'Failed to load the clause. Please try again later.';
         }
@@ -90,7 +93,7 @@ export class StandardClauseFormComponent implements OnInit {
         next: () => {
           this.router.navigate(['/standard-clauses']);
         },
-        error: (error) => {
+        error: (error: unknown) => {
           console.error('Error saving clause:', error);
           this.error = `Failed to ${this.isEditMode ? 'update' : 'create'} the clause. Please try again later.`;
         }

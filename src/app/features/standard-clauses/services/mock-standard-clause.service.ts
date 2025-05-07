@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Observable, of, delay } from 'rxjs';
-import { StandardClause, CreateStandardClauseDto } from './standard-clause.service';
+import { StandardClause, CreateStandardClauseDto, IStandardClauseService } from '../models/standard-clause.model';
 
 @Injectable({
   providedIn: 'root'
 })
-export class MockStandardClauseService {
+export class MockStandardClauseService implements IStandardClauseService {
   private clauses: StandardClause[] = [];
   private nextId = 1;
 
@@ -23,7 +23,7 @@ export class MockStandardClauseService {
   }
 
   getAll(): Observable<StandardClause[]> {
-    return of(this.clauses).pipe(delay(500)); // Simulate network delay
+    return of(this.clauses).pipe(delay(500));
   }
 
   getOne(id: number): Observable<StandardClause> {
@@ -43,7 +43,7 @@ export class MockStandardClauseService {
     return of(this.clauses.filter(clause => clause.contractType === contractType)).pipe(delay(500));
   }
 
-  create(dto: CreateStandardClauseDto & { contractType: string }): Observable<StandardClause> {
+  create(dto: CreateStandardClauseDto): Observable<StandardClause> {
     const now = new Date();
     const newClause: StandardClause = {
       id: this.nextId++,
