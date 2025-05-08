@@ -26,7 +26,7 @@ describe('Contract Review Module E2E', () => {
 
     // Optionally wait for UI update (uncomment if needed)
     // cy.wait(500);
-    cy.get('[data-cy="upload-analyze-btn"]')
+    cy.get('[data-cy="next-btn"]')
       .filter(':visible')
       .should('not.be.disabled')
       .click();

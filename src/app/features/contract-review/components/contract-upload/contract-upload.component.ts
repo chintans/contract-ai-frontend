@@ -1,14 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { NgxFileDropModule, FileSystemFileEntry, NgxFileDropEntry } from 'ngx-file-drop';
-import { ContractAnalysisService } from '../../services/contract-analysis.service';
 
 @Component({
   selector: 'app-contract-upload',
@@ -32,11 +30,9 @@ export class ContractUploadComponent {
   isUploading = false;
   isDragging = false;
 
-  constructor(
-    private contractAnalysisService: ContractAnalysisService,
-    private router: Router,
-    private route: ActivatedRoute
-  ) {}
+  @Output() uploadDataChange = new EventEmitter<{ contractType: string; selectedFile: File | null }>();
+
+  constructor() {}
 
   dropped(files: NgxFileDropEntry[]): void {
     for (const droppedFile of files) {
@@ -44,6 +40,7 @@ export class ContractUploadComponent {
         const fileEntry = droppedFile.fileEntry as FileSystemFileEntry;
         fileEntry.file((file: File) => {
           this.selectedFile = file;
+          this.emitUploadData();
         });
       }
     }
@@ -53,12 +50,21 @@ export class ContractUploadComponent {
     this.isDragging = event;
   }
 
-  fileLeave(event: boolean): void {
+  fileLeave(): void {
     this.isDragging = false;
   }
 
   removeFile(): void {
     this.selectedFile = null;
+    this.emitUploadData();
+  }
+
+  onContractTypeChange(): void {
+    this.emitUploadData();
+  }
+
+  emitUploadData(): void {
+    this.uploadDataChange.emit({ contractType: this.contractType, selectedFile: this.selectedFile });
   }
 
   formatFileSize(bytes: number): string {
@@ -67,19 +73,5 @@ export class ContractUploadComponent {
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-  }
-
-  async onSubmit(): Promise<void> {
-    if (!this.selectedFile) return;
-
-    this.isUploading = true;
-    try {
-      await this.contractAnalysisService.uploadContract(this.selectedFile);
-      this.router.navigate(['/contract-review/analysis']);  
-    } catch (error) {
-      console.error('Error uploading contract:', error);
-    } finally {
-      this.isUploading = false;
-    }
   }
 } 

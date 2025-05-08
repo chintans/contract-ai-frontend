@@ -4,7 +4,7 @@
     
     <mat-form-field appearance="fill" class="w-full mb-6">
       <mat-label>Contract Type</mat-label>
-      <mat-select data-cy="contract-type-select" [(ngModel)]="contractType" required>
+      <mat-select data-cy="contract-type-select" [(ngModel)]="contractType" required (selectionChange)="onContractTypeChange()">
         <mat-option value="service">Service Agreement</mat-option>
         <mat-option value="employment">Employment Contract</mat-option>
         <mat-option value="nda">Non-Disclosure Agreement</mat-option>
@@ -19,7 +19,7 @@
         [multiple]="false"
         (onFileDrop)="dropped($event)"
         (onFileOver)="fileOver($event)"
-        (onFileLeave)="fileLeave($event)"
+        (onFileLeave)="fileLeave()"
         accept=".pdf,.doc,.docx"
       >
         <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
@@ -53,16 +53,6 @@
     <div *ngIf="isUploading" class="progress-bar">
       <mat-progress-bar mode="indeterminate"></mat-progress-bar>
       <p class="text-sm text-gray-600 mt-2">Analyzing contract...</p>
-    </div>
-
-    <div class="flex justify-end">
-      <button mat-raised-button
-              color="primary"
-              data-cy="upload-analyze-btn"
-              [disabled]="!selectedFile || !contractType || isUploading"
-              (click)="onSubmit()">
-        Upload and Analyze
-      </button>
     </div>
   </div>
 </div> 

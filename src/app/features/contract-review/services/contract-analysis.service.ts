@@ -34,8 +34,7 @@ export interface ContractAnalysis {
 @Injectable({
   providedIn: 'root'
 })
-export class ContractAnalysisService {
-  private currentAnalysis = new BehaviorSubject<ContractAnalysis | null>(null);
+export class ContractAnalysisService {  
   private mockAnalysis: ContractAnalysis = {
     contractId: '123456',
     fileName: 'software-development-agreement.pdf',
@@ -104,7 +103,7 @@ export class ContractAnalysisService {
       ]
     }
   };
-
+  private currentAnalysis = new BehaviorSubject<ContractAnalysis | null>(this.mockAnalysis);
   getCurrentAnalysis(): Observable<ContractAnalysis | null> {
     return this.currentAnalysis.asObservable();
   }

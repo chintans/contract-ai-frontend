@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -51,7 +51,8 @@ export class LegalQAComponent implements OnInit {
 
   constructor(
     private contractAnalysisService: ContractAnalysisService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {
     this.analysis$ = this.contractAnalysisService.getCurrentAnalysis();
   }
@@ -61,7 +62,7 @@ export class LegalQAComponent implements OnInit {
     this.analysis$.subscribe(analysis => {
       if (!analysis) {
         // If no analysis is available, redirect to upload
-        this.router.navigate(['contract-review', 'upload']);
+        this.router.navigate(['../upload'], { relativeTo: this.route });
       } else {
         // Add welcome message
         this.addMessage({
@@ -119,9 +120,5 @@ export class LegalQAComponent implements OnInit {
         chatContainer.scrollTop = chatContainer.scrollHeight;
       }
     });
-  }
-
-  goToSummary(): void {
-    this.router.navigate(['contract-review', 'summary']);
   }
 } 

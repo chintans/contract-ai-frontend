@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
@@ -134,13 +134,6 @@ export class RiskFlagNotesDialogComponent {
               </mat-card-actions>
             </mat-card>
           </div>
-
-          <div class="flex justify-end mt-6">
-            <button mat-raised-button color="primary" (click)="goToSummary()">
-              View Summary
-              <mat-icon>arrow_forward</mat-icon>
-            </button>
-          </div>
         </div>
 
         <ng-template #loading>
@@ -176,7 +169,8 @@ export class RiskFlagsComponent implements OnInit {
   constructor(
     private contractAnalysisService: ContractAnalysisService,
     private dialog: MatDialog,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {
     this.analysis$ = this.contractAnalysisService.getCurrentAnalysis();
     this.filteredRisks$ = this.analysis$.pipe(
@@ -192,7 +186,7 @@ export class RiskFlagsComponent implements OnInit {
     this.analysis$.subscribe(analysis => {
       if (!analysis) {
         // If no analysis is available, redirect to upload
-        this.router.navigate(['contract-review', 'upload']);
+        this.router.navigate(['../upload'], { relativeTo: this.route });
       }
     });
   }
@@ -226,9 +220,5 @@ export class RiskFlagsComponent implements OnInit {
     newStatus: 'open' | 'resolved' | 'ignored'
   ): void {
     this.contractAnalysisService.updateRiskFlag(risk.id, { status: newStatus });
-  }
-
-  goToSummary(): void {
-    this.router.navigate(['contract-review', 'summary']);
   }
 } 

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
@@ -33,7 +33,8 @@ export class ContractSummaryComponent implements OnInit {
 
   constructor(
     private contractAnalysisService: ContractAnalysisService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {
     this.analysis$ = this.contractAnalysisService.getCurrentAnalysis();
   }
@@ -43,7 +44,7 @@ export class ContractSummaryComponent implements OnInit {
     this.analysis$.subscribe(analysis => {
       if (!analysis) {
         // If no analysis is available, redirect to upload
-        this.router.navigate(['contract-review', 'upload']);
+        this.router.navigate(['../upload'], { relativeTo: this.route });
       }
     });
   }
@@ -77,9 +78,5 @@ export class ContractSummaryComponent implements OnInit {
       console.error('Error exporting summary:', error);
       // Handle error (show error message to user)
     }
-  }
-
-  goToQA(): void {
-    this.router.navigate(['contract-review', 'qa']);
   }
 } 
