@@ -137,9 +137,10 @@ export class TemplateWizardComponent {
     
     this.isLoadingClauses.set(true);
     this.error.set(null);
-    
+    console.log('Loading clauses for contract type:', this.meta().contractType);
     this.standardClauseService.getByContractType(this.meta().contractType).subscribe({
       next: (clauses: StandardClause[]) => {
+        console.log('Clauses loaded:', clauses);
         this.standardClauses.set(clauses.map(clause => ({
           id: clause.id.toString(),
           name: clause.name,
@@ -149,6 +150,7 @@ export class TemplateWizardComponent {
           allowedDeviations: clause.allowedDeviations,
           version: clause.version
         })));
+        
         this.isLoadingClauses.set(false);
       },
       error: (err: unknown) => {

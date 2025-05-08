@@ -2,8 +2,24 @@
 // File: cypress/e2e/templates/templates.e2e.cy.ts
 
 describe('Templates Module E2E', () => {
+
+  const initialClauses = [
+    {
+      id: 1,
+      name: 'Clause 1',
+      type: 'Confidentiality',
+      text: 'Confidentiality clause text',
+      jurisdiction: 'USA',
+      allowedDeviations: 0,
+      contractType: 'MSA',
+      version: '1.0',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }
+  ];
+  const apiUrl = Cypress.env('api-url');
   beforeEach(() => {
-    cy.visit('/templates');
+    cy.visit('/templates');    
   });
 
   it('should render the template admin page', () => {
@@ -111,18 +127,21 @@ describe('Templates Module E2E', () => {
   });
 
   it('should show loading state with aria-busy and aria-live', () => {
+    cy.intercept('GET', `${apiUrl}/api/standard-clauses/contract-type/MSA`, { body: initialClauses }).as('getClauses');
     cy.contains('button', 'New Template').click();
     cy.get('input[aria-label="Template Name"]').type('Test Template');
     cy.get('select[aria-label="Contract Type"]').select('MSA');
     cy.get('select[aria-label="Country"]').select('India');
     cy.get('select[aria-label="State"]').select('Gujarat');
     cy.get('select[aria-label="City"]').select('Ahmedabad');
-    cy.contains('button', 'Next').click();
+    cy.contains('button', 'Next').click();    
     // Wait for loading state
-    cy.get('[aria-busy="true"][aria-live="polite"]', { timeout: 4000 }).should('exist');
+    cy.get('[aria-busy="true"][aria-live="polite"]', { timeout: 1000 }).should('exist');
   });
 
   it('should show empty state with aria-live', () => {
+    
+    cy.intercept('GET', `${apiUrl}/api/standard-clauses/contract-type/MSA`, { body: [] }).as('getClauses');
     cy.contains('button', 'New Template').click();
     cy.get('input[aria-label="Template Name"]').type('Test Template');
     cy.get('select[aria-label="Contract Type"]').select('MSA');
@@ -130,6 +149,7 @@ describe('Templates Module E2E', () => {
     cy.get('select[aria-label="State"]').select('Gujarat');
     cy.get('select[aria-label="City"]').select('Ahmedabad');
     cy.contains('button', 'Next').click();
+    cy.wait('@getClauses');
     // Wait for empty state
     cy.get('[aria-live="polite"]', { timeout: 4000 }).contains('No standard clauses').should('exist');
   });
