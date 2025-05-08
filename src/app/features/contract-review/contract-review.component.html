@@ -1,28 +1,43 @@
-<div class="container mx-auto p-4">
+<main id="main-content" class="container mx-auto p-4" role="main" aria-label="Contract Review Main Content">
   <h1 class="text-2xl font-bold mb-6">Contract Review</h1>
   
-  <mat-stepper [selectedIndex]="currentStepIndex" [linear]="true" [disableRipple]="true" #stepper>
+  <mat-stepper [selectedIndex]="currentStepIndex" [linear]="true" [disableRipple]="true" #stepper aria-label="Contract Review Steps">
     <mat-step label="Upload Contract">
-      <app-contract-upload (uploadDataChange)="onUploadDataChange($event)"></app-contract-upload>
+      <section role="region" aria-labelledby="upload-contract-label">
+        <span id="upload-contract-label" class="sr-only">Upload Contract</span>
+        <app-contract-upload (uploadDataChange)="onUploadDataChange($event)"></app-contract-upload>
+      </section>
     </mat-step>
     <mat-step label="Analysis">
-      <app-contract-analysis *ngIf="currentStepIndex === 1"></app-contract-analysis>
+      <section role="region" aria-labelledby="analysis-label">
+        <span id="analysis-label" class="sr-only">Analysis</span>
+        <app-contract-analysis *ngIf="currentStepIndex === 1"></app-contract-analysis>
+      </section>
     </mat-step>
     <mat-step label="Risk Flags">
-      <app-risk-flags *ngIf="currentStepIndex === 2"></app-risk-flags>
+      <section role="region" aria-labelledby="risk-flags-label">
+        <span id="risk-flags-label" class="sr-only">Risk Flags</span>
+        <app-risk-flags *ngIf="currentStepIndex === 2"></app-risk-flags>
+      </section>
     </mat-step>
     <mat-step label="Summary">
-      <app-contract-summary *ngIf="currentStepIndex === 3"></app-contract-summary>
+      <section role="region" aria-labelledby="summary-label">
+        <span id="summary-label" class="sr-only">Summary</span>
+        <app-contract-summary *ngIf="currentStepIndex === 3"></app-contract-summary>
+      </section>
     </mat-step>
     <mat-step label="Legal Q&A">
-      <app-legal-qa *ngIf="currentStepIndex === 4"></app-legal-qa>
+      <section role="region" aria-labelledby="legal-qa-label">
+        <span id="legal-qa-label" class="sr-only">Legal Q&amp;A</span>
+        <app-legal-qa *ngIf="currentStepIndex === 4"></app-legal-qa>
+      </section>
     </mat-step>
   </mat-stepper>
 
   <div class="flex justify-between mt-4">
-    <button mat-button (click)="previous()" [disabled]="!hasPrevious()">
-      <mat-icon>arrow_back</mat-icon>
-      Previous
+    <button mat-button (click)="previous()" [disabled]="!hasPrevious()" aria-label="Go to previous step">
+      <mat-icon aria-hidden="true">arrow_back</mat-icon>
+      <span>Previous</span>
     </button>
     <button
       mat-raised-button
@@ -30,12 +45,13 @@
       (click)="next()"
       data-cy="next-btn"
       [disabled]="!isCurrentStepValid() || !hasNext()"
+      aria-label="Go to next step"
     >
-      Next
-      <mat-icon>arrow_forward</mat-icon>
+      <span>Next</span>
+      <mat-icon aria-hidden="true">arrow_forward</mat-icon>
     </button>
   </div>
-  <div *ngIf="stepError()" class="text-red-600 mt-2 text-center">
+  <div *ngIf="stepError()" class="text-red-600 mt-2 text-center" role="alert">
     {{ stepError() }}
   </div>
-</div> 
+</main> 
