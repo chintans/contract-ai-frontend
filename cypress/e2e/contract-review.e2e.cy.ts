@@ -47,7 +47,7 @@ describe('Contract Review Module E2E', () => {
 
     // Step 5: Q&A
     cy.contains('Legal Q&A').should('exist');
-    cy.get('input[aria-label="Ask a question"]').type('What are the key obligations?');
+    cy.get('input[aria-label="Type your question here"]').type('What are the key obligations?');
     cy.get('button[type="submit"]').click();
     cy.get('mat-spinner').should('exist');
     //cy.checkA11y();

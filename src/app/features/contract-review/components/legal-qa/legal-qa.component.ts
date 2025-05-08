@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -10,11 +10,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ContractAnalysisService, ContractAnalysis } from '../../services/contract-analysis.service';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { FocusMonitor, LiveAnnouncer } from '@angular/cdk/a11y';
 
-interface QAMessage {
-  role: 'user' | 'assistant';
+interface Message {
   content: string;
+  role: 'user' | 'assistant';
   timestamp: Date;
 }
 
@@ -35,9 +37,12 @@ interface QAMessage {
   templateUrl: './legal-qa.component.html',
   styleUrls: ['./legal-qa.component.scss']
 })
-export class LegalQAComponent implements OnInit {
+export class LegalQAComponent implements OnInit, OnDestroy, AfterViewInit {
+  @ViewChild('qaForm') qaForm!: NgForm;
+  @ViewChild('questionInput') questionInput!: ElementRef;
+
   analysis$: Observable<ContractAnalysis | null>;
-  messages: QAMessage[] = [];
+  messages: Message[] = [];
   currentQuestion = '';
   isLoading = false;
   suggestedQuestions = [
@@ -49,10 +54,14 @@ export class LegalQAComponent implements OnInit {
     'What is the governing law?'
   ];
 
+  private destroy$ = new Subject<void>();
+
   constructor(
     private contractAnalysisService: ContractAnalysisService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private focusMonitor: FocusMonitor,
+    private liveAnnouncer: LiveAnnouncer
   ) {
     this.analysis$ = this.contractAnalysisService.getCurrentAnalysis();
   }
@@ -72,10 +81,45 @@ export class LegalQAComponent implements OnInit {
         });
       }
     });
+
+    // Subscribe to form value changes for accessibility announcements
+    this.qaForm?.valueChanges?.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(() => {
+      if (this.isLoading) {
+        this.liveAnnouncer.announce('Processing your question...');
+      }
+    });
+  }
+
+  ngAfterViewInit(): void {
+    // Monitor focus on the question input
+    if (this.questionInput) {
+      this.focusMonitor.monitor(this.questionInput)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(origin => {
+          if (origin === 'keyboard') {
+            this.liveAnnouncer.announce('Question input field. Type your question and press Enter to send.');
+          }
+        });
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+    if (this.questionInput) {
+      this.focusMonitor.stopMonitoring(this.questionInput);
+    }
   }
 
   async sendMessage(): Promise<void> {
-    if (!this.currentQuestion.trim()) return;
+    if (!this.currentQuestion.trim() || this.isLoading) {
+      return;
+    }
+
+    this.isLoading = true;
+    this.liveAnnouncer.announce('Sending your question...');
 
     const userQuestion = this.currentQuestion;
     this.addMessage({
@@ -84,9 +128,6 @@ export class LegalQAComponent implements OnInit {
       timestamp: new Date()
     });
 
-    this.currentQuestion = '';
-    this.isLoading = true;
-
     try {
       const response = await this.contractAnalysisService.getAIResponse(userQuestion);
       this.addMessage({
@@ -94,6 +135,7 @@ export class LegalQAComponent implements OnInit {
         content: response,
         timestamp: new Date()
       });
+      this.liveAnnouncer.announce('Response received');
     } catch (error) {
       console.error('Error getting AI response:', error);
       this.addMessage({
@@ -101,17 +143,29 @@ export class LegalQAComponent implements OnInit {
         content: 'I apologize, but I encountered an error processing your question. Please try again.',
         timestamp: new Date()
       });
+      this.liveAnnouncer.announce('Error sending message. Please try again.');
     } finally {
       this.isLoading = false;
+      this.currentQuestion = '';
+      // Return focus to input after sending
+      this.questionInput.nativeElement.focus();
     }
   }
 
-  askSuggestedQuestion(question: string): void {
+  async askSuggestedQuestion(question: string): Promise<void> {
     this.currentQuestion = question;
-    this.sendMessage();
+    await this.sendMessage();
   }
 
-  private addMessage(message: QAMessage): void {
+  // Handle keyboard events for better accessibility
+  onKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      this.sendMessage();
+    }
+  }
+
+  private addMessage(message: Message): void {
     this.messages.push(message);
     // Scroll to bottom after message is added
     setTimeout(() => {

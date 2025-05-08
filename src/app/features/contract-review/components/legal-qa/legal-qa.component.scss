@@ -1,5 +1,118 @@
+@use '@angular/cdk';
+
+// Include the visually-hidden styles
+@include cdk.a11y-visually-hidden();
+
 :host {
   display: block;
+}
+
+// Enhanced focus styles
+:focus {
+  outline: 2px solid #1976d2;
+  outline-offset: 2px;
+}
+
+// High contrast mode support
+@include cdk.high-contrast {
+  mat-card {
+    border: 1px solid;
+  }
+
+  button[mat-raised-button] {
+    outline: 1px solid;
+  }
+
+  .message {
+    border: 1px solid;
+  }
+}
+
+// Ensure sufficient color contrast
+.bg-blue-100 {
+  background-color: #bbdefb; // Accessible blue background
+  color: #000000; // Black text for contrast
+}
+
+.bg-gray-100 {
+  background-color: #f5f5f5; // Accessible gray background
+  color: #000000; // Black text for contrast
+}
+
+// Focus visible styles
+.mat-mdc-form-field:focus-within {
+  outline: 2px solid #1976d2;
+  outline-offset: 2px;
+}
+
+// Ensure buttons have sufficient touch target size
+button[mat-raised-button],
+button[mat-stroked-button] {
+  min-height: 44px;
+  min-width: 44px;
+  
+  &:focus-visible {
+    outline: 2px solid #1976d2;
+    outline-offset: 2px;
+  }
+}
+
+// Ensure proper spacing for screen readers
+.message {
+  margin-bottom: 1rem;
+}
+
+// Improve readability
+.text-sm {
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+// Ensure loading spinner is visible in high contrast mode
+mat-spinner {
+  @include cdk.high-contrast {
+    border: 2px solid currentColor;
+  }
+}
+
+// Ensure proper focus management for the chat container
+.chat-container {
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px #1976d2;
+  }
+}
+
+// Ensure proper contrast for disabled states
+button[disabled] {
+  opacity: 0.7;
+  @include cdk.high-contrast {
+    opacity: 0.5;
+    border: 1px solid GrayText;
+  }
+}
+
+// Improve visibility of the divider
+mat-divider {
+  @include cdk.high-contrast {
+    border-top-width: 2px;
+  }
+}
+
+// Ensure proper spacing for form elements
+.form-container {
+  margin-top: 1rem;
+  
+  mat-form-field {
+    width: 100%;
+  }
+}
+
+// Improve visibility of error states
+.mat-mdc-form-field-error {
+  color: #d32f2f; // Accessible error red
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
 }
 
 .qa-container {
@@ -42,8 +155,4 @@
   display: flex;
   gap: 0.5rem;
   margin-top: 1rem;
-}
-
-mat-form-field {
-  width: 100%;
 } 
