@@ -4,6 +4,7 @@ import { TemplatesComponent } from './features/templates/templates.component';
 
 const routes: Routes = [
   { path: 'templates', component: TemplatesComponent },
+  { path: 'rules', loadChildren: () => import('./features/rules/rules.module').then(m => m.RulesModule) },
   { path: '', redirectTo: '/templates', pathMatch: 'full' }
 ];
 

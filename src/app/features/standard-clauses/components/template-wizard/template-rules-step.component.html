@@ -1,0 +1,70 @@
+<div class="rules-step" role="main" aria-labelledby="configure-rules-heading">
+  <div class="step-header">
+    <h2 id="configure-rules-heading">Configure Rules</h2>
+    <p class="step-description" id="configure-rules-desc">
+      Set enforcement rules and validation criteria for each clause in your template.
+    </p>
+  </div>
+
+  <!-- Rules List and Add Button -->
+  <div class="mb-6">
+    <div class="flex items-center justify-between mb-2">
+      <h4 class="font-semibold">Available Rules</h4>
+      <button mat-stroked-button color="primary" (click)="addRule()" aria-label="Add Rule">
+        <mat-icon aria-hidden="true">add</mat-icon> Add Rule
+      </button>
+    </div>
+    <div *ngIf="rules().length === 0" class="text-gray-500" role="status" aria-live="polite">No rules defined yet.</div>
+    <div *ngFor="let rule of rules(); let ruleIdx = index" class="border rounded p-2 mb-2 bg-gray-50 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <mat-checkbox [checked]="isRuleSelected(rule)" (change)="onRuleChecked(rule, $event.checked)" aria-label="Select Rule"></mat-checkbox>
+        <div>
+          <div class="font-medium">{{rule.name}}</div>
+          <div class="text-xs text-gray-600">{{rule.description}}</div>
+        </div>
+      </div>
+      <button mat-icon-button color="primary" (click)="viewRuleDetails(rule)" aria-label="View Rule Details">
+        <mat-icon>info</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <div class="clauses-list">
+    <div *ngFor="let clause of clauses(); let i = index" class="clause-item" tabindex="0" [attr.aria-labelledby]="'clause-title-' + i">
+      <div class="clause-header">
+        <h3 id="clause-title-{{i}}">{{clause.title}}</h3>
+        <span class="clause-number">#{{i + 1}}</span>
+      </div>
+
+      <div class="mb-2">
+        <mat-form-field appearance="fill" class="w-full">
+          <mat-label>Associate Rule</mat-label>
+          <mat-select [(ngModel)]="clause.ruleId" (selectionChange)="onRuleSelect(clause.id, $event.value)" aria-label="Associate Rule">
+            <mat-option [value]="null">None</mat-option>
+            <mat-option *ngFor="let rule of rules()" [value]="rule.id">{{rule.name}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="rule-configuration">
+        <div class="editor-section">
+          <app-rule-editor
+            [rule]="clause.rule"
+            (ruleChange)="onRuleChange(clause.id, $event)">
+          </app-rule-editor>
+        </div>
+
+        <mat-divider vertical></mat-divider>
+
+        <div class="preview-section">
+          <app-rule-preview
+            [rule]="clause.rule"
+            [clauseText]="clause.text">
+          </app-rule-preview>
+        </div>
+      </div>
+
+      <mat-divider *ngIf="i < clauses().length - 1"></mat-divider>
+    </div>
+  </div>
+</div> 

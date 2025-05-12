@@ -1,0 +1,64 @@
+.rules-step {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.step-header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.step-description {
+  color: #666;
+  max-width: 600px;
+  margin: 1rem auto;
+}
+
+.clauses-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.clause-item {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.clause-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.clause-number {
+  background: #f3f4f6;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+
+.rule-configuration {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+.editor-section,
+.preview-section {
+  min-width: 0;
+}
+
+.step-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+} 

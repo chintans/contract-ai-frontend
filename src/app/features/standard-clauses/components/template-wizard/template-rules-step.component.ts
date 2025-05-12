@@ -38,150 +38,15 @@ interface ClauseWithRule {
     RuleEditorComponent,
     RulePreviewComponent
   ],
-  template: `
-    <div class="rules-step" role="main" aria-labelledby="configure-rules-heading">
-      <div class="step-header">
-        <h2 id="configure-rules-heading">Configure Rules</h2>
-        <p class="step-description" id="configure-rules-desc">
-          Set enforcement rules and validation criteria for each clause in your template.
-        </p>
-      </div>
-
-      <!-- Rules List and Add Button -->
-      <div class="mb-6">
-        <div class="flex items-center justify-between mb-2">
-          <h4 class="font-semibold">Available Rules</h4>
-          <button mat-stroked-button color="primary" (click)="addRule()" aria-label="Add Rule">
-            <mat-icon aria-hidden="true">add</mat-icon> Add Rule
-          </button>
-        </div>
-        <div *ngIf="rules().length === 0" class="text-gray-500" role="status" aria-live="polite">No rules defined yet.</div>
-        <div *ngFor="let rule of rules()" class="border rounded p-2 mb-2 bg-gray-50">
-          <div class="font-medium">{{rule.name}}</div>
-          <div class="text-xs text-gray-600">{{rule.description}}</div>
-        </div>
-      </div>
-
-      <div class="clauses-list">
-        <div *ngFor="let clause of clauses(); let i = index" class="clause-item" tabindex="0" [attr.aria-labelledby]="'clause-title-' + i">
-          <div class="clause-header">
-            <h3 id="clause-title-{{i}}">{{clause.title}}</h3>
-            <span class="clause-number">#{{i + 1}}</span>
-          </div>
-
-          <div class="mb-2">
-            <mat-form-field appearance="fill" class="w-full">
-              <mat-label>Associate Rule</mat-label>
-              <mat-select [(ngModel)]="clause.ruleId" (selectionChange)="onRuleSelect(clause.id, $event.value)" aria-label="Associate Rule">
-                <mat-option [value]="null">None</mat-option>
-                <mat-option *ngFor="let rule of rules()" [value]="rule.id">{{rule.name}}</mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div>
-
-          <div class="rule-configuration">
-            <div class="editor-section">
-              <app-rule-editor
-                [rule]="clause.rule"
-                (ruleChange)="onRuleChange(clause.id, $event)">
-              </app-rule-editor>
-            </div>
-
-            <mat-divider vertical></mat-divider>
-
-            <div class="preview-section">
-              <app-rule-preview
-                [rule]="clause.rule"
-                [clauseText]="clause.text">
-              </app-rule-preview>
-            </div>
-          </div>
-
-          <mat-divider *ngIf="i < clauses().length - 1"></mat-divider>
-        </div>
-      </div>
-
-      <div class="step-actions">
-        <button mat-button (click)="onBack.emit()" aria-label="Back">Back</button>
-        <button mat-raised-button color="primary" 
-                [disabled]="!allRulesValid()"
-                (click)="onNext.emit()"
-                aria-label="Next">
-          Next
-        </button>
-      </div>
-    </div>
-  `,
-  styles: [`
-    .rules-step {
-      padding: 2rem;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .step-header {
-      margin-bottom: 2rem;
-      text-align: center;
-    }
-
-    .step-description {
-      color: #666;
-      max-width: 600px;
-      margin: 1rem auto;
-    }
-
-    .clauses-list {
-      display: flex;
-      flex-direction: column;
-      gap: 2rem;
-    }
-
-    .clause-item {
-      background: white;
-      border-radius: 8px;
-      padding: 1.5rem;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    }
-
-    .clause-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-    }
-
-    .clause-number {
-      background: #f3f4f6;
-      padding: 0.25rem 0.75rem;
-      border-radius: 9999px;
-      font-size: 0.875rem;
-      color: #4b5563;
-    }
-
-    .rule-configuration {
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      gap: 2rem;
-      align-items: start;
-    }
-
-    .editor-section,
-    .preview-section {
-      min-width: 0;
-    }
-
-    .step-actions {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 2rem;
-      padding-top: 1rem;
-      border-top: 1px solid #e5e7eb;
-    }
-  `]
+  templateUrl: './template-rules-step.component.html',
+  styleUrls: ['./template-rules-step.component.scss']
 })
 export class TemplateRulesStepComponent {
   private rulesService = inject(RulesService);
   private dialog = inject(MatDialog);
+
+  // Track selected rules locally (by id)
+  selectedRuleIds = signal<Set<string>>(new Set());
 
   rules = this.rulesService.rules;
 
@@ -249,5 +114,30 @@ export class TemplateRulesStepComponent {
 
   allRulesValid(): boolean {
     return this._clauses().every(clause => clause.rule !== null);
+  }
+
+  // Checkbox handler
+  onRuleChecked(rule: RuleWithMetadata, checked: boolean) {
+    const current = new Set(this.selectedRuleIds());
+    if (checked) {
+      current.add(rule.id);
+    } else {
+      current.delete(rule.id);
+    }
+    this.selectedRuleIds.set(current);
+  }
+
+  // Used in template for [(ngModel)]
+  isRuleSelected(rule: RuleWithMetadata): boolean {
+    return this.selectedRuleIds().has(rule.id);
+  }
+
+  // View rule details in dialog (read-only)
+  viewRuleDetails(rule: RuleWithMetadata) {
+    this.dialog.open(RuleDialogComponent, {
+      width: '800px',
+      data: { rule },
+      disableClose: false
+    });
   }
 } 

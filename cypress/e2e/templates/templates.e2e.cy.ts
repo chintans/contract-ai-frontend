@@ -189,4 +189,71 @@ describe('Templates Module E2E', () => {
     cy.get('app-add-standard-clause[role="dialog"]', { timeout: 4000 }).should('exist');
     cy.focused().should('exist');
   });
+
+  it('should render and interact with the Rules step with correct ARIA and behaviors', () => {
+    cy.contains('button', 'New Template').click();
+    cy.get('input[aria-label="Template Name"]').type('Test Template');
+    cy.get('select[aria-label="Contract Type"]').select('MSA');
+    cy.get('select[aria-label="Country"]').select('India');
+    cy.get('select[aria-label="State"]').select('Gujarat');
+    cy.get('select[aria-label="City"]').select('Ahmedabad');
+    cy.contains('button', 'Next').click();
+    cy.contains('button', 'Next').click(); // Go to Rules step
+
+    // Check main container and heading
+    cy.get('div[role="main"]').should('exist');
+    cy.get('h2#configure-rules-heading').should('exist').and('contain', 'Configure Rules');
+    cy.get('p#configure-rules-desc').should('exist');
+
+    // Check Add Rule button
+    cy.get('button[aria-label="Add Rule"]').should('exist');
+
+    // If there are rules, check rules list
+    cy.get('div[role="main"]').then($main => {
+      if ($main.find('mat-checkbox').length > 0) {
+        cy.get('mat-checkbox input[type="checkbox"][aria-label="Select Rule"]').should('exist');
+        cy.get('button[aria-label="View Rule Details"]').first().should('exist');
+      } else {
+        // If no rules, check empty state
+        cy.get('div[role="status"][aria-live="polite"]').should('contain', 'No rules defined yet.');
+      }
+    });
+
+    // Check clause list and rule association dropdown
+    /*cy.get('.clauses-list .clause-item').each(($clause, idx) => {
+      cy.wrap($clause).find('h3[id^="clause-title-"]').should('exist');
+      cy.wrap($clause).find('mat-select[aria-label="Associate Rule"]').should('exist');
+    });*/
+
+    // Interact: select a rule for the first clause if rules exist
+    /*cy.get('mat-select input[type="select"][aria-label="Associate Rule"]').first().then($select => {
+      cy.wrap($select).click();
+      cy.get('mat-option').not('[value="null"]').first().then($option => {
+        const ruleName = $option.text();
+        cy.wrap($option).click();
+        // Check that the select now shows the rule name
+        cy.wrap($select).should('contain', ruleName);
+      });
+    });*/
+
+    // Test Add Rule dialog opens
+    cy.get('button[aria-label="Add Rule"]').click();
+    cy.get('mat-dialog-container').should('exist');
+    cy.get('mat-dialog-container').should('have.attr', 'role', 'dialog');
+    cy.get('mat-dialog-container').find('button').contains(/save|cancel/i);
+    cy.get('body').type('{esc}'); // Close dialog
+
+    // Test View Rule Details dialog opens (if rules exist)
+    cy.get('button[aria-label="View Rule Details"]').first().click({ force: true });
+    cy.get('mat-dialog-container').should('exist');
+    cy.get('mat-dialog-container').should('have.attr', 'role', 'dialog');
+    cy.get('body').type('{esc}'); // Close dialog
+
+    // Keyboard navigation: focus Add Rule button and press Enter
+    cy.get('button[aria-label="Add Rule"]').focus();
+    cy.focused().should('have.attr', 'aria-label', 'Add Rule');
+    cy.focused().type('{enter}');
+    cy.get('mat-dialog-container').should('exist');
+    cy.get('body').type('{esc}'); // Close dialog
+  });
 }); 
