@@ -19,6 +19,7 @@ describe('Templates Module E2E', () => {
   ];
   const apiUrl = Cypress.env('api-url');
   beforeEach(() => {
+    cy.viewport(1280, 800);
     cy.visit('/templates');    
   });
 
@@ -255,5 +256,62 @@ describe('Templates Module E2E', () => {
     cy.focused().type('{enter}');
     cy.get('mat-dialog-container').should('exist');
     cy.get('body').type('{esc}'); // Close dialog
+  });
+
+  it('should display a detailed review summary in Step 4 and allow template activation', () => {
+    cy.intercept('GET', `${apiUrl}/api/standard-clauses/contract-type/MSA`, { body: initialClauses }).as('getClauses'); 
+    cy.intercept('POST', `${apiUrl}/api/standard-clauses`, { body: {
+      id: 2,
+      name: 'Confidentiality',
+      type: 'CONFIDENTIALITY',
+      text: 'This is a confidentiality clause.',
+      jurisdiction: 'India',
+      allowedDeviations: 5      
+    } }).as('addClause');
+    cy.contains('button', 'New Template').click();
+    cy.get('button[aria-label="Toggle Sidebar"]').click();
+    cy.get('input[aria-label="Template Name"]').type('Test Template');
+    cy.get('select[aria-label="Contract Type"]').select('MSA');
+    cy.get('select[aria-label="Country"]').select('India');
+    cy.get('select[aria-label="State"]').select('Gujarat');
+    cy.get('select[aria-label="City"]').select('Ahmedabad');
+    cy.contains('button', 'Next').click();
+    cy.wait('@getClauses');
+    // Add a clause
+    cy.contains('button', 'Add New Standard Clause').click();
+    cy.get('input[formcontrolname="name"]').type('Confidentiality');
+    cy.get('select[formcontrolname="type"]').select('CONFIDENTIALITY');
+    cy.get('input[formcontrolname="jurisdiction"]').type('India');
+    cy.get('textarea[formcontrolname="text"], textarea').type('This is a confidentiality clause.');
+    cy.get('input[formcontrolname="allowedDeviations"], input[type="number"]').clear().type('5');
+    cy.contains('button', 'Add Clause').click();
+    cy.wait('@addClause');
+    cy.contains('Confidentiality').should('exist');
+
+    // Go to Rules step
+    cy.contains('button', 'Next').click();
+    cy.contains('Rules').should('exist');
+    // Optionally, set a rule if UI allows
+    // Go to Review & Activate step
+    cy.contains('button', 'Next').click();
+    cy.contains('Review & Activate').should('exist');
+
+    // Check review summary
+    cy.get('h4').contains('Clauses & Rules Summary').should('exist');
+    cy.get('ul.divide-y > li').should('have.length.at.least', 1);
+    cy.get('ul.divide-y > li').first().within(() => {
+      cy.contains('Confidentiality').should('exist');
+      cy.get('.text-xs').should('contain.text', 'Enforcement');
+      cy.get('.text-xs').should('contain.text', 'Severity');
+      cy.get('.text-xs').should('contain.text', 'Allowed Deviation');
+    });
+
+    // Activate Template
+    cy.contains('button', 'Activate Template').click();
+    cy.get('.text-blue-600').should('contain.text', 'Activating template');
+    // Simulate success (if using mock backend, otherwise skip this)
+    cy.get('.text-green-600', { timeout: 4000 }).should('contain.text', 'Template activated successfully');
+    // Button should be disabled after success
+    cy.contains('button', 'Activate Template').should('be.disabled');
   });
 }); 

@@ -174,6 +174,7 @@ export class TemplateWizardComponent {
 
     this.standardClauseService.create(createDto).subscribe({
       next: (createdClause: StandardClause) => {
+        console.log('Created clause:', createdClause);
         this.standardClauses.update(clauses => [
           ...clauses,
           {
@@ -321,6 +322,40 @@ export class TemplateWizardComponent {
   }
 
   // Step 4: Review & Activate
+  isActivating = signal(false);
+  activateError = signal<string | null>(null);
+  activateSuccess = signal(false);
+
+  onActivateTemplate() {
+    this.isActivating.set(true);
+    this.activateError.set(null);
+    this.activateSuccess.set(false);
+    const template = this.buildTemplate();
+    // Collect clauses and rules
+    const clauses = this.clauses();
+    // Attach rules to clauses if available
+    const rules = this.clauseRules();
+    const versionedClauses = clauses.map(clause => ({
+      ...clause,
+      ruleJson: rules[clause.clauseId] ?? clause.ruleJson
+    }));
+    // Compose payload (expand as needed for your backend)
+    const payload = {
+      ...template,
+      clauses: versionedClauses
+    };
+    this.templatesService.create(payload as any).subscribe({
+      next: () => {
+        this.isActivating.set(false);
+        this.activateSuccess.set(true);
+      },
+      error: (err: unknown) => {
+        this.isActivating.set(false);
+        this.activateError.set('Failed to activate template. Please try again.');
+        console.error('Activate error:', err);
+      }
+    });
+  }
 
   nextStep() {
     if (this.step() === 0) {
