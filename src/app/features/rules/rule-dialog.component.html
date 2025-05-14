@@ -1,0 +1,46 @@
+<div class="p-6" role="dialog" aria-modal="true" aria-labelledby="rule-dialog-title" cdkTrapFocus>
+  <h2 id="rule-dialog-title" mat-dialog-title>{{data.rule ? 'Edit' : 'Create'}} Rule</h2>
+  
+  <mat-dialog-content>
+    <div class="grid gap-4">
+      <mat-form-field class="w-full">
+        <mat-label id="rule-name-label">Rule Name</mat-label>
+        <input matInput [(ngModel)]="rule.name" required aria-labelledby="rule-name-label">
+      </mat-form-field>
+
+      <mat-form-field class="w-full">
+        <mat-label id="rule-description-label">Description</mat-label>
+        <textarea matInput [(ngModel)]="rule.description" rows="3" aria-labelledby="rule-description-label"></textarea>
+      </mat-form-field>
+
+      <mat-form-field class="w-full">
+        <mat-label id="rule-sample-text-label">Sample Text</mat-label>
+        <textarea matInput [(ngModel)]="rule.sampleText" rows="3" aria-labelledby="rule-sample-text-label"></textarea>
+      </mat-form-field>
+
+      <app-rule-editor 
+        [rule]="getRuleForEditor()" 
+        (ruleChange)="onRuleChange($event)"
+        aria-label="Rule Editor">
+      </app-rule-editor>
+
+      <div class="mt-4">
+        <h3 class="text-lg font-medium mb-2" id="rule-preview-title">Preview</h3>
+        <app-rule-preview 
+          [rule]="getRuleForEditor()" 
+          [clauseText]="rule.sampleText || ''"
+          aria-labelledby="rule-preview-title">
+        </app-rule-preview>
+      </div>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="dialogRef.close()" aria-label="Cancel dialog">Cancel</button>
+    <button mat-raised-button color="primary" (click)="save()" [disabled]="!isValid()" [attr.aria-label]="data.rule ? 'Update Rule' : 'Create Rule'">
+      {{data.rule ? 'Update' : 'Create'}}
+    </button>
+  </mat-dialog-actions>
+  <!-- Optional: aria-live region for status messages -->
+  <div aria-live="polite" class="cdk-visually-hidden"></div>
+</div> 

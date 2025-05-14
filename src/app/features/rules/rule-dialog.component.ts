@@ -24,59 +24,8 @@ import { RuleWithMetadata } from './rules.service';
     RuleEditorComponent,
     RulePreviewComponent
   ],
-  template: `
-    <div class="p-6">
-      <h2 mat-dialog-title>{{data.rule ? 'Edit' : 'Create'}} Rule</h2>
-      
-      <mat-dialog-content>
-        <div class="grid gap-4">
-          <mat-form-field class="w-full">
-            <mat-label>Rule Name</mat-label>
-            <input matInput [(ngModel)]="rule.name" required>
-          </mat-form-field>
-
-          <mat-form-field class="w-full">
-            <mat-label>Description</mat-label>
-            <textarea matInput [(ngModel)]="rule.description" rows="3"></textarea>
-          </mat-form-field>
-
-          <mat-form-field class="w-full">
-            <mat-label>Sample Text</mat-label>
-            <textarea matInput [(ngModel)]="rule.sampleText" rows="3"></textarea>
-          </mat-form-field>
-
-          <app-rule-editor 
-            [rule]="getRuleForEditor()" 
-            (ruleChange)="onRuleChange($event)">
-          </app-rule-editor>
-
-          <div class="mt-4">
-            <h3 class="text-lg font-medium mb-2">Preview</h3>
-            <app-rule-preview 
-              [rule]="getRuleForEditor()" 
-              [clauseText]="rule.sampleText || ''">
-            </app-rule-preview>
-          </div>
-        </div>
-      </mat-dialog-content>
-
-      <mat-dialog-actions align="end">
-        <button mat-button (click)="dialogRef.close()">Cancel</button>
-        <button mat-raised-button color="primary" (click)="save()" [disabled]="!isValid()">
-          {{data.rule ? 'Update' : 'Create'}}
-        </button>
-      </mat-dialog-actions>
-    </div>
-  `,
-  styles: [`
-    :host {
-      display: block;
-    }
-
-    mat-dialog-content {
-      min-width: 600px;
-    }
-  `]
+  templateUrl: './rule-dialog.component.html',
+  styleUrls: ['./rule-dialog.component.scss']
 })
 export class RuleDialogComponent {
   rule: Partial<RuleWithMetadata>;

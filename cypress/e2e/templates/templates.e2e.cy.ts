@@ -267,7 +267,7 @@ describe('Templates Module E2E', () => {
       text: 'This is a confidentiality clause.',
       jurisdiction: 'India',
       allowedDeviations: 5      
-    } }).as('addClause');
+    } }).as('addClause');    
     cy.contains('button', 'New Template').click();
     cy.get('button[aria-label="Toggle Sidebar"]').click();
     cy.get('input[aria-label="Template Name"]').type('Test Template');
