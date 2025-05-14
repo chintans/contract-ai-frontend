@@ -187,6 +187,21 @@ export class TemplateWizardComponent {
             version: createdClause.version
           }
         ]);
+        // Add to clauses for review step
+        const versionedClause: VersionedClause = {
+          clauseId: createdClause.id.toString(),
+          clauseType: createdClause.type,
+          title: createdClause.name,
+          body: createdClause.text,
+          ruleJson: {
+            enforcement: 'MUST_HAVE',
+            severity: 'MEDIUM',
+            allowedDeviation: 0,
+            forbiddenPatterns: []
+          },
+          orderIdx: this.clauses().length
+        };
+        this.clauses.update(clauses => [...clauses, versionedClause]);
         this.showAddClauseDialog.set(false);
       },
       error: (err: unknown) => {
@@ -239,6 +254,19 @@ export class TemplateWizardComponent {
           orderIdx: this.clauses().length
         };
         this.clauses.update(clauses => [...clauses, versionedClause]);
+        // Also add to standardClauses for consistency
+        this.standardClauses.update(clauses => [
+          ...clauses,
+          {
+            id: createdClause.id.toString(),
+            name: createdClause.name,
+            type: createdClause.type,
+            text: createdClause.text,
+            jurisdiction: createdClause.jurisdiction,
+            allowedDeviations: createdClause.allowedDeviations,
+            version: createdClause.version
+          }
+        ]);
         this.showStandardClauseFormDialog = false;
       },
       error: (error) => {
@@ -259,7 +287,7 @@ export class TemplateWizardComponent {
   onStandardClauseSelected(clause: StandardClause) {
     // Map StandardClause to VersionedClause
     const mapped: VersionedClause = {
-      clauseId: Math.random().toString(36).substring(2, 10),
+      clauseId: clause.id.toString(),
       clauseType: clause.type,
       title: clause.name,
       body: clause.text,
@@ -272,6 +300,19 @@ export class TemplateWizardComponent {
       orderIdx: this.clauses().length
     };
     this.clauses.set([...this.clauses(), mapped]);
+    // Also add to standardClauses for consistency
+    this.standardClauses.update(clauses => [
+      ...clauses,
+      {
+        id: clause.id.toString(),
+        name: clause.name,
+        type: clause.type,
+        text: clause.text,
+        jurisdiction: clause.jurisdiction,
+        allowedDeviations: clause.allowedDeviations,
+        version: clause.version
+      }
+    ]);
     this.showStandardClauseSelector = false;
   }
 

@@ -17,6 +17,7 @@
 import './commands'
 
 import { mount } from 'cypress/angular'
+import { configure } from '@testing-library/cypress'
 
 // Augment the Cypress namespace to include type definitions for
 // your custom command.
@@ -31,6 +32,8 @@ declare global {
 }
 
 Cypress.Commands.add('mount', mount)
+
+configure({ testIdAttribute: 'data-testid' })
 
 // Example use:
 // cy.mount(MyComponent)

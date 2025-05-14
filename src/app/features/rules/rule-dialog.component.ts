@@ -37,7 +37,7 @@ export class RuleDialogComponent {
     this.rule = data.rule ? { ...data.rule } : {
       enforcement: Enforcement.MUST_HAVE,
       severity: Severity.MEDIUM,
-      similarityThreshold: 0.8,
+      similarityThreshold: undefined,
       patterns: []
     };
   }
@@ -46,7 +46,7 @@ export class RuleDialogComponent {
     return {
       enforcement: this.rule.enforcement || Enforcement.MUST_HAVE,
       severity: this.rule.severity || Severity.MEDIUM,
-      similarityThreshold: this.rule.similarityThreshold || 0.8,
+      similarityThreshold: this.rule.similarityThreshold || undefined,
       patterns: this.rule.patterns || []
     };
   }

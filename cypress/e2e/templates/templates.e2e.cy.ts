@@ -106,6 +106,7 @@ describe('Templates Module E2E', () => {
   });
 
   it('should allow step navigation in the wizard and highlight current step with aria-current', () => {
+    cy.intercept('GET', `${apiUrl}/api/standard-clauses/contract-type/MSA`, { body: initialClauses }).as('getClauses');
     cy.contains('button', 'New Template').click();
     cy.get('input[aria-label="Template Name"]').type('Test Template');
     cy.get('select[aria-label="Contract Type"]').select('MSA');
@@ -113,12 +114,24 @@ describe('Templates Module E2E', () => {
     cy.get('select[aria-label="State"]').select('Gujarat');
     cy.get('select[aria-label="City"]').select('Ahmedabad');
     cy.contains('button', 'Next').click();
+    cy.wait('@getClauses');
     cy.get('nav[aria-label="Wizard steps"] [aria-current="step"]').should('contain.text', '2.');
     cy.contains('Clause Library').should('exist');
     // Go to Rules step
     cy.contains('button', 'Next').click();
     cy.get('nav[aria-label="Wizard steps"] [aria-current="step"]').should('contain.text', '3.');
     cy.contains('Rules').should('exist');
+    // Set a valid rule for each clause to enable Next
+    cy.get('.clause-item').each(($clause) => {
+      cy.wrap($clause).within(() => {
+        cy.get('mat-radio-button').first().click({ force: true });
+        cy.get('mat-select[formcontrolname="severity"]').scrollIntoView().click({ force: true });
+        cy.get('mat-option').first().click({ force: true });
+      });
+    });
+    cy.contains('button', 'Next').click();
+    cy.get('nav[aria-label="Wizard steps"] [aria-current="step"]').should('contain.text', '4.');
+    cy.contains('Review & Activate').should('exist');
   });
 
   it('should have accessible buttons and navigation', () => {
@@ -206,36 +219,14 @@ describe('Templates Module E2E', () => {
     cy.get('h2#configure-rules-heading').should('exist').and('contain', 'Configure Rules');
     cy.get('p#configure-rules-desc').should('exist');
 
-    // Check Add Rule button
-    cy.get('button[aria-label="Add Rule"]').should('exist');
-
-    // If there are rules, check rules list
-    cy.get('div[role="main"]').then($main => {
-      if ($main.find('mat-checkbox').length > 0) {
-        cy.get('mat-checkbox input[type="checkbox"][aria-label="Select Rule"]').should('exist');
-        cy.get('button[aria-label="View Rule Details"]').first().should('exist');
-      } else {
-        // If no rules, check empty state
-        cy.get('div[role="status"][aria-live="polite"]').should('contain', 'No rules defined yet.');
-      }
-    });
-
-    // Check clause list and rule association dropdown
-    /*cy.get('.clauses-list .clause-item').each(($clause, idx) => {
-      cy.wrap($clause).find('h3[id^="clause-title-"]').should('exist');
-      cy.wrap($clause).find('mat-select[aria-label="Associate Rule"]').should('exist');
-    });*/
-
-    // Interact: select a rule for the first clause if rules exist
-    /*cy.get('mat-select input[type="select"][aria-label="Associate Rule"]').first().then($select => {
-      cy.wrap($select).click();
-      cy.get('mat-option').not('[value="null"]').first().then($option => {
-        const ruleName = $option.text();
-        cy.wrap($option).click();
-        // Check that the select now shows the rule name
-        cy.wrap($select).should('contain', ruleName);
+    // Set a valid rule for each clause to enable Next
+    cy.get('.clause-item').each(($clause) => {
+      cy.wrap($clause).within(() => {
+        cy.get('mat-radio-button').first().click({ force: true });
+        cy.get('mat-select[formcontrolname="severity"]').click({ force: true });
+        cy.get('mat-option').first().click({ force: true });
       });
-    });*/
+    });
 
     // Test Add Rule dialog opens
     cy.get('button[aria-label="Add Rule"]').click();
@@ -291,7 +282,16 @@ describe('Templates Module E2E', () => {
     // Go to Rules step
     cy.contains('button', 'Next').click();
     cy.contains('Rules').should('exist');
-    // Optionally, set a rule if UI allows
+
+    // Set a valid rule for each clause to enable Next
+    cy.get('.clause-item').each(($clause) => {
+      cy.wrap($clause).within(() => {
+        cy.get('mat-radio-button').first().click({ force: true });
+        cy.get('mat-select[formcontrolname="severity"]').click({ force: true });
+        cy.get('mat-option').first().click({ force: true });
+      });
+    });
+
     // Go to Review & Activate step
     cy.contains('button', 'Next').click();
     cy.contains('Review & Activate').should('exist');
@@ -313,5 +313,80 @@ describe('Templates Module E2E', () => {
     cy.get('.text-green-600', { timeout: 4000 }).should('contain.text', 'Template activated successfully');
     // Button should be disabled after success
     cy.contains('button', 'Activate Template').should('be.disabled');
+  });
+
+  it('should allow adding, editing, and validating rule conditions (if/unless) in the rule editor', () => {
+    cy.contains('button', 'New Template').click();
+    cy.get('input[aria-label="Template Name"]').type('Test Template');
+    cy.get('select[aria-label="Contract Type"]').select('MSA');
+    cy.get('select[aria-label="Country"]').select('India');
+    cy.get('select[aria-label="State"]').select('Gujarat');
+    cy.get('select[aria-label="City"]').select('Ahmedabad');
+    cy.contains('button', 'Next').click();
+    cy.contains('button', 'Next').click(); // Go to Rules step
+
+    // Open the rule editor for the first clause (assume at least one clause exists)
+    cy.get('.clause-item').first().within(() => {
+      // Add If condition
+      cy.get('[data-testid="add-condition-if-btn"]').click();
+      cy.get('[data-testid^="condition-if-key-"]').type('contractType');
+      cy.get('[data-testid^="condition-if-value-"]').type('MSA');
+      // Add another If condition
+      cy.get('[data-testid="add-condition-if-btn"]').click();
+      cy.get('[data-testid="condition-if-key-1"]').type('jurisdiction');
+      cy.get('[data-testid="condition-if-value-1"]').type('India');
+      // Add Unless condition
+      cy.get('[data-testid="add-condition-unless-btn"]').click();
+      cy.get('[data-testid^="condition-unless-key-"]').type('dealValueLakh');
+      cy.get('[data-testid^="condition-unless-value-"]').type('5');
+      // Remove the first If condition
+      cy.get('[data-testid="remove-condition-if-0"]').click();
+      cy.get('[data-testid^="condition-if-key-"]').should('have.length', 1);
+      // Add duplicate key to trigger validation error
+      cy.get('[data-testid="add-condition-if-btn"]').click();
+      cy.get('[data-testid="condition-if-key-1"]').type('jurisdiction');
+      cy.get('[data-testid="condition-if-value-1"]').type('India');
+      cy.get('[data-testid="validation-error"]').should('contain', 'Duplicate condition key: jurisdiction');
+      // Clear value to trigger empty field error
+      cy.get('[data-testid="condition-if-value-1"]').clear();
+      cy.get('[data-testid="validation-error"]').should('contain', 'All condition fields must have both key and value.');
+    });
+  });
+
+  it('should support batch rule application and simulation preview', () => {
+    cy.contains('button', 'New Template').click();
+    cy.get('input[aria-label="Template Name"]').type('Test Template');
+    cy.get('select[aria-label="Contract Type"]').select('MSA');
+    cy.get('select[aria-label="Country"]').select('India');
+    cy.get('select[aria-label="State"]').select('Gujarat');
+    cy.get('select[aria-label="City"]').select('Ahmedabad');
+    cy.contains('button', 'Next').click();
+    cy.contains('button', 'Next').click(); // Go to Rules step
+
+    // Select all clauses for batch action
+    cy.get('.clause-item input[type="checkbox"]').each($cb => cy.wrap($cb).check({ force: true }));
+    // Apply Strict rule template
+    cy.contains('button', 'Apply Strict').click();
+    // Check that simulation preview is updated for all clauses
+    cy.get('.simulation-preview').each($sim => {
+      cy.wrap($sim).should('contain.text', 'Simulation:');
+      cy.wrap($sim).invoke('text').should(text => {
+        expect(text).to.match(/PASS|FLAGGED/);
+      });
+    });
+  });
+
+  it('should have only one set of navigation buttons in the wizard', () => {
+    cy.contains('button', 'New Template').click();
+    cy.get('input[aria-label="Template Name"]').type('Test Template');
+    cy.get('select[aria-label="Contract Type"]').select('MSA');
+    cy.get('select[aria-label="Country"]').select('India');
+    cy.get('select[aria-label="State"]').select('Gujarat');
+    cy.get('select[aria-label="City"]').select('Ahmedabad');
+    cy.contains('button', 'Next').click();
+    cy.contains('button', 'Next').click(); // Go to Rules step
+    // There should be only one Next and one Back button visible in the main wizard area
+    cy.get('form .flex button').contains('Next').should('have.length', 1);
+    cy.get('form .flex button').contains('Back').should('have.length', 1);
   });
 }); 

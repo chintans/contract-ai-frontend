@@ -5,7 +5,8 @@
             "cypress",
             "node",
             "@types/chai",
-            "cypress-axe"            
+            "cypress-axe",
+            "@testing-library/cypress"
         ]
     },
     "include": [

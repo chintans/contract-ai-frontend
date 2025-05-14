@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -28,162 +28,8 @@ import { RuleValidationService } from '../../services/rule-validation.service';
     MatButtonModule,
     MatTooltipModule
   ],
-  template: `
-    <form [formGroup]="ruleForm" class="rule-editor" role="form" aria-label="Rule Editor">
-      <!-- Enforcement -->
-      <div class="enforcement-section">
-        <label class="section-label" id="enforcement-label">Enforcement Level</label>
-        <mat-radio-group formControlName="enforcement" aria-labelledby="enforcement-label">
-          <mat-radio-button *ngFor="let type of enforcements" [value]="type" [attr.aria-label]="type">
-            {{type}}
-          </mat-radio-button>
-        </mat-radio-group>
-      </div>
-
-      <!-- Severity -->
-      <div class="severity-section">
-        <mat-form-field>
-          <mat-label id="severity-label">Severity</mat-label>
-          <mat-select formControlName="severity" aria-labelledby="severity-label">
-            <mat-option *ngFor="let level of severityLevels" [value]="level" [attr.aria-label]="level">
-              {{level}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-
-      <!-- Similarity Settings -->
-      <div class="similarity-section" *ngIf="showSimilarityControls()">
-        <mat-form-field>
-          <mat-label id="similarity-threshold-label">Similarity Threshold (%)</mat-label>
-          <input matInput type="number" formControlName="similarityThreshold"
-                 min="0" max="100"
-                 matTooltip="Exact text match = 100%. Lower this if you permit paraphrasing."
-                 aria-labelledby="similarity-threshold-label">
-        </mat-form-field>
-
-        <mat-form-field>
-          <mat-label id="allowed-deviation-label">Allowed Deviation (%)</mat-label>
-          <input matInput type="number" formControlName="deviationAllowedPct"
-                 min="0" max="100"
-                 aria-labelledby="allowed-deviation-label">
-        </mat-form-field>
-      </div>
-
-      <!-- Patterns -->
-      <div class="patterns-section" *ngIf="showPatternControls()">
-        <!-- Forbidden Patterns -->
-        <mat-form-field class="full-width">
-          <mat-label id="forbidden-patterns-label">Forbidden Patterns</mat-label>
-          <mat-chip-grid #forbiddenChipGrid aria-labelledby="forbidden-patterns-label">
-            <mat-chip-row *ngFor="let pattern of forbiddenPatterns()"
-                         (removed)="removePattern('forbidden', pattern)">
-              {{pattern}}
-              <button matChipRemove aria-label="Remove pattern">
-                <mat-icon>cancel</mat-icon>
-              </button>
-            </mat-chip-row>
-          </mat-chip-grid>
-          <input placeholder="Add pattern..."
-                 [matChipInputFor]="forbiddenChipGrid"
-                 (matChipInputTokenEnd)="addPattern('forbidden', $event)"
-                 aria-label="Add forbidden pattern">
-        </mat-form-field>
-
-        <!-- Required Patterns -->
-        <mat-form-field class="full-width">
-          <mat-label id="required-patterns-label">Required Patterns</mat-label>
-          <mat-chip-grid #requiredChipGrid aria-labelledby="required-patterns-label">
-            <mat-chip-row *ngFor="let pattern of requiredPatterns()"
-                         (removed)="removePattern('required', pattern)">
-              {{pattern}}
-              <button matChipRemove aria-label="Remove pattern">
-                <mat-icon>cancel</mat-icon>
-              </button>
-            </mat-chip-row>
-          </mat-chip-grid>
-          <input placeholder="Add pattern..."
-                 [matChipInputFor]="requiredChipGrid"
-                 (matChipInputTokenEnd)="addPattern('required', $event)"
-                 aria-label="Add required pattern">
-        </mat-form-field>
-      </div>
-
-      <!-- Additional Settings -->
-      <div class="additional-settings">
-        <mat-form-field>
-          <mat-label id="statutory-reference-label">Statutory Reference</mat-label>
-          <input matInput formControlName="statutoryReference" aria-labelledby="statutory-reference-label">
-        </mat-form-field>
-
-        <mat-form-field>
-          <mat-label id="score-weight-label">Score Weight</mat-label>
-          <input matInput type="number" formControlName="scoreWeight" min="0" aria-labelledby="score-weight-label">
-        </mat-form-field>
-
-        <mat-checkbox formControlName="autoSuggest" aria-label="Enable Auto-Suggest">
-          Enable Auto-Suggest
-        </mat-checkbox>
-      </div>
-
-      <!-- Validation Errors -->
-      <div class="validation-errors" *ngIf="validationErrors().length">
-        <p *ngFor="let error of validationErrors()" class="error-message" role="alert">
-          {{error}}
-        </p>
-      </div>
-    </form>
-  `,
-  styles: [`
-    .rule-editor {
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-      padding: 1rem;
-    }
-
-    .section-label {
-      font-weight: 500;
-      margin-bottom: 0.5rem;
-      display: block;
-    }
-
-    .enforcement-section mat-radio-group {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    .similarity-section,
-    .additional-settings {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1rem;
-    }
-
-    .patterns-section {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .full-width {
-      width: 100%;
-    }
-
-    .validation-errors {
-      background-color: #fef2f2;
-      border-radius: 4px;
-      padding: 1rem;
-      margin-top: 1rem;
-    }
-
-    .error-message {
-      color: #dc2626;
-      margin: 0;
-      font-size: 0.875rem;
-    }
-  `]
+  templateUrl: './rule-editor.component.html',
+  styleUrls: ['./rule-editor.component.scss']
 })
 export class RuleEditorComponent {
   private fb = inject(FormBuilder);
@@ -199,7 +45,7 @@ export class RuleEditorComponent {
   @Output() ruleChange = new EventEmitter<ClauseRule>();
 
   enforcements = Object.values(Enforcement);
-  severityLevels = Object.values(Severity);
+  severityLevels = Object.keys(Severity).filter(key => isNaN(Number(key)));
 
   ruleForm: FormGroup = this.fb.group({
     enforcement: ['', Validators.required],
@@ -208,7 +54,9 @@ export class RuleEditorComponent {
     deviationAllowedPct: [null],
     statutoryReference: [''],
     autoSuggest: [false],
-    scoreWeight: [1, [Validators.required, Validators.min(0)]]
+    scoreWeight: [1, [Validators.required, Validators.min(0)]],
+    conditionIf: this.fb.array([]),
+    conditionUnless: this.fb.array([])
   });
 
   private _forbiddenPatterns = signal<string[]>([]);
@@ -217,6 +65,14 @@ export class RuleEditorComponent {
 
   forbiddenPatterns = this._forbiddenPatterns.asReadonly();
   requiredPatterns = this._requiredPatterns.asReadonly();
+
+  // Helper getters
+  get conditionIfArray() {
+    return this.ruleForm.get('conditionIf') as FormArray;
+  }
+  get conditionUnlessArray() {
+    return this.ruleForm.get('conditionUnless') as FormArray;
+  }
 
   constructor() {
     this.ruleForm.valueChanges.subscribe(() => {
@@ -256,17 +112,49 @@ export class RuleEditorComponent {
     this.validateAndEmit();
   }
 
+  addCondition(type: 'if' | 'unless') {
+    const arr = type === 'if' ? this.conditionIfArray : this.conditionUnlessArray;
+    arr.push(this.fb.group({ key: '', value: '' }));
+    this.validateAndEmit();
+  }
+  removeCondition(type: 'if' | 'unless', idx: number) {
+    const arr = type === 'if' ? this.conditionIfArray : this.conditionUnlessArray;
+    arr.removeAt(idx);
+    this.validateAndEmit();
+  }
+
   private validateAndEmit() {
+    const ifObj: Record<string, string> = {};
+    this.conditionIfArray.controls.forEach(ctrl => {
+      if (ctrl.value.key) ifObj[ctrl.value.key] = ctrl.value.value;
+    });
+    const unlessObj: Record<string, string | number> = {};
+    this.conditionUnlessArray.controls.forEach(ctrl => {
+      if (ctrl.value.key) unlessObj[ctrl.value.key] = ctrl.value.value;
+    });
+    // Basic validation for duplicate keys and empty fields
+    const errors: string[] = [];
+    const allKeys = [...Object.keys(ifObj), ...Object.keys(unlessObj)];
+    const keySet = new Set();
+    for (const key of allKeys) {
+      if (keySet.has(key)) errors.push(`Duplicate condition key: ${key}`);
+      keySet.add(key);
+    }
+    if (Object.values(ifObj).some(v => !v) || Object.values(unlessObj).some(v => !v)) {
+      errors.push('All condition fields must have both key and value.');
+    }
+    this.validationErrors.set(errors);
     const ruleValue: ClauseRule = {
       ...this.ruleForm.value,
       forbiddenPatterns: this._forbiddenPatterns(),
-      requiredPatterns: this._requiredPatterns()
+      requiredPatterns: this._requiredPatterns(),
+      condition: (Object.keys(ifObj).length || Object.keys(unlessObj).length)
+        ? { if: Object.keys(ifObj).length ? ifObj : undefined, unless: Object.keys(unlessObj).length ? unlessObj : undefined }
+        : undefined
     };
-
     const validation = this.ruleValidationService.validateRule(ruleValue);
-    this.validationErrors.set(validation.errors);
-
-    if (validation.isValid) {
+    this.validationErrors.set([...errors, ...validation.errors]);
+    if (validation.isValid && errors.length === 0) {
       this.ruleChange.emit(ruleValue);
     }
   }
