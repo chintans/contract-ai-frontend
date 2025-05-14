@@ -1,4 +1,4 @@
-import '@testing-library/cypress/add-commands';
+/// <reference types="@testing-library/cypress" />
 import { mount } from 'cypress/angular';
 import { RuleEditorComponent } from './rule-editor.component';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';

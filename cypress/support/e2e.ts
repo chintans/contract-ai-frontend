@@ -12,23 +12,7 @@
 // You can read more here:
 // https://on.cypress.io/configuration
 // ***********************************************************
-
+/// <reference types="@testing-library/cypress" />
 // Import commands.js using ES2015 syntax:
 import './commands'
 import 'cypress-axe'
-
-beforeEach(() => {
-    cy.intercept(
-        {
-            url: `${Cypress.env('api-url')}/**`,
-            middleware: true,
-        },
-        (req) => {
-            req.on('response', (res) => {
-                // Throttle the response to 1 Mbps to simulate a
-                // mobile 3G connection
-                res.setThrottle(3000)
-            })
-        }
-    )
-})
