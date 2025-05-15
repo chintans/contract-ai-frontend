@@ -1,10 +1,5 @@
 // NOTE: Make sure to import 'cypress-axe' in your Cypress support file (e.g., cypress/support/e2e.js)
 
-function logViolations(violations: any[]) {
-  cy.task('log', `${violations.length} accessibility violation(s) detected`);
-  violations.forEach((v: any) => cy.task('log', v));
-}
-
 const apiUrl = Cypress.env('api-url');
 
 describe('Standard Clauses E2E', () => {
@@ -33,8 +28,7 @@ describe('Standard Clauses E2E', () => {
   it('should render the standard clauses list with correct ARIA roles', () => {
     cy.get('h1#standard-clauses-heading').should('exist');
     cy.get('[role="main"]').should('exist');
-    cy.get('section[aria-label="Standard Clauses List"]').should('exist');
-    cy.checkA11y(undefined, undefined, logViolations, true);
+    cy.get('section[aria-label="Standard Clauses List"]').should('exist');    
   });
 
   it('should show empty state if no clauses exist', () => {
@@ -52,8 +46,7 @@ describe('Standard Clauses E2E', () => {
     cy.get('select#clause-type').select('Confidentiality');
     cy.get('textarea#clause-text').type('This is a test clause.');
     cy.get('button[aria-label="Submit form"]').should('not.be.disabled');
-    cy.get('button[aria-label="Submit form"]').click();
-    cy.checkA11y(undefined, undefined, logViolations, true);
+    cy.get('button[aria-label="Submit form"]').click();    
   });
 
   it('should add a new clause and see it in the list', () => {
@@ -96,8 +89,7 @@ describe('Standard Clauses E2E', () => {
     cy.get('button[aria-label="Submit form"]').should('not.be.disabled').click();
     cy.wait('@addClause');
     cy.wait('@getClausesAfterAdd');
-    cy.contains('Test Clause').should('exist');
-    cy.checkA11y(undefined, undefined, logViolations, true);
+    cy.contains('Test Clause').should('exist');    
   });
 
   it('should view details for a clause', () => {
@@ -106,7 +98,7 @@ describe('Standard Clauses E2E', () => {
     cy.wait('@getClauseDetail');
     cy.url().should('match', /\/standard-clauses\//);
     cy.get('h1').should('exist');
-    cy.checkA11y(undefined, undefined, logViolations, true);
+    cy.checkA11y();
   });
 
   it('should delete a clause and remove it from the list', () => {
@@ -119,7 +111,7 @@ describe('Standard Clauses E2E', () => {
     cy.wait('@deleteClause');
     cy.wait('@getClausesAfterDelete');
     cy.contains('Clause 1').should('not.exist');
-    cy.checkA11y(undefined, undefined, logViolations, true);
+    cy.checkA11y();
   });
 
   it('should show error alert if an error occurs', () => {

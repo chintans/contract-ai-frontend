@@ -1,12 +1,10 @@
-import { NgModule, Provider, InjectionToken } from '@angular/core';
+import { NgModule, Provider } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { environment } from '../../../environments/environment';
 import { StandardClauseService } from './services/standard-clause.service';
 import { MockStandardClauseService } from './services/mock-standard-clause.service';
-import { IStandardClauseService } from './models/standard-clause.model';
 import { StandardClausesRoutingModule } from './standard-clauses-routing.module';
-
-export const STANDARD_CLAUSE_SERVICE_TOKEN = new InjectionToken<IStandardClauseService>('StandardClauseService');
+import { STANDARD_CLAUSE_SERVICE_TOKEN } from './standard-clause-service.token';
 
 const standardClauseProvider: Provider = environment.mockData
   ? { provide: STANDARD_CLAUSE_SERVICE_TOKEN, useClass: MockStandardClauseService }

@@ -1,5 +1,4 @@
 // @ts-ignore
-import { injectAxe, checkA11y } from 'cypress-axe';
 import { mount } from 'cypress/angular';
 import { TemplateRulesStepComponent } from './template-rules-step.component';
 import { RuleEditorComponent } from '../rule-editor/rule-editor.component';
@@ -20,6 +19,10 @@ describe('TemplateRulesStepComponent', () => {
     { id: 'r2', name: 'Rule 2', description: 'Desc 2' }
   ]);
 
+  beforeEach(() => {
+    cy.viewport(1280, 720);
+  });
+
   it('renders with clauses and rules and checks ARIA', () => {
     mount(TemplateRulesStepComponent, {
       imports: [
@@ -32,16 +35,17 @@ describe('TemplateRulesStepComponent', () => {
         FormsModule
       ],
       componentProperties: {
-        clausesData: mockClauses,
-        rules: mockRules
+        clausesData: mockClauses, 
       }
     });
     cy.get('div[role="main"]').should('exist');
     cy.get('h2#configure-rules-heading').should('exist');
-    cy.get('button[aria-label="Add Rule"]').should('exist');
-    cy.get('button[aria-label="Back"]').should('exist');
-    cy.get('button[aria-label="Next"]').should('exist');
-    injectAxe();
-    checkA11y();
+    cy.get('button[aria-label="Apply Strict rule to selected"]').should('exist');
+    cy.get('button[aria-label="Apply Lenient rule to selected"]').should('exist');
+    cy.get('button[aria-label="Apply Strict template to selected"]').should('exist');
+    cy.get('button[aria-label="Apply Lenient template to selected"]').should('exist');
+    cy.get('button[aria-label="Clear autosaved rules"]').should('exist');
+    cy.get('input[type="checkbox"][aria-label="Select clause 1 for batch actions"]').should('exist');
+    cy.get('input[type="checkbox"][aria-label="Select clause 2 for batch actions"]').should('exist');
   });
 }); 

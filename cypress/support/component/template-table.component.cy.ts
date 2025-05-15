@@ -3,9 +3,13 @@ import { TemplateTableComponent, Template } from '../../../src/app/features/temp
 
 describe('TemplateTableComponent (Cypress)', () => {
   const templates: Template[] = [
-    { id: '1', name: 'MSA v1', contractType: 'MSA', jurisdiction: 'India', activeVersion: '1.0' },
-    { id: '2', name: 'NDA v2', contractType: 'NDA', jurisdiction: 'Global', activeVersion: '2.0' },
+    { id: '1', name: 'MSA v1', contractType: 'MSA', jurisdiction: { country: 'India', state: 'Gujarat', city: 'Ahmedabad', isGlobal: false }, activeVersion: '1.0' },
+    { id: '2', name: 'NDA v2', contractType: 'NDA', jurisdiction: { isGlobal: true }, activeVersion: '2.0' },
   ];
+
+  beforeEach(() => {
+    cy.viewport(1280, 720);
+  });
 
   it('renders a table with templates', () => {
     mount(TemplateTableComponent, {

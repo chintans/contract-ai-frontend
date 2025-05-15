@@ -1,0 +1,48 @@
+.preview-card {
+  margin: 1rem 0;
+}
+
+.preview-content {
+  padding: 1rem 0;
+}
+
+.preview-message {
+  font-style: italic;
+  color: #666;
+}
+
+.clause-text {
+  background: #f9fafb;
+  padding: 1rem;
+  border-radius: 4px;
+  margin: 1rem 0;
+}
+
+.analysis-result {
+  border-top: 1px solid #e5e7eb;
+  padding-top: 1rem;
+}
+
+.severity-high {
+  color: #dc2626;
+}
+
+.severity-medium {
+  color: #d97706;
+}
+
+.severity-low {
+  color: #059669;
+}
+
+mat-icon.severity-high {
+  color: #dc2626;
+}
+
+mat-icon.severity-medium {
+  color: #d97706;
+}
+
+mat-icon.severity-low {
+  color: #059669;
+} 

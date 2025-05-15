@@ -44,6 +44,7 @@
     "@types/node": "^22.15.12",
     "cypress": "^14.3.3",
     "cypress-axe": "^1.6.0",
+    "cypress-real-events": "^1.14.0",
     "jasmine-core": "^5.7.1",
     "jasmine-expect": "^5.0.0",
     "karma": "^6.4.4",

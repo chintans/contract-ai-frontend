@@ -1,11 +1,6 @@
 // E2E tests for Rules module
 // NOTE: Make sure to import 'cypress-axe' in your Cypress support file (e.g., cypress/support/e2e.js)
 
-function logViolations(violations: any[]) {
-  cy.task('log', `${violations.length} accessibility violation(s) detected`);
-  violations.forEach((v: any) => cy.task('log', v));
-}
-
 describe('Rules Module E2E', () => {
   const initialRules = [
     {
@@ -41,7 +36,7 @@ describe('Rules Module E2E', () => {
     cy.contains('h1', 'Rules Management').should('exist');
     cy.get('button').contains('Create New Rule').should('exist');
     cy.get('mat-card').should('have.length.at.least', 1);
-    cy.checkA11y(undefined, undefined, logViolations, true);
+    cy.checkA11y();
   });
 
   it('should open the create rule dialog and validate required fields', () => {
@@ -64,7 +59,7 @@ describe('Rules Module E2E', () => {
       .should('not.be.disabled')
       .click();
     cy.contains('mat-card-title', 'Test Rule').should('exist');
-    cy.checkA11y(undefined, undefined, logViolations, true);
+    cy.checkA11y();
   });
 
   it('should edit an existing rule', () => {
@@ -75,7 +70,7 @@ describe('Rules Module E2E', () => {
     cy.get('input[matinput]').first().clear().type('Updated Rule Name');
     cy.get('button').contains('Update').click();
     cy.contains('mat-card-title', 'Updated Rule Name').should('exist');
-    cy.checkA11y(undefined, undefined, logViolations, true);
+    cy.checkA11y();
   });
 
   it('should delete a rule and remove it from the list', () => {
@@ -86,7 +81,7 @@ describe('Rules Module E2E', () => {
       cy.contains('button', 'Delete').click();
     });
     cy.contains('Confidentiality Clause').should('not.exist');
-    cy.checkA11y(undefined, undefined, logViolations, true);
+    cy.checkA11y();
   });
 
   it('should show empty state if no rules exist', () => {

@@ -15,9 +15,10 @@
 
 // Import commands.js using ES2015 syntax:
 import './commands'
-
+import 'cypress-real-events'
 import { mount } from 'cypress/angular'
 import { configure } from '@testing-library/cypress'
+
 
 // Augment the Cypress namespace to include type definitions for
 // your custom command.

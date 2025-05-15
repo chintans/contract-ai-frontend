@@ -9,6 +9,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ClauseRule, Enforcement, Severity } from '../../models/rule.model';
 import { RuleValidationService } from '../../services/rule-validation.service';
 
@@ -26,7 +27,8 @@ import { RuleValidationService } from '../../services/rule-validation.service';
     MatChipsModule,
     MatIconModule,
     MatButtonModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatCheckboxModule
   ],
   templateUrl: './rule-editor.component.html',
   styleUrls: ['./rule-editor.component.scss']

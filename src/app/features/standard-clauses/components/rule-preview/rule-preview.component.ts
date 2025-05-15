@@ -1,4 +1,4 @@
-import { Component, Input, computed, signal } from '@angular/core';
+import { Component, Input, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -8,80 +8,8 @@ import { ClauseRule, Severity } from '../../models/rule.model';
   selector: 'app-rule-preview',
   standalone: true,
   imports: [CommonModule, MatCardModule, MatIconModule],
-  template: `
-    <mat-card class="preview-card" role="region" aria-labelledby="rule-preview-title">
-      <mat-card-header>
-        <mat-icon [class]="severityClass()" aria-hidden="true">{{severityIcon()}}</mat-icon>
-        <mat-card-title id="rule-preview-title">Rule Preview</mat-card-title>
-      </mat-card-header>
-      
-      <mat-card-content>
-        <div class="preview-content">
-          <p class="preview-message" role="status" aria-live="polite">{{previewMessage()}}</p>
-          
-          <div class="clause-text" *ngIf="clauseText">
-            <h4>Sample Clause</h4>
-            <p>{{clauseText}}</p>
-          </div>
-
-          <div class="analysis-result" *ngIf="analysisResult()">
-            <h4>Analysis</h4>
-            <p [class]="severityClass()" role="alert" aria-live="assertive">{{analysisResult()}}</p>
-          </div>
-        </div>
-      </mat-card-content>
-    </mat-card>
-  `,
-  styles: [`
-    .preview-card {
-      margin: 1rem 0;
-    }
-
-    .preview-content {
-      padding: 1rem 0;
-    }
-
-    .preview-message {
-      font-style: italic;
-      color: #666;
-    }
-
-    .clause-text {
-      background: #f9fafb;
-      padding: 1rem;
-      border-radius: 4px;
-      margin: 1rem 0;
-    }
-
-    .analysis-result {
-      border-top: 1px solid #e5e7eb;
-      padding-top: 1rem;
-    }
-
-    .severity-high {
-      color: #dc2626;
-    }
-
-    .severity-medium {
-      color: #d97706;
-    }
-
-    .severity-low {
-      color: #059669;
-    }
-
-    mat-icon.severity-high {
-      color: #dc2626;
-    }
-
-    mat-icon.severity-medium {
-      color: #d97706;
-    }
-
-    mat-icon.severity-low {
-      color: #059669;
-    }
-  `]
+  templateUrl: './rule-preview.component.html',
+  styleUrls: ['./rule-preview.component.scss']
 })
 export class RulePreviewComponent {
   @Input() rule: ClauseRule | null = null;

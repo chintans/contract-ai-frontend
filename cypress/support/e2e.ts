@@ -13,6 +13,12 @@
 // https://on.cypress.io/configuration
 // ***********************************************************
 /// <reference types="@testing-library/cypress" />
+/// <reference types="cypress" />
 // Import commands.js using ES2015 syntax:
 import './commands'
 import 'cypress-axe'
+import "cypress-real-events";
+
+beforeEach(() => {
+    cy.viewport(1280, 720);
+  });

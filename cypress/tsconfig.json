@@ -6,10 +6,14 @@
             "node",
             "@types/chai",
             "cypress-axe",
-            "@testing-library/cypress"
+            "@testing-library/cypress",
+            "cypress-real-events"
         ]
     },
     "include": [
         "**/*.cy.ts"
+    ],
+    "exclude": [
+        "**/*.spec.ts"
     ]
 }

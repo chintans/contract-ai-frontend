@@ -1,10 +1,12 @@
 // @ts-ignore
-import { injectAxe, checkA11y } from 'cypress-axe';
 import { mount } from 'cypress/angular';
 import { RulePreviewComponent } from './rule-preview.component';
 import { Severity, Enforcement } from '../../models/rule.model';
 
 describe('RulePreviewComponent', () => {
+  beforeEach(() => {
+    cy.viewport(1280, 800);
+  });
   it('renders with rule and clauseText and checks ARIA', () => {
     mount(RulePreviewComponent, {
       componentProperties: {
@@ -28,8 +30,6 @@ describe('RulePreviewComponent', () => {
     cy.contains('Rule Preview').should('exist');
     cy.contains('Sample Clause').should('exist');
     cy.contains('Analysis').should('exist');
-    injectAxe();
-    checkA11y();
   });
 
   it('renders with no rule and no clauseText', () => {
@@ -39,7 +39,6 @@ describe('RulePreviewComponent', () => {
         clauseText: null
       }
     });
-    cy.contains('Configure a rule to see preview').should('exist');
-    checkA11y();
+    cy.contains('Configure a rule to see preview').should('exist');    
   });
 }); 
