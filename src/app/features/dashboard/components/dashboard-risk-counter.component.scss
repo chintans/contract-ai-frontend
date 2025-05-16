@@ -1,0 +1,24 @@
+.risk-counter {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.risk-badge {
+  display: inline-block;
+  padding: 0.3em 1em;
+  border-radius: 1em;
+  font-weight: 600;
+  font-size: 1rem;
+  color: #fff;
+}
+
+.risk-badge.high {
+  background: #e53935;
+}
+.risk-badge.medium {
+  background: #fb8c00;
+}
+.risk-badge.low {
+  background: #43a047;
+} 

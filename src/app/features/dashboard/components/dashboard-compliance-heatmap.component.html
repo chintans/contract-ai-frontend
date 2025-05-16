@@ -1,0 +1,18 @@
+<div class="compliance-heatmap" role="table" aria-label="Compliance Heatmap">
+  <ng-container *ngIf="categories$ | async as categories">
+    <ng-container *ngIf="rules$ | async as rules">
+      <ng-container *ngIf="matrix$ | async as matrix">
+        <div class="heatmap-header" role="row">
+          <div class="heatmap-corner"></div>
+          <div *ngFor="let rule of rules" class="heatmap-header-cell" role="columnheader">{{ rule }}</div>
+        </div>
+        <div *ngFor="let row of matrix; let i = index" class="heatmap-row" role="row">
+          <div class="heatmap-category" role="rowheader">{{ categories[i] }}</div>
+          <div *ngFor="let cell of row" class="heatmap-cell" [ngClass]="cell.status" role="cell" tabindex="0">
+            {{ cell.label }}
+          </div>
+        </div>
+      </ng-container>
+    </ng-container>
+  </ng-container>
+</div> 

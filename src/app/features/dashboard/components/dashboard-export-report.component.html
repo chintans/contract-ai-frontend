@@ -1,0 +1,7 @@
+<div class="export-report" role="region" aria-label="Export Report">
+  <button type="button" class="export-btn pdf" [disabled]="isLoading()" *ngIf="!isReady()" (click)="isLoading.set(true)">Export PDF</button>
+  <button type="button" class="export-btn docx" [disabled]="isLoading()" *ngIf="!isReady()" (click)="isLoading.set(true)">Export DOCX</button>
+  <span class="spinner" *ngIf="isLoading() && !isReady()">Generating...</span>
+  <a *ngIf="isReady() && downloadUrl()" [href]="downloadUrl()" download class="download-link">Download Report</a>
+  <span class="error" *ngIf="error()">{{ error() }}</span>
+</div> 

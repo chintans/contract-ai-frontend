@@ -1,0 +1,11 @@
+<div class="bulk-resolve-toolbar" role="toolbar" aria-label="Bulk Actions" *ngIf="(selectedCount$ | async) ?? 0 > 0">
+  <span class="selected-count">{{ (selectedCount$ | async) ?? 0 }} selected</span>
+  <button type="button" class="toolbar-btn resolve" (click)="resolveSelected()">Resolve</button>
+  <select class="toolbar-btn change-severity" (change)="onSeverityChange($event)">
+    <option value="">Change Severity</option>
+    <option value="high">High</option>
+    <option value="medium">Medium</option>
+    <option value="low">Low</option>
+  </select>
+  <button type="button" class="toolbar-btn delete" (click)="deleteSelected()">Delete</button>
+</div> 

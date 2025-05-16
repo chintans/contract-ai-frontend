@@ -1,0 +1,29 @@
+<section class="py-8 text-lg text-gray-700">
+  <div class="flex gap-2 mb-6" role="tablist">
+    <button type="button" role="tab" 
+      class="px-4 py-2 rounded-t bg-gray-100 text-gray-700 font-semibold hover:bg-primary-100 focus:outline-none focus:ring-2 focus:ring-primary-400 transition-colors"
+      [class.bg-white]="(activeTab$ | async) === 'clauses'"
+      [class.text-primary-700]="(activeTab$ | async) === 'clauses'"
+      (click)="setTab('clauses')">Clauses</button>
+    <button type="button" role="tab" 
+      class="px-4 py-2 rounded-t bg-gray-100 text-gray-700 font-semibold hover:bg-primary-100 focus:outline-none focus:ring-2 focus:ring-primary-400 transition-colors"
+      [class.bg-white]="(activeTab$ | async) === 'summaries'"
+      [class.text-primary-700]="(activeTab$ | async) === 'summaries'"
+      (click)="setTab('summaries')">Summaries</button>
+    <button type="button" role="tab" 
+      class="px-4 py-2 rounded-t bg-gray-100 text-gray-700 font-semibold hover:bg-primary-100 focus:outline-none focus:ring-2 focus:ring-primary-400 transition-colors"
+      [class.bg-white]="(activeTab$ | async) === 'compliance'"
+      [class.text-primary-700]="(activeTab$ | async) === 'compliance'"
+      (click)="setTab('compliance')">Compliance</button>
+    <button type="button" role="tab" 
+      class="px-4 py-2 rounded-t bg-gray-100 text-gray-700 font-semibold hover:bg-primary-100 focus:outline-none focus:ring-2 focus:ring-primary-400 transition-colors"
+      [class.bg-white]="(activeTab$ | async) === 'attachments'"
+      [class.text-primary-700]="(activeTab$ | async) === 'attachments'"
+      (click)="setTab('attachments')">Attachments</button>
+  </div>
+  <app-dashboard-autosave-toolbar *ngIf="(activeTab$ | async) === 'clauses'"></app-dashboard-autosave-toolbar>
+  <app-dashboard-clauses-list *ngIf="(activeTab$ | async) === 'clauses'"></app-dashboard-clauses-list>
+  <div *ngIf="(activeTab$ | async) === 'summaries'" class="tab-content">Summaries content goes here.</div>
+  <app-dashboard-compliance-heatmap *ngIf="(activeTab$ | async) === 'compliance'"></app-dashboard-compliance-heatmap>
+  <div *ngIf="(activeTab$ | async) === 'attachments'" class="tab-content">Attachments content goes here.</div>
+</section> 

@@ -1,0 +1,65 @@
+<div class="flex flex-wrap gap-6 items-center py-4" role="region" aria-label="Advanced Filters">
+  <ng-container *ngIf="filters$ | async as filters">
+    <div class="flex items-center gap-2">
+      <label class="font-semibold text-gray-700">Severity:</label>
+      <ng-container *ngFor="let option of severities">
+        <button type="button"
+          class="bg-gray-100 border border-gray-300 rounded-full px-4 py-1 text-base font-medium text-gray-700 transition-colors hover:bg-primary-100 hover:border-primary-300 focus:outline-none focus:ring-2 focus:ring-primary-400"
+          [ngClass]="{'bg-primary-700 text-white border-primary-700': filters.severities.includes(option.value)}"
+          (click)="onFilterChange({ severities: toggle(filters.severities, option.value) })">
+          {{ option.label }}
+        </button>
+      </ng-container>
+    </div>
+    <div class="flex items-center gap-2">
+      <label class="font-semibold text-gray-700">Clause Type:</label>
+      <ng-container *ngFor="let option of clauseTypes">
+        <button type="button"
+          class="bg-gray-100 border border-gray-300 rounded-full px-4 py-1 text-base font-medium text-gray-700 transition-colors hover:bg-primary-100 hover:border-primary-300 focus:outline-none focus:ring-2 focus:ring-primary-400"
+          [ngClass]="{'bg-primary-700 text-white border-primary-700': filters.clauseTypes.includes(option.value)}"
+          (click)="onFilterChange({ clauseTypes: toggle(filters.clauseTypes, option.value) })">
+          {{ option.label }}
+        </button>
+      </ng-container>
+    </div>
+    <div class="flex items-center gap-2">
+      <label class="font-semibold text-gray-700">Rule Category:</label>
+      <ng-container *ngFor="let option of ruleCategories">
+        <button type="button"
+          class="bg-gray-100 border border-gray-300 rounded-full px-4 py-1 text-base font-medium text-gray-700 transition-colors hover:bg-primary-100 hover:border-primary-300 focus:outline-none focus:ring-2 focus:ring-primary-400"
+          [ngClass]="{'bg-primary-700 text-white border-primary-700': filters.ruleCategories.includes(option.value)}"
+          (click)="onFilterChange({ ruleCategories: toggle(filters.ruleCategories, option.value) })">
+          {{ option.label }}
+        </button>
+      </ng-container>
+    </div>
+    <div class="flex items-center gap-2">
+      <label class="font-semibold text-gray-700">Reviewer:</label>
+      <ng-container *ngFor="let option of reviewers">
+        <button type="button"
+          class="bg-gray-100 border border-gray-300 rounded-full px-4 py-1 text-base font-medium text-gray-700 transition-colors hover:bg-primary-100 hover:border-primary-300 focus:outline-none focus:ring-2 focus:ring-primary-400"
+          [ngClass]="{'bg-primary-700 text-white border-primary-700': filters.reviewers.includes(option.value)}"
+          (click)="onFilterChange({ reviewers: toggle(filters.reviewers, option.value) })">
+          {{ option.label }}
+        </button>
+      </ng-container>
+    </div>
+    <div class="flex items-center gap-2">
+      <label class="font-semibold text-gray-700">Status:</label>
+      <ng-container *ngFor="let option of resolvedStates">
+        <button type="button"
+          class="bg-gray-100 border border-gray-300 rounded-full px-4 py-1 text-base font-medium text-gray-700 transition-colors hover:bg-primary-100 hover:border-primary-300 focus:outline-none focus:ring-2 focus:ring-primary-400"
+          [ngClass]="{'bg-primary-700 text-white border-primary-700': filters.resolvedStates.includes(option.value)}"
+          (click)="onFilterChange({ resolvedStates: toggle(filters.resolvedStates, option.value) })">
+          {{ option.label }}
+        </button>
+      </ng-container>
+    </div>
+    <div class="flex items-center gap-2">
+      <label for="clause-search" class="font-semibold text-gray-700">Search:</label>
+      <input id="clause-search" type="text"
+        class="px-4 py-1 rounded-full border border-gray-300 text-base focus:outline-none focus:ring-2 focus:ring-primary-400"
+        [value]="filters.search" (input)="onSearchInput($event)" placeholder="Search clause body..." />
+    </div>
+  </ng-container>
+</div> 

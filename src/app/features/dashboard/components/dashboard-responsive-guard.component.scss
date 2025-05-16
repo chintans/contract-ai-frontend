@@ -1,0 +1,15 @@
+.responsive-guard {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #e3eafc;
+  color: #1976d2;
+  border: 1px solid #90caf9;
+  border-radius: 8px 8px 0 0;
+  padding: 0.75rem 2rem;
+  z-index: 2000;
+  font-size: 1.1rem;
+  font-weight: 500;
+  box-shadow: 0 -2px 12px rgba(0,0,0,0.08);
+} 

@@ -1,0 +1,35 @@
+.event-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px;
+}
+.event-timeline-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 0;
+  border-bottom: 1px solid #eee;
+}
+.event-timestamp {
+  color: #888;
+  font-size: 0.9em;
+  min-width: 80px;
+}
+.event-actor {
+  font-weight: bold;
+  color: #1976d2;
+}
+.event-action {
+  color: #333;
+}
+.event-detail {
+  color: #555;
+  font-size: 0.95em;
+  flex: 1;
+}
+.event-timeline-empty {
+  color: #aaa;
+  font-style: italic;
+  padding: 12px 0;
+} 

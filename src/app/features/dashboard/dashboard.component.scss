@@ -1,3 +1,120 @@
 :host {
   display: block;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-areas:
+    'header header header chat'
+    'left-rail main main chat';
+  grid-template-columns: 260px 1fr 1fr 400px;
+  grid-template-rows: 80px 1fr;
+  min-height: 100vh;
+  background: #f8f9fb;
+  gap: 0;
+}
+
+.dashboard-header {
+  grid-area: header;
+  background: #fff;
+  border-bottom: 1px solid #e5e7eb;
+  z-index: 2;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+
+.dashboard-left-rail {
+  grid-area: left-rail;
+  background: #f4f6fa;
+  border-right: 1px solid #e5e7eb;
+  min-width: 220px;
+  max-width: 260px;
+  z-index: 1;
+  overflow-y: auto;
+}
+
+.dashboard-main-panel {
+  grid-area: main;
+  background: #fff;
+  padding: 0 2rem;
+  overflow-y: auto;
+  min-width: 0;
+  box-shadow: 0 0 0 1px #f0f1f3;
+}
+
+.dashboard-chat-assistant {
+  grid-area: chat;
+  background: #f9fafb;
+  border-left: 1px solid #e5e7eb;
+  min-width: 320px;
+  max-width: 400px;
+  box-shadow: -2px 0 8px rgba(0,0,0,0.03);
+  z-index: 3;
+  overflow-y: auto;
+}
+
+@media (max-width: 1200px) {
+  .dashboard-grid {
+    grid-template-columns: 200px 2fr 1fr 280px;
+  }
+  .dashboard-chat-assistant {
+    min-width: 220px;
+    max-width: 280px;
+  }
+}
+
+@media (max-width: 900px) {
+  .dashboard-grid {
+    grid-template-areas:
+      'header header header'
+      'left-rail main chat';
+    grid-template-columns: 60px 1fr 220px;
+    grid-template-rows: 60px 1fr;
+  }
+  .dashboard-header {
+    min-height: 60px;
+  }
+  .dashboard-left-rail {
+    min-width: 60px;
+    max-width: 60px;
+  }
+  .dashboard-chat-assistant {
+    min-width: 120px;
+    max-width: 220px;
+  }
+}
+
+@media (max-width: 600px) {
+  .dashboard-grid {
+    display: flex;
+    flex-direction: column;
+  }
+  .dashboard-header,
+  .dashboard-left-rail,
+  .dashboard-main-panel,
+  .dashboard-chat-assistant {
+    min-width: 0;
+    max-width: 100vw;
+    width: 100vw;
+    box-shadow: none;
+    border: none;
+  }
+  .dashboard-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .dashboard-left-rail,
+  .dashboard-chat-assistant {
+    display: none;
+  }
+}
+
+.dashboard-header-placeholder,
+.dashboard-left-rail-placeholder,
+.dashboard-main-panel-placeholder,
+.dashboard-chat-assistant-placeholder {
+  padding: 2rem;
+  color: #888;
+  font-size: 1.2rem;
+  text-align: center;
 } 

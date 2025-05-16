@@ -1,0 +1,14 @@
+<div class="comparison-drawer" [class.open]="isOpen()" role="dialog" aria-modal="true" aria-label="Comparison Drawer">
+  <div class="drawer-header">
+    <span>Comparison Drawer</span>
+    <div class="view-toggle">
+      <button type="button" [class.active]="viewMode() === 'inline'" (click)="viewMode.set('inline')">Inline</button>
+      <button type="button" [class.active]="viewMode() === 'side-by-side'" (click)="viewMode.set('side-by-side')">Side by Side</button>
+    </div>
+    <button type="button" class="close-btn" (click)="isOpen.set(false)" aria-label="Close">&times;</button>
+  </div>
+  <div class="drawer-content" [class]="viewMode()">
+    <div class="playbook-text">Playbook Text Placeholder</div>
+    <div class="clause-text">Current Clause Placeholder</div>
+  </div>
+</div>

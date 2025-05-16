@@ -1,4 +1,21 @@
-<div class="p-0">
-  <h1 class="text-2xl font-bold mb-0">Dashboard</h1>
-  <p>Welcome to the Contract Review AI Dashboard</p>
+<div class="grid min-h-screen grid-cols-1 grid-rows-[80px_1fr] bg-gray-50 md:grid-cols-[260px_1fr_400px] md:grid-rows-[80px_1fr] lg:grid-cols-[260px_1fr_1fr_400px] gap-0" aria-label="Contract Review Dashboard" role="main">
+  <!-- Dashboard Header -->
+  <header class="col-span-full row-start-1 row-end-2 flex items-center bg-white border-b border-gray-200 shadow z-20 px-6" aria-label="Dashboard Header" role="banner">
+    <app-dashboard-header></app-dashboard-header>
+  </header>
+
+  <!-- Left Rail -->
+  <nav class="hidden md:flex flex-col bg-gray-100 border-r border-gray-200 min-w-[220px] max-w-[260px] overflow-y-auto z-10 row-start-2 row-end-3 col-start-1 col-end-2" aria-label="Navigation Panel" role="navigation">
+    <app-dashboard-left-rail></app-dashboard-left-rail>
+  </nav>
+
+  <!-- Main Panel (Tabbed) -->
+  <section class="flex flex-col bg-white px-4 py-6 overflow-y-auto min-w-0 shadow row-start-2 row-end-3 col-start-2 col-end-3" aria-label="Main Content" role="region">
+    <app-dashboard-main-panel></app-dashboard-main-panel>
+  </section>
+
+  <!-- Dockable Chat Assistant -->
+  <aside class="hidden md:flex flex-col bg-gray-50 border-l border-gray-200 min-w-[320px] max-w-[400px] shadow z-30 overflow-y-auto row-start-2 row-end-3 col-start-3 col-end-4" aria-label="Chat Assistant" role="complementary">
+    <app-dashboard-chat-assistant></app-dashboard-chat-assistant>
+  </aside>
 </div> 

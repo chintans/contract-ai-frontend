@@ -1,0 +1,8 @@
+<cdk-virtual-scroll-viewport itemSize="72" class="clauses-viewport" role="list" aria-label="Clauses List">
+  <ng-container *ngIf="filteredClauses$ | async as clauses">
+    <div *cdkVirtualFor="let clause of clauses" class="clause-item" role="listitem">
+      <div class="clause-title">{{ clause.title }}</div>
+      <div class="clause-body">{{ clause.body }}</div>
+    </div>
+  </ng-container>
+</cdk-virtual-scroll-viewport> 

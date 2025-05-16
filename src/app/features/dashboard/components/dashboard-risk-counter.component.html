@@ -1,0 +1,5 @@
+<div class="flex items-center gap-4" aria-label="Risk Counter">
+  <span class="inline-block px-4 py-1 rounded-full font-semibold text-white bg-red-600">High: {{ (riskCounts$ | async)?.high }}</span>
+  <span class="inline-block px-4 py-1 rounded-full font-semibold text-white bg-orange-500">Medium: {{ (riskCounts$ | async)?.medium }}</span>
+  <span class="inline-block px-4 py-1 rounded-full font-semibold text-white bg-green-600">Low: {{ (riskCounts$ | async)?.low }}</span>
+</div> 

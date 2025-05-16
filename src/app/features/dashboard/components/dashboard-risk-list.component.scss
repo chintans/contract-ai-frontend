@@ -1,0 +1,38 @@
+.risk-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.risk-list-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.risk-list-item.selected {
+  background: #e0f7fa;
+}
+.risk-type.risk-high {
+  color: #d32f2f;
+  font-weight: bold;
+}
+.risk-type.risk-medium {
+  color: #fbc02d;
+  font-weight: bold;
+}
+.risk-type.risk-low {
+  color: #388e3c;
+  font-weight: bold;
+}
+.risk-category {
+  font-size: 0.95em;
+  color: #555;
+}
+.risk-description {
+  flex: 1;
+  font-size: 0.95em;
+  color: #333;
+} 
