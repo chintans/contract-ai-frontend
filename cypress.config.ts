@@ -1,6 +1,6 @@
 import { defineConfig } from "cypress";
 
-export default {
+export default defineConfig({
   projectId: 'rc512x',
   component: {
     devServer: {
@@ -26,4 +26,4 @@ export default {
       });
     },
   },
-};
+});
