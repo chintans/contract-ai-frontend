@@ -466,6 +466,10 @@ export class TemplateWizardComponent {
 
   isMetaValid(): boolean {
     const m = this.meta();
+    if (m.isGlobal) {
+      // For global templates only the name and contract type are required
+      return !!(m.name && m.contractType);
+    }
     return !!(m.name && m.contractType && m.country && m.state && m.city);
   }
-} 
+}
