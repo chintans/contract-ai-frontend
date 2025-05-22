@@ -1,7 +1,7 @@
 import { Component, Output, EventEmitter, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IStandardClauseService, StandardClause } from '../standard-clauses/models/standard-clause.model';
-import { STANDARD_CLAUSE_SERVICE_TOKEN } from '../standard-clauses/standard-clauses.module';
+import { STANDARD_CLAUSE_SERVICE_TOKEN } from '../standard-clauses/standard-clause-service.token';
 
 @Component({
   selector: 'app-standard-clause-selector',

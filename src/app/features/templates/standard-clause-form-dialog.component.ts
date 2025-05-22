@@ -1,7 +1,7 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StandardClauseFormComponent } from '../standard-clauses/standard-clause-form/standard-clause-form.component';
-import { CreateStandardClauseDto } from '../../services/standard-clause.service';
+import { CreateStandardClauseDto } from '../standard-clauses/models/standard-clause.model';
 
 @Component({
   selector: 'app-standard-clause-form-dialog',
