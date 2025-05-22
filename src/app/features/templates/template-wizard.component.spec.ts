@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { TemplateWizardComponent } from './template-wizard.component';
-import { MockStandardClauseService } from '../../services/mock-standard-clause.service';
+import { MockStandardClauseService } from '../standard-clauses/services/mock-standard-clause.service';
 import { of, throwError } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { TemplatesService } from '../../services/templates.service';
