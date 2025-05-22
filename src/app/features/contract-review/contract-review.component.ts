@@ -54,7 +54,7 @@ export class ContractReviewComponent implements AfterViewInit, OnInit {
   private readonly route = inject(ActivatedRoute);
 
   // Map of routes to step indices
-  private readonly routeStepMap: { [key: string]: number } = {
+  private readonly routeStepMap: Record<string, number> = {
     'upload': 0,
     'analysis': 1,
     'risk-flags': 2,
@@ -63,7 +63,7 @@ export class ContractReviewComponent implements AfterViewInit, OnInit {
   };
 
   // Map of step indices to routes
-  private readonly stepRouteMap: { [key: number]: string } = {
+  private readonly stepRouteMap: Record<number, string> = {
     0: 'upload',
     1: 'analysis',
     2: 'risk-flags',

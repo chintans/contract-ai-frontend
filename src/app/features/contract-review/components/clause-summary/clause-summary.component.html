@@ -1,0 +1,14 @@
+<div class="p-4">
+  <h2 class="text-xl font-semibold mb-4">Clause Summary</h2>
+  <div class="space-y-4">
+    <!-- Clause summary content will go here -->
+    <section aria-label="Clause List">
+      <ul class="divide-y divide-gray-200">
+        <li *ngFor="let clause of clauses; trackBy: trackByClauseId" class="py-2">
+          <h3 class="text-lg font-bold">{{ clause.title }}</h3>
+          <p class="text-gray-700">{{ clause.summary }}</p>
+        </li>
+      </ul>
+    </section>
+  </div>
+</div> 

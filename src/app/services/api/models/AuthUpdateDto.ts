@@ -1,0 +1,14 @@
+/* generated using openapi-typescript-codegen -- do not edit */
+/* istanbul ignore file */
+
+/* eslint-disable */
+import type { FileDto } from './FileDto';
+export type AuthUpdateDto = {
+    photo?: FileDto;
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    password?: string;
+    oldPassword?: string;
+};
+

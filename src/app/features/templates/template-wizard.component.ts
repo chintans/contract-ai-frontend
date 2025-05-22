@@ -1,4 +1,4 @@
-import { Component, computed, signal, inject, Provider, InjectionToken } from '@angular/core';
+import { Component, computed, signal, inject, Provider, InjectionToken, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { VersionedClause } from './template-version.model';
@@ -14,8 +14,8 @@ import { StandardClauseService } from '../standard-clauses/services/standard-cla
 import { MockStandardClauseService } from '../standard-clauses/services/mock-standard-clause.service';
 import { environment } from '../../../environments/environment';
 
-type StateCities = { [state: string]: string[] };
-type CountryStates = { [country: string]: StateCities };
+type StateCities = Record<string, string[]>;
+type CountryStates = Record<string, StateCities>;
 const STANDARD_CLAUSE_SERVICE_TOKEN = new InjectionToken<IStandardClauseService>('StandardClauseService');
 
 const standardClauseProvider: Provider = environment.mockData
@@ -36,7 +36,7 @@ const standardClauseProvider: Provider = environment.mockData
   styleUrls: ['./template-wizard.component.scss'],
   providers: [standardClauseProvider]
 })
-export class TemplateWizardComponent {
+export class TemplateWizardComponent implements OnInit {
   step = signal(0);
   showAddClauseDialog = signal(false);
   standardClauses = signal<StandardClauseCardData[]>([]);

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, Input } from '@angular/core';
+import { Component, EventEmitter, Output, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 export interface Jurisdiction {
@@ -23,7 +23,7 @@ export interface Template {
   templateUrl: './template-table.component.html',
   styleUrls: ['./template-table.component.scss']
 })
-export class TemplateTableComponent {
+export class TemplateTableComponent implements OnInit {
   @Input() templates: Template[] = [];
   @Output() editTemplate = new EventEmitter<Template>();
 

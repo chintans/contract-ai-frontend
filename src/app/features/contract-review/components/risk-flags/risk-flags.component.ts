@@ -48,7 +48,7 @@ import { map } from 'rxjs/operators';
   `
 })
 export class RiskFlagNotesDialogComponent {
-  notes: string = '';
+  notes = '';
 
   constructor() {}
 }
