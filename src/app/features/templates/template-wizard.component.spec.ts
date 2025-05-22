@@ -13,23 +13,23 @@ const mockClauses = [
 describe('TemplateWizardComponent', () => {
   let component: TemplateWizardComponent;
   let fixture: ComponentFixture<TemplateWizardComponent>;
-  let mockService: jasmine.SpyObj<MockStandardClauseService>;
+  let mockService: MockStandardClauseService;
 
   beforeEach(async () => {
     const activatedRouteStub = { snapshot: { paramMap: { get: () => null } } };
     const templatesServiceStub = { getOne: () => ({ subscribe: (cb: any) => cb({}) }) };
-    const spy = jasmine.createSpyObj('MockStandardClauseService', ['getByContractType', 'create']);
     await TestBed.configureTestingModule({
       imports: [TemplateWizardComponent],
       providers: [
         { provide: ActivatedRoute, useValue: activatedRouteStub },
-        { provide: TemplatesService, useValue: templatesServiceStub },
-        { provide: MockStandardClauseService, useValue: spy }
+        { provide: TemplatesService, useValue: templatesServiceStub }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(TemplateWizardComponent);
     component = fixture.componentInstance;
-    mockService = TestBed.inject(MockStandardClauseService) as jasmine.SpyObj<MockStandardClauseService>;
+    mockService = TestBed.inject(MockStandardClauseService);
+    spyOn(mockService, 'getByContractType').and.returnValue(of(mockClauses));
+    spyOn(mockService, 'create').and.returnValue(of(mockClauses[0]));
   });
 
   it('should create', () => {
@@ -41,6 +41,14 @@ describe('TemplateWizardComponent', () => {
   });
 
   it('should go to next and previous steps', () => {
+    component.meta.set({
+      name: 'name',
+      contractType: 'NDA',
+      country: '',
+      state: '',
+      city: '',
+      isGlobal: true
+    });
     component.nextStep();
     expect(component.step()).toBe(1);
     component.prevStep();
@@ -54,7 +62,6 @@ describe('TemplateWizardComponent', () => {
 
   it('should load standard clauses on loadStandardClauses', fakeAsync(() => {
     component.meta.update(m => ({ ...m, contractType: 'NDA' }));
-    mockService.getByContractType.and.returnValue(of(mockClauses));
     component.loadStandardClauses();
     tick();
     expect(component.standardClauses().length).toBe(2);
@@ -63,7 +70,7 @@ describe('TemplateWizardComponent', () => {
 
   it('should handle error when loading clauses fails', fakeAsync(() => {
     component.meta.update(m => ({ ...m, contractType: 'NDA' }));
-    mockService.getByContractType.and.returnValue(throwError(() => new Error('fail')));
+    (mockService.getByContractType as jasmine.Spy).and.returnValue(throwError(() => new Error('fail')));
     component.loadStandardClauses();
     tick();
     expect(component.error()).toBe('Failed to load standard clauses. Please try again.');

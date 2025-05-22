@@ -44,7 +44,9 @@ describe('RulesAdminComponent', () => {
         { provide: RulesService, useValue: rulesServiceSpy },
         { provide: MatDialog, useValue: dialogSpy }
       ]
-    }).compileComponents();
+    })
+      .overrideProvider(MatDialog, { useValue: dialogSpy })
+      .compileComponents();
 
     fixture = TestBed.createComponent(RulesAdminComponent);
     component = fixture.componentInstance;

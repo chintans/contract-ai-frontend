@@ -28,7 +28,7 @@ describe('TemplateVersionDrawerComponent', () => {
 
   it('should emit activateVersion', () => {
     const spy = spyOn(component.activateVersion, 'emit');
-    fixture.nativeElement.querySelector('button.text-green-600').click();
+    fixture.nativeElement.querySelector('button.text-green-600:not([disabled])').click();
     expect(spy).toHaveBeenCalledWith('2');
   });
 
