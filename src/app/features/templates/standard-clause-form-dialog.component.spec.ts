@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { StandardClauseFormDialogComponent } from './standard-clause-form-dialog.component';
 import { CreateStandardClauseDto } from '../standard-clauses/models/standard-clause.model';
 
@@ -18,7 +19,7 @@ describe('StandardClauseFormDialogComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [StandardClauseFormDialogComponent]
+      imports: [RouterTestingModule, StandardClauseFormDialogComponent]
     }).compileComponents();
     fixture = TestBed.createComponent(StandardClauseFormDialogComponent);
     component = fixture.componentInstance;
