@@ -23,7 +23,9 @@ describe('RiskFlagsComponent', () => {
         { provide: Router, useValue: { navigate: () => {} } },
         { provide: ActivatedRoute, useValue: {} }
       ]
-    }).compileComponents();
+    })
+      .overrideProvider(MatDialog, { useValue: dialogSpy })
+      .compileComponents();
   });
 
   it('should create', () => {

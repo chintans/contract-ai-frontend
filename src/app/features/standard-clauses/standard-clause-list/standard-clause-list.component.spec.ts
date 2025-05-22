@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
+import { RouterTestingModule } from '@angular/router/testing';
 import { StandardClauseListComponent } from './standard-clause-list.component';
 import { STANDARD_CLAUSE_SERVICE_TOKEN } from '../standard-clause-service.token';
 import { IStandardClauseService, StandardClause } from '../models/standard-clause.model';
@@ -27,7 +28,7 @@ describe('StandardClauseListComponent', () => {
   beforeEach(async () => {
     service = new MockService();
     await TestBed.configureTestingModule({
-      imports: [StandardClauseListComponent],
+      imports: [RouterTestingModule, StandardClauseListComponent],
       providers: [
         { provide: STANDARD_CLAUSE_SERVICE_TOKEN, useValue: service }
       ]
