@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { Router, RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -6,6 +6,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
+import { AuthService } from './core/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -25,8 +26,15 @@ import { CommonModule } from '@angular/common';
   ]
 })
 export class AppComponent {
-  constructor(private router: Router) {
-    console.log('AppComponent initialized');
+  private auth = inject(AuthService);
+  constructor(private router: Router) {}
+
+  isLoggedIn() {
+    return this.auth.isAuthenticated();
+  }
+
+  logout() {
+    this.auth.logout();
   }
 
   navigate(route: string): void {

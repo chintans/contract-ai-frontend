@@ -1,0 +1,22 @@
+<form class="signup-form" [formGroup]="form" (ngSubmit)="signup()">
+  <mat-form-field appearance="fill">
+    <mat-label>First Name</mat-label>
+    <input matInput formControlName="firstName" />
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Last Name</mat-label>
+    <input matInput formControlName="lastName" />
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Email</mat-label>
+    <input matInput formControlName="email" type="email" />
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Password</mat-label>
+    <input matInput formControlName="password" type="password" />
+  </mat-form-field>
+  <button mat-raised-button color="primary" type="submit">Sign Up</button>
+  <div id="googleSignupBtn" class="mt-4"></div>
+  <p *ngIf="error()" class="error">{{ error() }}</p>
+  <a routerLink="/login">Already have an account?</a>
+</form>
