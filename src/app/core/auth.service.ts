@@ -28,6 +28,7 @@ export class AuthService {
 
   loginWithGoogle(idToken: string) {
     const dto: AuthGoogleLoginDto = { idToken };
+    console.log('loginWithGoogle', dto.idToken);
     return this.api.authGoogleControllerLoginV1(dto).pipe(tap(res => this.setSession(res)));
   }
 

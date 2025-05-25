@@ -1,6 +1,7 @@
 /* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
- 
+/* tslint:disable */
+/* eslint-disable */
 export { ApiError } from './core/ApiError';
 export { CancelablePromise, CancelError } from './core/CancelablePromise';
 export { OpenAPI } from './core/OpenAPI';
@@ -22,7 +23,7 @@ export type { FileDto } from './models/FileDto';
 export type { FileResponseDto } from './models/FileResponseDto';
 export type { FileType } from './models/FileType';
 export type { InfinityPaginationUserResponseDto } from './models/InfinityPaginationUserResponseDto';
-export type { IngestDto } from './models/IngestDto';
+export type { IngestContractDto } from './models/IngestContractDto';
 export type { LoginResponseDto } from './models/LoginResponseDto';
 export type { RefreshResponseDto } from './models/RefreshResponseDto';
 export type { Role } from './models/Role';
@@ -42,7 +43,6 @@ export { AuthService } from './services/AuthService';
 export { ContractsService } from './services/ContractsService';
 export { FilesService } from './services/FilesService';
 export { HomeService } from './services/HomeService';
-export { HybridReviewService } from './services/HybridReviewService';
 export { RulesService } from './services/RulesService';
 export { StandardClausesService } from './services/StandardClausesService';
 export { TemplatesService } from './services/TemplatesService';

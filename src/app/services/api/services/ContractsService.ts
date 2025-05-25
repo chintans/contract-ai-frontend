@@ -1,10 +1,11 @@
 /* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
-
+/* tslint:disable */
 /* eslint-disable */
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import type { Observable } from 'rxjs';
+import type { IngestContractDto } from '../models/IngestContractDto';
 import type { UpdateContractDto } from '../models/UpdateContractDto';
 import type { UpdateRiskFlagDto } from '../models/UpdateRiskFlagDto';
 import { OpenAPI } from '../core/OpenAPI';
@@ -290,6 +291,42 @@ export class ContractsService {
             url: '/api/contracts/{id}/reviews',
             path: {
                 'id': id,
+            },
+        });
+    }
+    /**
+     * @param id
+     * @param requestBody
+     * @returns any
+     * @throws ApiError
+     */
+    public contractControllerHybridIngest(
+        id: string,
+        requestBody: IngestContractDto,
+    ): Observable<any> {
+        return __request(OpenAPI, this.http, {
+            method: 'POST',
+            url: '/api/contracts/{id}/hybrid-ingest',
+            path: {
+                'id': id,
+            },
+            body: requestBody,
+            mediaType: 'application/json',
+        });
+    }
+    /**
+     * @param q
+     * @returns any
+     * @throws ApiError
+     */
+    public contractControllerHybridSearch(
+        q: string,
+    ): Observable<any> {
+        return __request(OpenAPI, this.http, {
+            method: 'GET',
+            url: '/api/contracts/{id}/hybrid-search',
+            query: {
+                'q': q,
             },
         });
     }

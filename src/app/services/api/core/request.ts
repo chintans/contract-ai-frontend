@@ -1,5 +1,6 @@
 /* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
+/* tslint:disable */
 /* eslint-disable */
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import type { HttpResponse, HttpErrorResponse } from '@angular/common/http';
