@@ -1,5 +1,6 @@
 export const environment = {
   production: true,
   apiUrl: 'http://localhost:3000/api', // TODO: Update with production API URL
-  mockData: false
-}; 
+  mockData: false,
+  googleClientId: 'GOOGLE_CLIENT_ID'
+};
