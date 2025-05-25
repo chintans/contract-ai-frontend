@@ -1,0 +1,9 @@
+{
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": "."
+  },
+  "terminals": [],
+  "install": "pnpm install",
+  "start": "pnpm start"
+}
