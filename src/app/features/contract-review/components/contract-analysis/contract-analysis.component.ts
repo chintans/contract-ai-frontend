@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
@@ -25,7 +25,8 @@ import { firstValueFrom, Observable } from 'rxjs';
   templateUrl: './contract-analysis.component.html',
   styleUrls: ['./contract-analysis.component.scss']
 })
-export class ContractAnalysisComponent implements OnInit {
+export class ContractAnalysisComponent implements OnInit, OnChanges {
+  @Input() contractId: string | null = null;
   analysis$: Observable<ContractAnalysis | null>;
 
   constructor(
@@ -44,6 +45,22 @@ export class ContractAnalysisComponent implements OnInit {
         this.router.navigate(['../upload'], { relativeTo: this.route });
       }
     });
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['contractId'] && this.contractId) {
+      this.fetchAnalysis(this.contractId);
+    }
+  }
+
+  private async fetchAnalysis(contractId: string): Promise<void> {
+    try {
+      const analysisRes = await firstValueFrom(this.contractAnalysisService['contractsService'].contractControllerGetAnalysis(contractId));
+      const mapped = (this.contractAnalysisService as any).mapBackendToContractAnalysis(analysisRes, '');
+      (this.contractAnalysisService as any).currentAnalysis.next(mapped);
+    } catch (error) {
+      // Optionally handle error
+    }
   }
 
   async exportAnalysis(): Promise<void> {

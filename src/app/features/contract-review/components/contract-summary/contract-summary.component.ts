@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
@@ -28,7 +28,8 @@ import { firstValueFrom } from 'rxjs';
   templateUrl: './contract-summary.component.html',
   styleUrls: ['./contract-summary.component.scss']
 })
-export class ContractSummaryComponent implements OnInit {
+export class ContractSummaryComponent implements OnInit, OnChanges {
+  @Input() contractId: string | null = null;
   analysis$: Observable<ContractAnalysis | null>;
 
   constructor(
@@ -47,6 +48,25 @@ export class ContractSummaryComponent implements OnInit {
         this.router.navigate(['../upload'], { relativeTo: this.route });
       }
     });
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['contractId'] && this.contractId) {
+      this.fetchSummary(this.contractId);
+    }
+  }
+
+  private async fetchSummary(contractId: string): Promise<void> {
+    try {
+      const summaryRes = await this.contractAnalysisService['contractsService'].contractControllerGetContractSummary(contractId).toPromise();
+      const current = await this.contractAnalysisService.getCurrentAnalysis().toPromise();
+      if (current) {
+        const updated = { ...current, analysis: { ...current.analysis, summary: summaryRes || {} } };
+        (this.contractAnalysisService as any).currentAnalysis.next(updated);
+      }
+    } catch (error) {
+      // Optionally handle error
+    }
   }
 
   getHighRiskCount(analysis: ContractAnalysis): number {

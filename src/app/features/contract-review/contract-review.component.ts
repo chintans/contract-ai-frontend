@@ -40,11 +40,15 @@ export class ContractReviewComponent implements AfterViewInit, OnInit {
   totalSteps = 5; // Total number of steps in the stepper
 
   // Step data signals
-  uploadData = signal<{ contractType: string; selectedFile: File | null }>({ contractType: '', selectedFile: null });
+  uploadData = signal<{ contractType: string; selectedFile: File | null; contractId?: string; status?: string; error?: string }>({ contractType: '', selectedFile: null });
   analysisData = signal<{ analysis: any }>({ analysis: null });
   risksData = signal<{ risks: any[] }>({ risks: [] });
   summaryData = signal<{ summary: any }>({ summary: null });
   qaData = signal<{ questions: string[] }>({ questions: [] });
+
+  // Contract ID and status signals
+  contractId = signal<string | null>(null);
+  contractStatus = signal<string | null>(null);
 
   // Error state
   stepError = signal<string | null>(null);
@@ -161,7 +165,13 @@ export class ContractReviewComponent implements AfterViewInit, OnInit {
     return this.currentStepIndex < this.totalSteps - 1;
   }
 
-  onUploadDataChange(data: { contractType: string; selectedFile: File | null }): void {
+  onUploadDataChange(data: { contractType: string; selectedFile: File | null; contractId?: string; status?: string; error?: string }): void {
     this.uploadData.set(data);
+    if (data.contractId) {
+      this.contractId.set(data.contractId);
+    }
+    if (data.status) {
+      this.contractStatus.set(data.status);
+    }
   }
 } 

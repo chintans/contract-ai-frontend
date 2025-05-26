@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -160,7 +160,8 @@ export class RiskFlagNotesDialogComponent {
     }
   `]
 })
-export class RiskFlagsComponent implements OnInit {
+export class RiskFlagsComponent implements OnInit, OnChanges {
+  @Input() contractId: string | null = null;
   analysis$: Observable<ContractAnalysis | null>;
   filteredRisks$: Observable<ContractAnalysis['analysis']['riskFlags']>;
   selectedSeverity = 'all';
@@ -189,6 +190,25 @@ export class RiskFlagsComponent implements OnInit {
         this.router.navigate(['../upload'], { relativeTo: this.route });
       }
     });
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['contractId'] && this.contractId) {
+      this.fetchRiskFlags(this.contractId);
+    }
+  }
+
+  private async fetchRiskFlags(contractId: string): Promise<void> {
+    try {
+      const risksRes = await this.contractAnalysisService['contractsService'].contractControllerGetContractRisks(contractId).toPromise();
+      const current = await this.contractAnalysisService.getCurrentAnalysis().toPromise();
+      if (current) {
+        const updated = { ...current, analysis: { ...current.analysis, riskFlags: risksRes || [] } };
+        (this.contractAnalysisService as any).currentAnalysis.next(updated);
+      }
+    } catch (error) {
+      // Optionally handle error
+    }
   }
 
   private filterRisks(risks: ContractAnalysis['analysis']['riskFlags']): ContractAnalysis['analysis']['riskFlags'] {

@@ -1,7 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, Observable, of, firstValueFrom } from 'rxjs';
 import { ContractsService } from '../../../services/api/services/ContractsService';
-import { HybridReviewService } from '../../../services/api/services/HybridReviewService';
 import { UpdateRiskFlagDto } from '../../../services/api/models/UpdateRiskFlagDto';
 
 export interface ContractAnalysis {
@@ -38,7 +37,6 @@ export interface ContractAnalysis {
 })
 export class ContractAnalysisService {
   private contractsService = inject(ContractsService);
-  private hybridReviewService = inject(HybridReviewService);
   private currentAnalysis = new BehaviorSubject<ContractAnalysis | null>(null);
 
   getCurrentAnalysis(): Observable<ContractAnalysis | null> {
@@ -133,10 +131,13 @@ export class ContractAnalysisService {
   async getAIResponse(question: string): Promise<string> {
     // Use HybridReviewService for search, fallback to ContractsService QnA if needed
     try {
-      const res = await firstValueFrom(this.hybridReviewService.hybridReviewControllerSearch(question)) as any;
-      if (res?.answer) return res.answer;
-      // fallback: try ContractsService QnA if contractId is available
       const contractId = this.currentAnalysis.value?.contractId;
+      if (!contractId) return 'No contract ID available.';
+      
+      const res = await firstValueFrom(this.contractsService.contractControllerAskQuestion(contractId)) as any;
+      if (res?.answer) return res.answer;
+      
+      // fallback: try ContractsService QnA
       if (contractId) {
         const qnaRes = await firstValueFrom(this.contractsService.contractControllerAskQuestion(contractId)) as any;
         if (qnaRes?.answer) return qnaRes.answer;

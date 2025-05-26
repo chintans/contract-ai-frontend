@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -7,6 +7,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { NgxFileDropModule, FileSystemFileEntry, NgxFileDropEntry } from 'ngx-file-drop';
+import { ContractAnalysisService } from '../../services/contract-analysis.service';
 
 @Component({
   selector: 'app-contract-upload',
@@ -30,7 +31,9 @@ export class ContractUploadComponent {
   isUploading = false;
   isDragging = false;
 
-  @Output() uploadDataChange = new EventEmitter<{ contractType: string; selectedFile: File | null }>();
+  @Output() uploadDataChange = new EventEmitter<{ contractType: string; selectedFile: File | null; contractId?: string; status?: string; error?: string }>();
+
+  private readonly contractAnalysisService = inject(ContractAnalysisService);
 
   constructor() {}
 
@@ -40,7 +43,7 @@ export class ContractUploadComponent {
         const fileEntry = droppedFile.fileEntry as FileSystemFileEntry;
         fileEntry.file((file: File) => {
           this.selectedFile = file;
-          this.emitUploadData();
+          this.tryUpload();
         });
       }
     }
@@ -60,11 +63,38 @@ export class ContractUploadComponent {
   }
 
   onContractTypeChange(): void {
-    this.emitUploadData();
+    this.tryUpload();
   }
 
-  emitUploadData(): void {
-    this.uploadDataChange.emit({ contractType: this.contractType, selectedFile: this.selectedFile });
+  private tryUpload(): void {
+    this.emitUploadData(); // always emit current state
+    if (this.contractType && this.selectedFile) {
+      this.startUpload();
+    }
+  }
+
+  private async startUpload(): Promise<void> {
+    this.isUploading = true;
+    this.emitUploadData();
+    try {
+      await this.contractAnalysisService.uploadContract(this.selectedFile!, this.contractType);
+      const analysis = await this.contractAnalysisService.getCurrentAnalysis().toPromise();
+      this.isUploading = false;
+      this.emitUploadData(analysis?.contractId, analysis?.status);
+    } catch (err: any) {
+      this.isUploading = false;
+      this.emitUploadData(undefined, 'error', err?.message || 'Upload failed');
+    }
+  }
+
+  emitUploadData(contractId?: string, status?: string, error?: string): void {
+    this.uploadDataChange.emit({
+      contractType: this.contractType,
+      selectedFile: this.selectedFile,
+      contractId,
+      status,
+      error
+    });
   }
 
   formatFileSize(bytes: number): string {

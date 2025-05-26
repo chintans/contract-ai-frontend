@@ -11,25 +11,25 @@
     <mat-step label="Analysis">
       <section role="region" aria-labelledby="analysis-label">
         <span id="analysis-label" class="sr-only">Analysis</span>
-        <app-contract-analysis *ngIf="currentStepIndex === 1"></app-contract-analysis>
+        <app-contract-analysis *ngIf="currentStepIndex === 1" [contractId]="contractId()"></app-contract-analysis>
       </section>
     </mat-step>
     <mat-step label="Risk Flags">
       <section role="region" aria-labelledby="risk-flags-label">
         <span id="risk-flags-label" class="sr-only">Risk Flags</span>
-        <app-risk-flags *ngIf="currentStepIndex === 2"></app-risk-flags>
+        <app-risk-flags *ngIf="currentStepIndex === 2" [contractId]="contractId()"></app-risk-flags>
       </section>
     </mat-step>
     <mat-step label="Summary">
       <section role="region" aria-labelledby="summary-label">
         <span id="summary-label" class="sr-only">Summary</span>
-        <app-contract-summary *ngIf="currentStepIndex === 3"></app-contract-summary>
+        <app-contract-summary *ngIf="currentStepIndex === 3" [contractId]="contractId()"></app-contract-summary>
       </section>
     </mat-step>
     <mat-step label="Legal Q&A">
       <section role="region" aria-labelledby="legal-qa-label">
         <span id="legal-qa-label" class="sr-only">Legal Q&amp;A</span>
-        <app-legal-qa *ngIf="currentStepIndex === 4"></app-legal-qa>
+        <app-legal-qa *ngIf="currentStepIndex === 4" [contractId]="contractId()"></app-legal-qa>
       </section>
     </mat-step>
   </mat-stepper>
