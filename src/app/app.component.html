@@ -15,10 +15,28 @@
         <mat-icon>dashboard</mat-icon>
         <span>Dashboard</span>
       </a>
-      <a mat-list-item routerLink="/contract-review" routerLinkActive="active" (click)="navigate('contract-review')">
-        <mat-icon>description</mat-icon>
-        <span>Contract Review</span>
-      </a>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon>description</mat-icon>
+            <span>Contracts</span>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-action-list>
+          <a mat-list-item routerLink="/contracts" routerLinkActive="active" (click)="navigate('contracts')">
+            <mat-icon>list</mat-icon>
+            <span>All Contracts</span>
+          </a>
+          <a mat-list-item routerLink="/contracts/new" routerLinkActive="active" (click)="navigate('contracts/new')">
+            <mat-icon>add</mat-icon>
+            <span>New Contract</span>
+          </a>
+          <a mat-list-item routerLink="/contracts/:id/reviews" routerLinkActive="active">
+            <mat-icon>rate_review</mat-icon>
+            <span>Contract Review</span>
+          </a>
+        </mat-action-list>
+      </mat-expansion-panel>
       <a mat-list-item routerLink="/templates" routerLinkActive="active" (click)="navigate('templates')">
         <mat-icon>library_books</mat-icon>
         <span>Templates</span>
