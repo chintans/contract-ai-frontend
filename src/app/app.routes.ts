@@ -47,5 +47,10 @@ export const routes: Routes = [
     path: 'rules',
     loadChildren: () => import('./features/rules/rules.module').then(m => m.RulesModule),
     canActivate: [authGuard]
+  },
+  {
+    path: 'prs',
+    loadComponent: () => import('./features/version-control/pr-dashboard.component').then(m => m.PrDashboardComponent),
+    canActivate: [authGuard]
   }
 ];

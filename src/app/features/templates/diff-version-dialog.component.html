@@ -2,6 +2,9 @@
   <div class="bg-white rounded shadow-lg w-full max-w-4xl p-6 relative">
     <button class="absolute top-2 right-2 text-gray-500" (click)="close.emit()" aria-label="Close diff dialog">&times;</button>
     <h2 class="text-xl font-bold mb-4">Compare Versions</h2>
-    <div class="border rounded p-4 bg-gray-50 min-h-[300px]">(Monaco diff coming soon...)</div>
+    <app-diff-viewer
+      [baseText]="baseVersion?.bodyText || ''"
+      [compareText]="compareVersion?.bodyText || ''"
+    ></app-diff-viewer>
   </div>
-</div> 
+</div>

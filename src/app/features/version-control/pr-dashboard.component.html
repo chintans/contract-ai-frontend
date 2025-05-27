@@ -1,0 +1,30 @@
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+  <div>
+    <h3 class="font-medium mb-2">Open</h3>
+    <mat-card *ngFor="let pr of open" class="mb-2 p-2">
+      <div>{{ pr.sourceBranch }} → {{ pr.targetBranch }}</div>
+      <div class="text-xs text-gray-500">{{ pr.commits }} commits</div>
+    </mat-card>
+  </div>
+  <div>
+    <h3 class="font-medium mb-2">In Review</h3>
+    <mat-card *ngFor="let pr of inReview" class="mb-2 p-2">
+      <div>{{ pr.sourceBranch }} → {{ pr.targetBranch }}</div>
+      <div class="text-xs text-gray-500">{{ pr.commits }} commits</div>
+    </mat-card>
+  </div>
+  <div>
+    <h3 class="font-medium mb-2">Merged</h3>
+    <mat-card *ngFor="let pr of merged" class="mb-2 p-2">
+      <div>{{ pr.sourceBranch }} → {{ pr.targetBranch }}</div>
+      <div class="text-xs text-gray-500">{{ pr.commits }} commits</div>
+    </mat-card>
+  </div>
+  <div>
+    <h3 class="font-medium mb-2">Abandoned</h3>
+    <mat-card *ngFor="let pr of abandoned" class="mb-2 p-2">
+      <div>{{ pr.sourceBranch }} → {{ pr.targetBranch }}</div>
+      <div class="text-xs text-gray-500">{{ pr.commits }} commits</div>
+    </mat-card>
+  </div>
+</div>
