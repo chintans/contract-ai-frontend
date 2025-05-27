@@ -1,0 +1,21 @@
+<div class="p-6">
+  <h1 class="text-2xl font-bold mb-4">Contracts</h1>
+  <button mat-raised-button color="primary" (click)="newContract()">New Contract</button>
+  <table class="min-w-full mt-4" *ngIf="contracts.length">
+    <thead>
+      <tr>
+        <th class="text-left">Title</th>
+        <th class="text-left">Status</th>
+        <th class="text-left">Last Edited</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let c of contracts" (click)="openContract(c)" class="cursor-pointer hover:bg-gray-100">
+        <td>{{ c.title }}</td>
+        <td>{{ c.status }}</td>
+        <td>{{ c.lastEdited }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <p *ngIf="!contracts.length">No contracts found.</p>
+</div>
