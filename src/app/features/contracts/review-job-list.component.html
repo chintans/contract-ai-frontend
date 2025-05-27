@@ -1,0 +1,17 @@
+<div class="p-6">
+  <h1 class="text-2xl font-bold mb-4">Review Jobs</h1>
+  <table class="min-w-full">
+    <thead>
+      <tr>
+        <th class="text-left">File</th>
+        <th class="text-left">Created</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let j of jobs" (click)="open(j)" class="cursor-pointer hover:bg-gray-100">
+        <td>{{ j.fileName }}</td>
+        <td>{{ j.createdAt }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

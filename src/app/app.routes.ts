@@ -29,6 +29,11 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
   {
+    path: 'contracts',
+    loadChildren: () => import('./features/contracts/contracts.module').then(m => m.ContractsModule),
+    canActivate: [authGuard]
+  },
+  {
     path: 'templates',
     loadChildren: () => import('./features/templates/templates.module').then(m => m.TemplatesModule),
     canActivate: [authGuard]
