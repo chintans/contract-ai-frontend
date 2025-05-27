@@ -1,0 +1,11 @@
+<div class="p-6" role="dialog" aria-modal="true" cdkTrapFocus>
+  <h2 class="text-lg font-medium mb-4">Commit Changes</h2>
+  <mat-form-field class="w-full">
+    <mat-label>Message</mat-label>
+    <textarea matInput [(ngModel)]="message" rows="3"></textarea>
+  </mat-form-field>
+  <div class="flex justify-end gap-2 mt-4">
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button mat-raised-button color="primary" (click)="onCommit()" [disabled]="!message.trim()">Commit</button>
+  </div>
+</div>

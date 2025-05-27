@@ -1,4 +1,18 @@
-<div class="p-6">
-  <h1 class="text-2xl font-bold mb-4">Edit Contract</h1>
-  <textarea class="border w-full h-64" [(ngModel)]="body" placeholder="Contract text..."></textarea>
+<div class="p-6 space-y-4">
+  <div class="flex items-center justify-between">
+    <app-branch-selector
+      [branches]="branches"
+      [currentBranch]="currentBranch"
+      (branchChange)="onBranchChange($event)"
+      [canCreate]="true"
+    ></app-branch-selector>
+    <button mat-raised-button color="primary" (click)="openCommitDialog()">
+      Commit
+    </button>
+  </div>
+  <textarea
+    class="border w-full h-64"
+    [(ngModel)]="body"
+    placeholder="Contract text..."
+  ></textarea>
 </div>
