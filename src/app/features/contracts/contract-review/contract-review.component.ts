@@ -5,7 +5,7 @@ import { MatStepperModule, MatStepper } from '@angular/material/stepper';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { SharedModule } from '../../shared/shared.module';
+import { SharedModule } from '../../../shared/shared.module';
 import { StepValidationService } from './services/step-validation.service';
 import { inject, signal, computed } from '@angular/core';
 import { ContractUploadComponent } from './components/contract-upload/contract-upload.component';

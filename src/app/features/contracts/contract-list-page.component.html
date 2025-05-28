@@ -1,21 +1,32 @@
-<div class="p-6">
-  <h1 class="text-2xl font-bold mb-4">Contracts</h1>
-  <button mat-raised-button color="primary" (click)="newContract()">New Contract</button>
-  <table class="min-w-full mt-4" *ngIf="contracts.length">
-    <thead>
-      <tr>
-        <th class="text-left">Title</th>
-        <th class="text-left">Status</th>
-        <th class="text-left">Last Edited</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let c of contracts" (click)="openContract(c)" class="cursor-pointer hover:bg-gray-100">
-        <td>{{ c.title }}</td>
-        <td>{{ c.status }}</td>
-        <td>{{ c.lastEdited }}</td>
-      </tr>
-    </tbody>
-  </table>
-  <p *ngIf="!contracts.length">No contracts found.</p>
+<div class="contract-list-container">
+  <div class="header">
+    <h1 class="title">Contracts</h1>
+    <button mat-fab color="primary" aria-label="Create New Contract" (click)="newContract()">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
+  <mat-card>
+    <mat-table [dataSource]="dataSource" matSort *ngIf="contracts().length" class="mat-elevation-z2">
+      <ng-container matColumnDef="title">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Title</mat-header-cell>
+        <mat-cell *matCellDef="let c">{{ c.title }}</mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="status">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Status</mat-header-cell>
+        <mat-cell *matCellDef="let c">{{ c.status }}</mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="lastEdited">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Last Edited</mat-header-cell>
+        <mat-cell *matCellDef="let c">{{ c.lastEdited }}</mat-cell>
+      </ng-container>
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="openContract(row)" class="row-hover"></mat-row>
+    </mat-table>
+    <mat-paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+    <div *ngIf="!contracts().length" class="empty-state">
+      <mat-icon color="disabled" fontSize="48">description</mat-icon>
+      <p>No contracts found.</p>
+      <button mat-stroked-button color="primary" (click)="newContract()">Create your first contract</button>
+    </div>
+  </mat-card>
 </div>

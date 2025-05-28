@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, Observable, of, firstValueFrom } from 'rxjs';
-import { ContractsService } from '../../../services/api/services/ContractsService';
-import { UpdateRiskFlagDto } from '../../../services/api/models/UpdateRiskFlagDto';
+import { ContractsService } from '../../../../services/api/services/ContractsService';
+import { UpdateRiskFlagDto } from '../../../../services/api/models/UpdateRiskFlagDto';
 
 export interface ContractAnalysis {
   contractId: string;

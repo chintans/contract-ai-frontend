@@ -1,3 +1,41 @@
 :host {
   display: block;
 }
+
+.contract-create-wizard {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2rem 2.5rem 1.5rem 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+mat-horizontal-stepper {
+  margin-bottom: 1.5rem;
+}
+
+mat-form-field.w-full {
+  width: 100%;
+}
+
+.mb-4 {
+  margin-bottom: 1.5rem;
+}
+
+.source-options {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+@media (max-width: 700px) {
+  .contract-create-wizard {
+    padding: 1rem;
+  }
+}

@@ -1,38 +1,49 @@
-<div class="p-6">
-  <h1 class="text-2xl font-bold mb-4">New Contract</h1>
-
-  <div *ngIf="step() === 0" class="space-y-4">
-    <label>
-      Title
-      <input class="border p-1" [(ngModel)]="title" />
-    </label>
-    <label>
-      Type
-      <input class="border p-1" [(ngModel)]="type" />
-    </label>
-    <label>
-      Party A
-      <input class="border p-1" [(ngModel)]="partyA" />
-    </label>
-    <label>
-      Party B
-      <input class="border p-1" [(ngModel)]="partyB" />
-    </label>
-  </div>
-
-  <div *ngIf="step() === 1" class="space-y-4">
-    <p>Select Source</p>
-    <button mat-raised-button color="primary" (click)="next()">Start Blank</button>
-    <button mat-button (click)="next()">From Template</button>
-  </div>
-
-  <div *ngIf="step() === 2" class="space-y-4">
-    <p>Contract Body</p>
-    <textarea class="border w-full h-40" placeholder="Contract text..."></textarea>
-  </div>
-
-  <div class="mt-4 space-x-2">
-    <button mat-button (click)="prev()" [disabled]="step() === 0">Back</button>
-    <button mat-raised-button color="primary" (click)="next()">{{ step() < 2 ? 'Next' : 'Finish' }}</button>
-  </div>
-</div>
+<mat-card class="contract-create-wizard">
+  <mat-horizontal-stepper [selectedIndex]="step()" linear>
+    <mat-step>
+      <form>
+        <ng-template matStepLabel>Contract Details</ng-template>
+        <mat-form-field appearance="outline" class="w-full mb-4">
+          <mat-label>Title</mat-label>
+          <input matInput [(ngModel)]="title" name="title" required />
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="w-full mb-4">
+          <mat-label>Type</mat-label>
+          <input matInput [(ngModel)]="type" name="type" />
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="w-full mb-4">
+          <mat-label>Party A</mat-label>
+          <input matInput [(ngModel)]="partyA" name="partyA" />
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="w-full mb-4">
+          <mat-label>Party B</mat-label>
+          <input matInput [(ngModel)]="partyB" name="partyB" />
+        </mat-form-field>
+        <div class="actions">
+          <button mat-raised-button color="primary" (click)="next()" type="button">Next</button>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>Source</ng-template>
+      <div class="source-options">
+        <button mat-raised-button color="primary" (click)="next()">Start Blank</button>
+        <button mat-stroked-button (click)="next()">From Template</button>
+      </div>
+      <div class="actions">
+        <button mat-button (click)="prev()">Back</button>
+      </div>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>Contract Body</ng-template>
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Contract Body</mat-label>
+        <textarea matInput rows="8" placeholder="Contract text..."></textarea>
+      </mat-form-field>
+      <div class="actions">
+        <button mat-button (click)="prev()">Back</button>
+        <button mat-raised-button color="primary" (click)="next()">Finish</button>
+      </div>
+    </mat-step>
+  </mat-horizontal-stepper>
+</mat-card>

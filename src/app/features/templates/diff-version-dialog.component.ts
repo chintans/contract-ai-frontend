@@ -15,5 +15,13 @@ export class DiffVersionDialogComponent {
   @Input() compareVersion?: TemplateVersion;
   @Output() close = new EventEmitter<void>();
 
+  get baseBodyText(): string {
+    return this.baseVersion?.clauses.map(c => c.body).join('\n\n') || '';
+  }
+
+  get compareBodyText(): string {
+    return this.compareVersion?.clauses.map(c => c.body).join('\n\n') || '';
+  }
+
   // Monaco diff integration will be added later
 } 

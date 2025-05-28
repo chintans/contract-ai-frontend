@@ -22,12 +22,7 @@ export const routes: Routes = [
     path: 'dashboard',
     component: DashboardComponent,
     canActivate: [authGuard]
-  },
-  {
-    path: 'contract-review',
-    loadChildren: () => import('./features/contract-review/contract-review.module').then(m => m.ContractReviewModule),
-    canActivate: [authGuard]
-  },
+  },  
   {
     path: 'contracts',
     loadChildren: () => import('./features/contracts/contracts.module').then(m => m.ContractsModule),

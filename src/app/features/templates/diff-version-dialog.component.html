@@ -3,8 +3,8 @@
     <button class="absolute top-2 right-2 text-gray-500" (click)="close.emit()" aria-label="Close diff dialog">&times;</button>
     <h2 class="text-xl font-bold mb-4">Compare Versions</h2>
     <app-diff-viewer
-      [baseText]="baseVersion?.bodyText || ''"
-      [compareText]="compareVersion?.bodyText || ''"
+      [baseText]="baseBodyText"
+      [compareText]="compareBodyText"
     ></app-diff-viewer>
   </div>
 </div>

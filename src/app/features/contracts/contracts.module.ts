@@ -9,7 +9,17 @@ const routes: Routes = [
   { path: ':id/edit', loadComponent: () => import('./contract-editor.component').then(m => m.ContractEditorComponent) },
   { path: ':id/versions', loadComponent: () => import('./version-timeline.component').then(m => m.VersionTimelineComponent) },
   { path: ':id/reviews', loadComponent: () => import('./review-job-list.component').then(m => m.ReviewJobListComponent) },
-  { path: ':id/reviews/:rid', loadChildren: () => import('../contract-review/contract-review.module').then(m => m.ContractReviewModule) }
+  {
+    path: ':id/reviews/:rid',
+    children: [
+      { path: '', redirectTo: 'upload', pathMatch: 'full' },
+      { path: 'upload', loadComponent: () => import('./contract-review/contract-review.component').then(m => m.ContractReviewComponent) },
+      { path: 'analysis', loadComponent: () => import('./contract-review/contract-review.component').then(m => m.ContractReviewComponent) },
+      { path: 'risk-flags', loadComponent: () => import('./contract-review/contract-review.component').then(m => m.ContractReviewComponent) },
+      { path: 'summary', loadComponent: () => import('./contract-review/contract-review.component').then(m => m.ContractReviewComponent) },
+      { path: 'qa', loadComponent: () => import('./contract-review/contract-review.component').then(m => m.ContractReviewComponent) }
+    ]
+  }
 ];
 
 const providers: Provider[] = [

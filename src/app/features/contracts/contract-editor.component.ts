@@ -16,8 +16,7 @@ import { CommitDialogComponent } from '../version-control/commit-dialog.componen
     MatButtonModule,
     MatIconModule,
     MatDialogModule,
-    BranchSelectorComponent,
-    CommitDialogComponent
+    BranchSelectorComponent
   ],
   templateUrl: './contract-editor.component.html',
   styleUrls: ['./contract-editor.component.scss']
