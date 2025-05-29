@@ -1,6 +1,9 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, inject } from '@angular/core';
 import { ClauseRule } from '../standard-clauses/models/rule.model';
 import { Enforcement, Severity } from '../standard-clauses/models/rule.model';
+import { RulesService as ApiRulesService } from '../../services/api/rules.service';
+import { environment } from '../../environments/environment';
+import { map } from 'rxjs';
 
 export interface RuleWithMetadata extends ClauseRule {
   id: string;
@@ -17,21 +20,24 @@ export interface RuleWithMetadata extends ClauseRule {
 export class RulesService {
   private _rules = signal<RuleWithMetadata[]>([]);
   rules = this._rules.asReadonly();
+  private api = inject(ApiRulesService);
 
   constructor() {
-    // Load rules from storage or API
     this.loadRules();
   }
 
   private loadRules() {
-    // Check if there are stored rules
+    if (!environment.mockData) {
+      this.api.rulesControllerFindAll().subscribe(rules => this._rules.set(rules as any));
+      return;
+    }
+
     const storedRules = localStorage.getItem('rules');
     if (storedRules) {
       this._rules.set(JSON.parse(storedRules));
       return;
     }
 
-    // If no stored rules, load mock data
     const mockRules: RuleWithMetadata[] = [
       {
         id: '1',
@@ -128,19 +134,25 @@ export class RulesService {
   }
 
   createRule(rule: Omit<RuleWithMetadata, 'id' | 'createdAt' | 'updatedAt'>) {
+    if (!environment.mockData) {
+      return this.api.rulesControllerCreate(rule as any).pipe(map(res => res as any));
+    }
     const newRule: RuleWithMetadata = {
       ...rule,
       id: crypto.randomUUID(),
       createdAt: new Date(),
       updatedAt: new Date()
     };
-
     this._rules.update(rules => [...rules, newRule]);
     this.saveRules();
     return newRule;
   }
 
   updateRule(id: string, rule: Partial<Omit<RuleWithMetadata, 'id' | 'createdAt' | 'updatedAt'>>) {
+    if (!environment.mockData) {
+      this.api.rulesControllerUpdate(id, rule as any).subscribe();
+      return;
+    }
     this._rules.update(rules =>
       rules.map(r => r.id === id
         ? { ...r, ...rule, updatedAt: new Date() }
@@ -151,6 +163,10 @@ export class RulesService {
   }
 
   deleteRule(id: string) {
+    if (!environment.mockData) {
+      this.api.rulesControllerRemove(id).subscribe();
+      return;
+    }
     this._rules.update(rules => rules.filter(r => r.id !== id));
     this.saveRules();
   }

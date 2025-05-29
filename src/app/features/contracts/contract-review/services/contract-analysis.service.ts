@@ -1,7 +1,8 @@
 import { Injectable, inject } from '@angular/core';
-import { BehaviorSubject, Observable, of, firstValueFrom } from 'rxjs';
-import { ContractsService } from '../../../../services/api/services/ContractsService';
-import { UpdateRiskFlagDto } from '../../../../services/api/models/UpdateRiskFlagDto';
+import { BehaviorSubject, Observable, of, firstValueFrom, map } from 'rxjs';
+import { ContractsService } from '../../../../services/api/contracts.service';
+import { FilesService } from '../../../../services/api/files.service';
+import { UpdateRiskFlagDto } from '../../../../services/model/updateRiskFlagDto';
 
 export interface ContractAnalysis {
   contractId: string;
@@ -37,6 +38,7 @@ export interface ContractAnalysis {
 })
 export class ContractAnalysisService {
   private contractsService = inject(ContractsService);
+  private filesService = inject(FilesService);
   private currentAnalysis = new BehaviorSubject<ContractAnalysis | null>(null);
 
   getCurrentAnalysis(): Observable<ContractAnalysis | null> {
@@ -154,6 +156,12 @@ export class ContractAnalysisService {
       return of(new Blob([JSON.stringify(analysis, null, 2)], { type: 'application/json' }));
     }
     return this.contractsService.contractControllerExportAnalysis(analysis.contractId) as Observable<Blob>;
+  }
+
+  uploadAttachment(file: File): Observable<string> {
+    return this.filesService.filesLocalControllerUploadFileV1(file).pipe(
+      map(res => res.file.path)
+    );
   }
 
   // Helper to map backend data to ContractAnalysis interface
