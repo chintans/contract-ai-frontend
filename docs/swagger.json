@@ -640,7 +640,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/StandardClause"
+                  "$ref": "#/components/schemas/StandardClauseDto"
                 }
               }
             }
@@ -667,7 +667,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/StandardClause"
+                    "$ref": "#/components/schemas/StandardClauseDto"
                   }
                 }
               }
@@ -704,7 +704,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/StandardClause"
+                  "$ref": "#/components/schemas/StandardClauseDto"
                 }
               }
             }
@@ -751,7 +751,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/StandardClause"
+                  "$ref": "#/components/schemas/StandardClauseDto"
                 }
               }
             }
@@ -822,7 +822,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/StandardClause"
+                    "$ref": "#/components/schemas/StandardClauseDto"
                   }
                 }
               }
@@ -861,7 +861,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/StandardClause"
+                    "$ref": "#/components/schemas/StandardClauseDto"
                   }
                 }
               }
@@ -936,6 +936,7 @@
             "name": "id",
             "required": true,
             "in": "path",
+            "description": "The ID of the contract to get",
             "schema": {
               "type": "string"
             }
@@ -958,6 +959,7 @@
             "name": "id",
             "required": true,
             "in": "path",
+            "description": "The ID of the contract to update",
             "schema": {
               "type": "string"
             }
@@ -990,6 +992,7 @@
             "name": "id",
             "required": true,
             "in": "path",
+            "description": "The ID of the contract to delete",
             "schema": {
               "type": "string"
             }
@@ -1014,6 +1017,7 @@
             "name": "id",
             "required": true,
             "in": "path",
+            "description": "The ID of the contract to analyze",
             "schema": {
               "type": "string"
             }
@@ -1038,6 +1042,7 @@
             "name": "id",
             "required": true,
             "in": "path",
+            "description": "The ID of the contract to get summary for",
             "schema": {
               "type": "string"
             }
@@ -1062,6 +1067,7 @@
             "name": "id",
             "required": true,
             "in": "path",
+            "description": "The ID of the contract to get risks for",
             "schema": {
               "type": "string"
             }
@@ -1086,6 +1092,7 @@
             "name": "id",
             "required": true,
             "in": "path",
+            "description": "The ID of the contract to get analysis for",
             "schema": {
               "type": "string"
             }
@@ -1110,6 +1117,7 @@
             "name": "id",
             "required": true,
             "in": "path",
+            "description": "The ID of the contract to get Q&A for",
             "schema": {
               "type": "string"
             }
@@ -1132,6 +1140,7 @@
             "name": "id",
             "required": true,
             "in": "path",
+            "description": "The ID of the contract to ask question for",
             "schema": {
               "type": "string"
             }
@@ -1156,6 +1165,7 @@
             "name": "id",
             "required": true,
             "in": "path",
+            "description": "The ID of the contract to submit chat for",
             "schema": {
               "type": "string"
             }
@@ -1178,6 +1188,7 @@
             "name": "id",
             "required": true,
             "in": "path",
+            "description": "The ID of the contract to get chat history for",
             "schema": {
               "type": "string"
             }
@@ -1202,6 +1213,7 @@
             "name": "id",
             "required": true,
             "in": "path",
+            "description": "The ID of the contract to update risk flag for",
             "schema": {
               "type": "string"
             }
@@ -1210,6 +1222,7 @@
             "name": "riskId",
             "required": true,
             "in": "path",
+            "description": "The ID of the risk flag to update",
             "schema": {
               "type": "string"
             }
@@ -1244,6 +1257,7 @@
             "name": "id",
             "required": true,
             "in": "path",
+            "description": "The ID of the contract to export",
             "schema": {
               "type": "string"
             }
@@ -1268,6 +1282,7 @@
             "name": "id",
             "required": true,
             "in": "path",
+            "description": "The ID of the contract to get reviews for",
             "schema": {
               "type": "string"
             }
@@ -1292,6 +1307,7 @@
             "name": "id",
             "required": true,
             "in": "path",
+            "description": "The ID of the contract to ingest",
             "schema": {
               "type": "string"
             }
@@ -1302,16 +1318,31 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/IngestContractDto"
+                "type": "object",
+                "properties": {
+                  "sources": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "contractType": {
+                    "type": "string"
+                  },
+                  "title": {
+                    "type": "string"
+                  }
+                }
               }
             }
           }
         },
         "responses": {
-          "201": {
-            "description": ""
+          "200": {
+            "description": "Contract ingested successfully"
           }
         },
+        "summary": "Ingest a contract into the hybrid search index",
         "tags": [
           "contracts"
         ]
@@ -1322,9 +1353,19 @@
         "operationId": "ContractController_hybridSearch",
         "parameters": [
           {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "The ID of the contract to search",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "q",
             "required": true,
             "in": "query",
+            "description": "The search query to find relevant clauses",
             "schema": {
               "type": "string"
             }
@@ -1332,9 +1373,10 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "Return the most relevant contract clauses for the query"
           }
         },
+        "summary": "Hybrid semantic & vector search for contract clauses",
         "tags": [
           "contracts"
         ]
@@ -1431,7 +1473,7 @@
             "required": true,
             "in": "path",
             "schema": {
-              "type": "string"
+              "type": "number"
             }
           }
         ],
@@ -1452,7 +1494,7 @@
             "required": true,
             "in": "path",
             "schema": {
-              "type": "string"
+              "type": "number"
             }
           }
         ],
@@ -1483,7 +1525,7 @@
             "required": true,
             "in": "path",
             "schema": {
-              "type": "string"
+              "type": "number"
             }
           }
         ],
@@ -1507,10 +1549,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Rule"
-                  }
+                  "type": "object"
                 }
               }
             }
@@ -1540,7 +1579,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Rule"
+                  "type": "object"
                 }
               }
             }
@@ -1589,7 +1628,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Rule"
+                  "type": "object"
                 }
               }
             }
@@ -1631,7 +1670,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Rule"
+                  "type": "object"
                 }
               }
             }
@@ -1680,6 +1719,99 @@
         "summary": "Delete rule",
         "tags": [
           "rules"
+        ]
+      }
+    },
+    "/api/repos": {
+      "post": {
+        "operationId": "VersionControlController_createRepo",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRepoDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Create repository",
+        "tags": [
+          "version-control"
+        ]
+      }
+    },
+    "/api/repos/{id}/branches": {
+      "post": {
+        "operationId": "VersionControlController_createBranch",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBranchDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Create branch",
+        "tags": [
+          "version-control"
+        ]
+      }
+    },
+    "/api/repos/{id}/commits": {
+      "post": {
+        "operationId": "VersionControlController_commit",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCommitDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Create commit",
+        "tags": [
+          "version-control"
         ]
       }
     }
@@ -1862,8 +1994,7 @@
             "type": "string"
           },
           "deletedAt": {
-            "format": "date-time",
-            "type": "string"
+            "type": "object"
           }
         },
         "required": [
@@ -2134,7 +2265,7 @@
         "type": "object",
         "properties": {}
       },
-      "StandardClause": {
+      "StandardClauseDto": {
         "type": "object",
         "properties": {
           "id": {
@@ -2168,6 +2299,9 @@
           "updatedAt": {
             "format": "date-time",
             "type": "string"
+          },
+          "previousVersionId": {
+            "type": "number"
           }
         },
         "required": [
@@ -2176,8 +2310,6 @@
           "type",
           "contractType",
           "text",
-          "jurisdiction",
-          "version",
           "createdAt",
           "updatedAt"
         ]
@@ -2196,9 +2328,9 @@
           "status": {
             "type": "string",
             "enum": [
-              "open",
-              "resolved",
-              "ignored"
+              "OPEN",
+              "RESOLVED",
+              "IGNORED"
             ]
           },
           "notes": {
@@ -2207,37 +2339,6 @@
         },
         "required": [
           "status"
-        ]
-      },
-      "IngestContractDto": {
-        "type": "object",
-        "properties": {}
-      },
-      "Rule": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
-          },
-          "pattern": {
-            "type": "string"
-          },
-          "similarityThreshold": {
-            "type": "number"
-          },
-          "deviationAllowedPct": {
-            "type": "number"
-          }
-        },
-        "required": [
-          "id",
-          "name"
         ]
       },
       "CreateRuleDto": {
@@ -2282,6 +2383,62 @@
             "type": "number"
           }
         }
+      },
+      "CreateRepoDto": {
+        "type": "object",
+        "properties": {
+          "entityType": {
+            "type": "string",
+            "enum": [
+              "contract",
+              "template"
+            ]
+          },
+          "entityId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "entityType",
+          "entityId"
+        ]
+      },
+      "CreateBranchDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "fromCommit": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "CreateCommitDto": {
+        "type": "object",
+        "properties": {
+          "branch": {
+            "type": "string"
+          },
+          "treeSha": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "authorId": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "branch",
+          "treeSha",
+          "message",
+          "authorId"
+        ]
       }
     }
   }

@@ -14,7 +14,8 @@
     "lint": "ng lint",
     "format": "prettier --write .",
     "lint:fix": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "generate:api": "openapi-ts"
+    "generate:api": "openapi-ts",
+    "generate:openapi-client": "openapi-generator-cli generate -g typescript-angular -i docs/swagger.json -o src/app/services --additional-properties=ngVersion=19.0.0,providedInRoot=true,withInterfaces=true,apiModulePrefix=Api,modelModulePrefix=Model"
   },
   "private": true,
   "dependencies": {
