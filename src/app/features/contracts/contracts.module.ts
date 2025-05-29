@@ -1,7 +1,8 @@
 import { NgModule, Provider } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
-import { ContractDataService, MockContractDataService } from './contract-data.service';
+import { ContractDataService, MockContractDataService, ApiContractDataService } from './contract-data.service';
+import { environment } from '../../../environments/environment';
 
 const routes: Routes = [
   { path: '', loadComponent: () => import('./contract-list-page.component').then(m => m.ContractListPageComponent) },
@@ -22,13 +23,13 @@ const routes: Routes = [
   }
 ];
 
-const providers: Provider[] = [
-  { provide: ContractDataService, useClass: MockContractDataService }
-];
+const contractProvider: Provider = environment.mockData
+  ? { provide: ContractDataService, useClass: MockContractDataService }
+  : { provide: ContractDataService, useClass: ApiContractDataService };
 
 @NgModule({
   imports: [CommonModule, RouterModule.forChild(routes)],
-  providers,
+  providers: [contractProvider],
   exports: [RouterModule]
 })
 export class ContractsModule {}

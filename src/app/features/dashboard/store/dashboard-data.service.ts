@@ -1,5 +1,7 @@
-import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Injectable, inject } from '@angular/core';
+import { Observable, of, map } from 'rxjs';
+import { ContractsService } from '../../../services/api/contracts.service';
+import { HomeService } from '../../../services/api/home.service';
 import { Contract, Clause, RiskFlag, ComplianceStatus, ChatMessage, UploadQueueItem } from './dashboard.models';
 
 export abstract class DashboardDataService {
@@ -43,4 +45,29 @@ export class DashboardMockDataService implements DashboardDataService {
       { id: '1', fileName: 'contract.pdf', status: 'uploaded' as const }
     ]);
   }
-} 
+}
+
+@Injectable()
+export class DashboardApiDataService implements DashboardDataService {
+  private contracts = inject(ContractsService);
+  private home = inject(HomeService);
+
+  loadContracts() {
+    return this.contracts.contractControllerFindAll();
+  }
+  loadClauses(contractId: string) {
+    return of([]);
+  }
+  loadRiskFlags(contractId: string) {
+    return this.contracts.contractControllerGetContractRisks(contractId);
+  }
+  loadCompliance(contractId: string) {
+    return of([]);
+  }
+  loadChat(contractId: string) {
+    return of([]);
+  }
+  loadUploadQueue() {
+    return this.home.homeControllerAppInfo().pipe(map(() => []));
+  }
+}
