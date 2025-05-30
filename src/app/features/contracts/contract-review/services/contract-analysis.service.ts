@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
-import { BehaviorSubject, Observable, of, firstValueFrom } from 'rxjs';
-import { ContractsService } from '../../../../services/api/services/ContractsService';
-import { UpdateRiskFlagDto } from '../../../../services/api/models/UpdateRiskFlagDto';
+import { BehaviorSubject, Observable, of, firstValueFrom, map } from 'rxjs';
+import { ContractsService, FilesService } from '@api/api';
+import { UpdateRiskFlagDto } from '@models/updateRiskFlagDto';
 
 export interface ContractAnalysis {
   contractId: string;
@@ -26,7 +26,7 @@ export interface ContractAnalysis {
       description: string;
       clause: string;
       recommendation: string;
-      status: 'open' | 'resolved' | 'ignored';
+      status: 'OPEN' | 'RESOLVED' | 'IGNORED';
       notes?: string;
     }[];
   };
@@ -37,6 +37,7 @@ export interface ContractAnalysis {
 })
 export class ContractAnalysisService {
   private contractsService = inject(ContractsService);
+  private filesService = inject(FilesService);
   private currentAnalysis = new BehaviorSubject<ContractAnalysis | null>(null);
 
   getCurrentAnalysis(): Observable<ContractAnalysis | null> {
@@ -65,9 +66,10 @@ export class ContractAnalysisService {
       }
     });
     try {
+      const fileBlob = new Blob([file], { type: file.type });
       // Upload contract
       const uploadRes = await firstValueFrom(
-        this.contractsService.contractControllerCreate({ file, contractType })
+        this.contractsService.contractControllerCreate(fileBlob, contractType)
       ) as any;
       const contractId = uploadRes?.id || uploadRes?.contractId;
       if (!contractId) throw new Error('No contract ID returned from upload');
@@ -108,7 +110,7 @@ export class ContractAnalysisService {
     const contractId = currentValue.contractId;
     if (!contractId) return;
     const dto: UpdateRiskFlagDto = {
-      status: (updates.status as UpdateRiskFlagDto.status) ?? UpdateRiskFlagDto.status.OPEN,
+      status: (updates.status) ?? 'OPEN',
       notes: updates.notes
     };
     this.contractsService.contractControllerUpdateRiskFlag(contractId, riskId, dto).subscribe({
@@ -154,6 +156,12 @@ export class ContractAnalysisService {
       return of(new Blob([JSON.stringify(analysis, null, 2)], { type: 'application/json' }));
     }
     return this.contractsService.contractControllerExportAnalysis(analysis.contractId) as Observable<Blob>;
+  }
+
+  uploadAttachment(file: File): Observable<string> {
+    return this.filesService.filesLocalControllerUploadFileV1(file).pipe(
+      map(res => res.file.path)
+    );
   }
 
   // Helper to map backend data to ContractAnalysis interface

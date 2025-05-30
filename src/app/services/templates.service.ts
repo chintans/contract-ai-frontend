@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { Observable, of, map } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { TemplatesService as ApiTemplatesService } from './api/templates.service';
 
 export interface StandardClause {
   id: string;
@@ -62,14 +62,14 @@ export class TemplatesService {
     }
   ];
 
-  constructor(private http: HttpClient) {}
+  constructor(private api: ApiTemplatesService) {}
 
   getAll(): Observable<StandardClause[]> {
     if (environment.mockData) {
       console.log('Using mock data for templates');
       return of(this.mockTemplates);
     }
-    return this.http.get<StandardClause[]>(this.apiUrl);
+    return this.api.templatesControllerFindAll();
   }
 
   getOne(id: string): Observable<StandardClause> {
@@ -80,21 +80,23 @@ export class TemplatesService {
       }
       return of(template);
     }
-    return this.http.get<StandardClause>(`${this.apiUrl}/${id}`);
+    return this.api.templatesControllerFindOne(Number(id)) as unknown as Observable<StandardClause>;
   }
 
   getByType(type: string): Observable<StandardClause[]> {
     if (environment.mockData) {
       return of(this.mockTemplates.filter(t => t.type === type));
     }
-    return this.http.get<StandardClause[]>(`${this.apiUrl}/type/${type}`);
+    return this.api.templatesControllerFindAll().pipe(
+      map(res => (res as any[]).filter(t => t.type === type))
+    );
   }
 
   getByJurisdiction(jurisdiction: string): Observable<StandardClause[]> {
     if (environment.mockData) {
       return of(this.mockTemplates.filter(t => t.jurisdiction === jurisdiction));
     }
-    return this.http.get<StandardClause[]>(`${this.apiUrl}/jurisdiction/${jurisdiction}`);
+    return this.api.templatesControllerFindByJurisdiction(jurisdiction) as unknown as Observable<StandardClause[]>;
   }
 
   create(clause: CreateStandardClauseDto): Observable<StandardClause> {
@@ -109,7 +111,7 @@ export class TemplatesService {
       this.mockTemplates.push(newTemplate);
       return of(newTemplate);
     }
-    return this.http.post<StandardClause>(this.apiUrl, clause);
+    return this.api.templatesControllerCreate(clause) as unknown as Observable<StandardClause>;
   }
 
   update(id: string, clause: UpdateStandardClauseDto): Observable<StandardClause> {
@@ -125,7 +127,7 @@ export class TemplatesService {
       };
       return of(this.mockTemplates[index]);
     }
-    return this.http.patch<StandardClause>(`${this.apiUrl}/${id}`, clause);
+    return this.api.templatesControllerUpdate(Number(id), clause) as unknown as Observable<StandardClause>;
   }
 
   delete(id: string): Observable<void> {
@@ -137,6 +139,6 @@ export class TemplatesService {
       this.mockTemplates.splice(index, 1);
       return of(void 0);
     }
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+    return this.api.templatesControllerRemove(Number(id)) as unknown as Observable<void>;
   }
 } 

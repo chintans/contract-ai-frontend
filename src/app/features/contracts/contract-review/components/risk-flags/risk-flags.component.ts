@@ -12,46 +12,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ContractAnalysisService, ContractAnalysis } from '../../services/contract-analysis.service';
-import { Observable } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-
-@Component({
-  selector: 'app-risk-flag-notes-dialog',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatDialogModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule
-  ],
-  template: `
-    <h2 mat-dialog-title>Add Notes</h2>
-    <mat-dialog-content>
-      <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Notes</mat-label>
-        <textarea matInput
-                  [(ngModel)]="notes"
-                  rows="4"
-                  placeholder="Enter your notes about this risk..."></textarea>
-      </mat-form-field>
-    </mat-dialog-content>
-    <mat-dialog-actions align="end">
-      <button mat-button mat-dialog-close>Cancel</button>
-      <button mat-raised-button
-              color="primary"
-              [mat-dialog-close]="notes">
-        Save
-      </button>
-    </mat-dialog-actions>
-  `
-})
-export class RiskFlagNotesDialogComponent {
-  notes = '';
-
-  constructor() {}
-}
+import { RiskFlagNotesDialogComponent } from './risk-flag-notes-dialog.component';
 
 @Component({
   selector: 'app-risk-flags',
@@ -67,98 +30,9 @@ export class RiskFlagNotesDialogComponent {
     MatFormFieldModule,
     MatSelectModule,
     MatProgressSpinnerModule
-  ],
-  template: `
-    <div class="p-6">
-      <div class="max-w-4xl mx-auto">
-        <div *ngIf="analysis$ | async as analysis; else loading">
-          <div class="mb-6">
-            <div class="flex items-center justify-between">
-              <h2 class="text-2xl font-semibold">Risk Flags</h2>
-              <div class="flex gap-4">
-                <mat-form-field appearance="outline" class="w-48">
-                  <mat-label>Filter by Severity</mat-label>
-                  <mat-select [(ngModel)]="selectedSeverity">
-                    <mat-option value="all">All</mat-option>
-                    <mat-option value="high">High</mat-option>
-                    <mat-option value="medium">Medium</mat-option>
-                    <mat-option value="low">Low</mat-option>
-                  </mat-select>
-                </mat-form-field>
-                <mat-form-field appearance="outline" class="w-48">
-                  <mat-label>Filter by Status</mat-label>
-                  <mat-select [(ngModel)]="selectedStatus">
-                    <mat-option value="all">All</mat-option>
-                    <mat-option value="open">Open</mat-option>
-                    <mat-option value="resolved">Resolved</mat-option>
-                    <mat-option value="ignored">Ignored</mat-option>
-                  </mat-select>
-                </mat-form-field>
-              </div>
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1 gap-4">
-            <mat-card *ngFor="let risk of filteredRisks$ | async">
-              <mat-card-header>
-                <div [ngClass]="getRiskTypeClass(risk.type)" class="w-2 h-2 rounded-full mt-2 mr-2"></div>
-                <mat-card-title class="text-lg">{{ risk.category }}</mat-card-title>
-                <mat-card-subtitle>{{ risk.clause }}</mat-card-subtitle>
-              </mat-card-header>
-              <mat-card-content class="mt-4">
-                <p class="text-gray-700">{{ risk.description }}</p>
-                <p class="text-gray-600 mt-2">
-                  <strong>Recommendation:</strong> {{ risk.recommendation }}
-                </p>
-                <p *ngIf="risk.notes" class="text-gray-600 mt-2">
-                  <strong>Notes:</strong> {{ risk.notes }}
-                </p>
-              </mat-card-content>
-              <mat-card-actions align="end">
-                <button mat-button (click)="addNotes(risk)">
-                  <mat-icon>note_add</mat-icon>
-                  Add Notes
-                </button>
-                <button mat-button
-                        [color]="risk.status === 'resolved' ? 'accent' : 'primary'"
-                        (click)="updateRiskStatus(risk, risk.status === 'resolved' ? 'open' : 'resolved')">
-                  <mat-icon>{{ risk.status === 'resolved' ? 'undo' : 'check' }}</mat-icon>
-                  {{ risk.status === 'resolved' ? 'Reopen' : 'Mark Resolved' }}
-                </button>
-                <button mat-button
-                        color="warn"
-                        (click)="updateRiskStatus(risk, risk.status === 'ignored' ? 'open' : 'ignored')">
-                  <mat-icon>{{ risk.status === 'ignored' ? 'visibility' : 'visibility_off' }}</mat-icon>
-                  {{ risk.status === 'ignored' ? 'Unignore' : 'Ignore' }}
-                </button>
-              </mat-card-actions>
-            </mat-card>
-          </div>
-        </div>
-
-        <ng-template #loading>
-          <div class="text-center py-12">
-            <mat-spinner diameter="48" class="mx-auto mb-4"></mat-spinner>
-            <p class="text-gray-600">Loading risk flags...</p>
-          </div>
-        </ng-template>
-      </div>
-    </div>
-  `,
-  styles: [`
-    :host {
-      display: block;
-    }
-    .risk-high {
-      @apply bg-red-500;
-    }
-    .risk-medium {
-      @apply bg-yellow-500;
-    }
-    .risk-low {
-      @apply bg-green-500;
-    }
-  `]
+],
+  templateUrl: './risk-flags.component.html',
+  styleUrls: ['./risk-flags.component.scss']
 })
 export class RiskFlagsComponent implements OnInit, OnChanges {
   @Input() contractId: string | null = null;
@@ -229,7 +103,7 @@ export class RiskFlagsComponent implements OnInit, OnChanges {
       data: { notes: risk.notes }
     });
 
-    const result = await dialogRef.afterClosed().toPromise();
+    const result = await firstValueFrom(dialogRef.afterClosed());
     if (result !== undefined) {
       this.contractAnalysisService.updateRiskFlag(risk.id, { notes: result });
     }
@@ -237,7 +111,7 @@ export class RiskFlagsComponent implements OnInit, OnChanges {
 
   updateRiskStatus(
     risk: ContractAnalysis['analysis']['riskFlags'][0],
-    newStatus: 'open' | 'resolved' | 'ignored'
+    newStatus: 'OPEN' | 'RESOLVED' | 'IGNORED'
   ): void {
     this.contractAnalysisService.updateRiskFlag(risk.id, { status: newStatus });
   }

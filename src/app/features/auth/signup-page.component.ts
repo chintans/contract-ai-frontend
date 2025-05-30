@@ -7,7 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { AuthService } from '../../core/auth.service';
 import { environment } from '../../../environments/environment';
-import type { AuthRegisterLoginDto } from '../../services/api/models/AuthRegisterLoginDto';
+import type { AuthRegisterLoginDto } from '@models/models';
 
 declare const google: any;
 

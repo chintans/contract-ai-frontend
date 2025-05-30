@@ -6,11 +6,8 @@ import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { dashboardReducer } from './store/dashboard.reducer';
 import { DashboardEffects } from './store/dashboard.effects';
-import { DashboardDataService, DashboardMockDataService } from './store/dashboard-data.service';
+import { DashboardDataService, DashboardMockDataService, DashboardApiDataService } from './store/dashboard-data.service';
 import { environment } from '../../../environments/environment';
-
-// Placeholder for real API service
-export class DashboardApiDataService extends DashboardMockDataService {}
 
 const routes: Routes = [
   {
