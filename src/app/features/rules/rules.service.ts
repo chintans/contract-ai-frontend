@@ -1,8 +1,8 @@
 import { Injectable, signal, inject } from '@angular/core';
 import { ClauseRule } from '../standard-clauses/models/rule.model';
 import { Enforcement, Severity } from '../standard-clauses/models/rule.model';
-import { RulesService as ApiRulesService } from '../../services/api/rules.service';
-import { environment } from '../../environments/environment';
+import { RulesService as ApiRulesService } from '@api/api';
+import { environment } from '../../../environments/environment';
 import { map } from 'rxjs';
 
 export interface RuleWithMetadata extends ClauseRule {
