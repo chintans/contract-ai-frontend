@@ -27,7 +27,7 @@ export class StandardClauseService implements IStandardClauseService {
   }
 
   getOne(id: number): Observable<StandardClause> {
-    return this.api.standardClausesControllerFindOne(id).pipe(map(this.mapDto.bind(this)));
+    return this.api.standardClausesControllerFindOne(id.toString()).pipe(map(this.mapDto.bind(this)));
   }
 
   getByType(type: string): Observable<StandardClause[]> {
@@ -47,10 +47,10 @@ export class StandardClauseService implements IStandardClauseService {
   }
 
   update(id: number, clause: Partial<CreateStandardClauseDto>): Observable<StandardClause> {
-    return this.api.standardClausesControllerUpdate(id, clause).pipe(map(this.mapDto.bind(this)));
+    return this.api.standardClausesControllerUpdate(id.toString(), clause).pipe(map(this.mapDto.bind(this)));
   }
 
   delete(id: number): Observable<void> {
-    return this.api.standardClausesControllerRemove(id);
+    return this.api.standardClausesControllerRemove(id.toString());
   }
 }

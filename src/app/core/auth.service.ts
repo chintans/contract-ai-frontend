@@ -1,21 +1,17 @@
-import { Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { tap } from 'rxjs';
-import { OpenAPI } from '../services/api/core/OpenAPI';
-import { AuthService as ApiAuthService } from '../services/api/services/AuthService';
-import type { AuthEmailLoginDto } from '../services/api/models/AuthEmailLoginDto';
-import type { AuthRegisterLoginDto } from '../services/api/models/AuthRegisterLoginDto';
-import type { AuthGoogleLoginDto } from '../services/api/models/AuthGoogleLoginDto';
-import type { LoginResponseDto } from '../services/api/models/LoginResponseDto';
-import type { User } from '../services/api/models/User';
+import { AuthService as ApiAuthService } from '@api/api';
+import { User, AuthEmailLoginDto, AuthGoogleLoginDto, AuthRegisterLoginDto, LoginResponseDto } from '@models/models';
+
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private token = signal<string | null>(localStorage.getItem('token'));
   user = signal<User | null>(null);
+  private readonly api: ApiAuthService = inject(ApiAuthService);
 
-  constructor(private api: ApiAuthService, private router: Router) {
-    OpenAPI.TOKEN = () => Promise.resolve(this.token() ?? '');
+  constructor(private router: Router) {    
   }
 
   isAuthenticated(): boolean {

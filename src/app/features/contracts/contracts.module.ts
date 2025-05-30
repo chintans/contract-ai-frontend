@@ -9,9 +9,9 @@ const routes: Routes = [
   { path: 'new', loadComponent: () => import('./contract-create-wizard.component').then(m => m.ContractCreateWizardComponent) },
   { path: ':id/edit', loadComponent: () => import('./contract-editor.component').then(m => m.ContractEditorComponent) },
   { path: ':id/versions', loadComponent: () => import('./version-timeline.component').then(m => m.VersionTimelineComponent) },
-  { path: ':id/reviews', loadComponent: () => import('./review-job-list.component').then(m => m.ReviewJobListComponent) },
+  { path: 'reviews', loadComponent: () => import('./review-job-list.component').then(m => m.ReviewJobListComponent) },
   {
-    path: ':id/reviews/:rid',
+    path: ':reviews',
     children: [
       { path: '', redirectTo: 'upload', pathMatch: 'full' },
       { path: 'upload', loadComponent: () => import('./contract-review/contract-review.component').then(m => m.ContractReviewComponent) },

@@ -1,8 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, Observable, of, firstValueFrom, map } from 'rxjs';
-import { ContractsService } from '../../../../services/api/contracts.service';
-import { FilesService } from '../../../../services/api/files.service';
-import { UpdateRiskFlagDto } from '../../../../services/model/updateRiskFlagDto';
+import { ContractsService, FilesService } from '@api/api';
+import { UpdateRiskFlagDto } from '@models/updateRiskFlagDto';
 
 export interface ContractAnalysis {
   contractId: string;
@@ -27,7 +26,7 @@ export interface ContractAnalysis {
       description: string;
       clause: string;
       recommendation: string;
-      status: 'open' | 'resolved' | 'ignored';
+      status: 'OPEN' | 'RESOLVED' | 'IGNORED';
       notes?: string;
     }[];
   };
@@ -67,9 +66,10 @@ export class ContractAnalysisService {
       }
     });
     try {
+      const fileBlob = new Blob([file], { type: file.type });
       // Upload contract
       const uploadRes = await firstValueFrom(
-        this.contractsService.contractControllerCreate({ file, contractType })
+        this.contractsService.contractControllerCreate(fileBlob, contractType)
       ) as any;
       const contractId = uploadRes?.id || uploadRes?.contractId;
       if (!contractId) throw new Error('No contract ID returned from upload');
@@ -110,7 +110,7 @@ export class ContractAnalysisService {
     const contractId = currentValue.contractId;
     if (!contractId) return;
     const dto: UpdateRiskFlagDto = {
-      status: (updates.status as UpdateRiskFlagDto.status) ?? UpdateRiskFlagDto.status.OPEN,
+      status: (updates.status) ?? 'OPEN',
       notes: updates.notes
     };
     this.contractsService.contractControllerUpdateRiskFlag(contractId, riskId, dto).subscribe({
