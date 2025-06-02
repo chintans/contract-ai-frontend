@@ -1,5 +1,4 @@
 .gitignore
-.openapi-generator-ignore
 README.md
 api.base.service.ts
 api.module.ts
@@ -26,6 +25,7 @@ configuration.ts
 encoder.ts
 git_push.sh
 index.ts
+model/analysisResultDto.ts
 model/authAppleLoginDto.ts
 model/authConfirmEmailDto.ts
 model/authEmailLoginDto.ts
@@ -35,7 +35,7 @@ model/authGoogleLoginDto.ts
 model/authRegisterLoginDto.ts
 model/authResetPasswordDto.ts
 model/authUpdateDto.ts
-model/contractControllerHybridIngestRequest.ts
+model/clauseDto.ts
 model/createBranchDto.ts
 model/createCommitDto.ts
 model/createRepoDto.ts
@@ -48,14 +48,17 @@ model/infinityPaginationUserResponseDto.ts
 model/loginResponseDto.ts
 model/models.ts
 model/refreshResponseDto.ts
+model/riskFlagDto.ts
 model/role.ts
 model/roleDto.ts
 model/standardClauseDto.ts
 model/status.ts
 model/statusDto.ts
+model/summaryDto.ts
 model/updateRiskFlagDto.ts
 model/updateRuleDto.ts
 model/updateUserDto.ts
 model/user.ts
 param.ts
+provide-api.ts
 variables.ts

@@ -9,18 +9,18 @@
               <mat-label>Filter by Severity</mat-label>
               <mat-select [(ngModel)]="selectedSeverity">
                 <mat-option value="all">All</mat-option>
-                <mat-option value="high">High</mat-option>
-                <mat-option value="medium">Medium</mat-option>
-                <mat-option value="low">Low</mat-option>
+                <mat-option value="HIGH">High</mat-option>
+                <mat-option value="MEDIUM">Medium</mat-option>
+                <mat-option value="LOW">Low</mat-option>
               </mat-select>
             </mat-form-field>
             <mat-form-field appearance="outline" class="w-48">
               <mat-label>Filter by Status</mat-label>
               <mat-select [(ngModel)]="selectedStatus">
                 <mat-option value="all">All</mat-option>
-                <mat-option value="open">Open</mat-option>
-                <mat-option value="resolved">Resolved</mat-option>
-                <mat-option value="ignored">Ignored</mat-option>
+                <mat-option value="OPEN">Open</mat-option>
+                <mat-option value="RESOLVED">Resolved</mat-option>
+                <mat-option value="IGNORED">Ignored</mat-option>
               </mat-select>
             </mat-form-field>
           </div>
@@ -30,15 +30,12 @@
       <div class="grid grid-cols-1 gap-4">
         <mat-card *ngFor="let risk of filteredRisks$ | async">
           <mat-card-header>
-            <div [ngClass]="getRiskTypeClass(risk.type)" class="w-2 h-2 rounded-full mt-2 mr-2"></div>
-            <mat-card-title class="text-lg">{{ risk.category }}</mat-card-title>
-            <mat-card-subtitle>{{ risk.clause }}</mat-card-subtitle>
+            <div [ngClass]="getRiskTypeClass(risk.severity)" class="w-2 h-2 rounded-full mt-2 mr-2"></div>
+            <mat-card-title class="text-lg">Risk: {{ risk.type }}</mat-card-title>
+            <mat-card-subtitle *ngIf="risk.clauseId">Clause: {{ risk.clauseId }}</mat-card-subtitle>
           </mat-card-header>
           <mat-card-content class="mt-4">
             <p class="text-gray-700">{{ risk.description }}</p>
-            <p class="text-gray-600 mt-2">
-              <strong>Recommendation:</strong> {{ risk.recommendation }}
-            </p>
             <p *ngIf="risk.notes" class="text-gray-600 mt-2">
               <strong>Notes:</strong> {{ risk.notes }}
             </p>

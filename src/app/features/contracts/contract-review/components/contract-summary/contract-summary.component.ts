@@ -32,6 +32,8 @@ export class ContractSummaryComponent implements OnInit, OnChanges {
   @Input() contractId: string | null = null;
   analysis$: Observable<ContractAnalysis | null>;
 
+  summary: any = null;
+
   constructor(
     private contractAnalysisService: ContractAnalysisService,
     private router: Router,
@@ -41,44 +43,32 @@ export class ContractSummaryComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    // Subscribe to check if analysis exists
     this.analysis$.subscribe(analysis => {
       if (!analysis) {
-        // If no analysis is available, redirect to upload
         this.router.navigate(['../upload'], { relativeTo: this.route });
+      } else {
+        // Pick the first summary of type 'FULL' or just the first summary
+        this.summary = analysis.analysis.summaries.find(s => s.type === 'FULL') || analysis.analysis.summaries[0] || null;
       }
     });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['contractId'] && this.contractId) {
-      this.fetchSummary(this.contractId);
-    }
-  }
-
-  private async fetchSummary(contractId: string): Promise<void> {
-    try {
-      const summaryRes = await this.contractAnalysisService['contractsService'].contractControllerGetContractSummary(contractId).toPromise();
-      const current = await this.contractAnalysisService.getCurrentAnalysis().toPromise();
-      if (current) {
-        const updated = { ...current, analysis: { ...current.analysis, summary: summaryRes || {} } };
-        (this.contractAnalysisService as any).currentAnalysis.next(updated);
-      }
-    } catch (error) {
-      // Optionally handle error
+      // No need to fetch summary separately, handled by service
     }
   }
 
   getHighRiskCount(analysis: ContractAnalysis): number {
-    return analysis.analysis.riskFlags.filter(risk => risk.type === 'high').length;
+    return analysis.analysis.riskFlags.filter(risk => risk.severity === 'HIGH').length;
   }
 
   getMediumRiskCount(analysis: ContractAnalysis): number {
-    return analysis.analysis.riskFlags.filter(risk => risk.type === 'medium').length;
+    return analysis.analysis.riskFlags.filter(risk => risk.severity === 'MEDIUM').length;
   }
 
   getLowRiskCount(analysis: ContractAnalysis): number {
-    return analysis.analysis.riskFlags.filter(risk => risk.type === 'low').length;
+    return analysis.analysis.riskFlags.filter(risk => risk.severity === 'LOW').length;
   }
 
   async exportAnalysis(): Promise<void> {
@@ -96,7 +86,6 @@ export class ContractSummaryComponent implements OnInit, OnChanges {
       }
     } catch (error) {
       console.error('Error exporting summary:', error);
-      // Handle error (show error message to user)
     }
   }
 } 
