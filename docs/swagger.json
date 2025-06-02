@@ -936,9 +936,10 @@
             "name": "id",
             "required": true,
             "in": "path",
-            "description": "The ID of the contract to get",
+            "description": "Contract ID",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -959,9 +960,10 @@
             "name": "id",
             "required": true,
             "in": "path",
-            "description": "The ID of the contract to update",
+            "description": "Contract ID",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -992,9 +994,10 @@
             "name": "id",
             "required": true,
             "in": "path",
-            "description": "The ID of the contract to delete",
+            "description": "Contract ID",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -1017,9 +1020,10 @@
             "name": "id",
             "required": true,
             "in": "path",
-            "description": "The ID of the contract to analyze",
+            "description": "Contract ID",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -1042,9 +1046,10 @@
             "name": "id",
             "required": true,
             "in": "path",
-            "description": "The ID of the contract to get summary for",
+            "description": "Contract ID",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -1067,9 +1072,10 @@
             "name": "id",
             "required": true,
             "in": "path",
-            "description": "The ID of the contract to get risks for",
+            "description": "Contract ID",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -1092,15 +1098,23 @@
             "name": "id",
             "required": true,
             "in": "path",
-            "description": "The ID of the contract to get analysis for",
+            "description": "Contract ID",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Return analysis data"
+            "description": "Return analysis data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnalysisResultDto"
+                }
+              }
+            }
           }
         },
         "summary": "Get full contract analysis",
@@ -1117,9 +1131,10 @@
             "name": "id",
             "required": true,
             "in": "path",
-            "description": "The ID of the contract to get Q&A for",
+            "description": "Contract ID",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -1140,9 +1155,10 @@
             "name": "id",
             "required": true,
             "in": "path",
-            "description": "The ID of the contract to ask question for",
+            "description": "Contract ID",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -1165,9 +1181,10 @@
             "name": "id",
             "required": true,
             "in": "path",
-            "description": "The ID of the contract to submit chat for",
+            "description": "Contract ID",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -1188,9 +1205,10 @@
             "name": "id",
             "required": true,
             "in": "path",
-            "description": "The ID of the contract to get chat history for",
+            "description": "Contract ID",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -1213,18 +1231,20 @@
             "name": "id",
             "required": true,
             "in": "path",
-            "description": "The ID of the contract to update risk flag for",
+            "description": "Contract ID",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           },
           {
             "name": "riskId",
             "required": true,
             "in": "path",
-            "description": "The ID of the risk flag to update",
+            "description": "Risk ID",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -1257,9 +1277,10 @@
             "name": "id",
             "required": true,
             "in": "path",
-            "description": "The ID of the contract to export",
+            "description": "Contract ID",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -1282,9 +1303,10 @@
             "name": "id",
             "required": true,
             "in": "path",
-            "description": "The ID of the contract to get reviews for",
+            "description": "Contract ID",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -1307,9 +1329,19 @@
             "name": "id",
             "required": true,
             "in": "path",
-            "description": "The ID of the contract to ingest",
+            "description": "Contract ID",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "body",
+            "required": true,
+            "in": "path",
+            "description": "Contract ingestion data",
+            "schema": {
+              "$ref": "#/components/schemas/IngestContractDto"
             }
           }
         ],
@@ -1318,21 +1350,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "sources": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
-                  "contractType": {
-                    "type": "string"
-                  },
-                  "title": {
-                    "type": "string"
-                  }
-                }
+                "$ref": "#/components/schemas/IngestContractDto"
               }
             }
           }
@@ -1342,7 +1360,7 @@
             "description": "Contract ingested successfully"
           }
         },
-        "summary": "Ingest a contract into the hybrid search index",
+        "summary": "Ingest a contract using hybrid AI",
         "tags": [
           "contracts"
         ]
@@ -1353,30 +1371,31 @@
         "operationId": "ContractController_hybridSearch",
         "parameters": [
           {
-            "name": "id",
+            "name": "q",
             "required": true,
             "in": "path",
-            "description": "The ID of the contract to search",
+            "description": "Search query",
             "schema": {
               "type": "string"
             }
           },
           {
-            "name": "q",
+            "name": "id",
             "required": true,
-            "in": "query",
-            "description": "The search query to find relevant clauses",
+            "in": "path",
+            "description": "Contract ID",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Return the most relevant contract clauses for the query"
+            "description": "Return contract clauses"
           }
         },
-        "summary": "Hybrid semantic & vector search for contract clauses",
+        "summary": "Search contract clauses using hybrid AI",
         "tags": [
           "contracts"
         ]
@@ -2322,6 +2341,341 @@
         "type": "object",
         "properties": {}
       },
+      "SummaryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "summary-uuid",
+            "description": "Summary ID"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "FULL",
+              "CLAUSE",
+              "RISK",
+              "COMPLIANCE"
+            ],
+            "description": "Type of summary"
+          },
+          "text": {
+            "type": "string",
+            "example": "Summary text",
+            "description": "Summary text"
+          },
+          "isReviewed": {
+            "type": "boolean",
+            "example": false,
+            "description": "Whether the summary is reviewed"
+          },
+          "reviewerComments": {
+            "type": "string",
+            "example": "Reviewer comments"
+          },
+          "contractId": {
+            "type": "string",
+            "example": "contract-uuid",
+            "description": "Contract ID"
+          },
+          "clauseId": {
+            "type": "string",
+            "example": "clause-uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2024-06-01T12:00:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2024-06-01T12:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "text",
+          "isReviewed",
+          "contractId",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "RiskFlagDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "riskflag-uuid",
+            "description": "Risk flag ID"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "COMPLIANCE",
+              "FINANCIAL",
+              "LEGAL",
+              "OPERATIONAL",
+              "REPUTATIONAL",
+              "MISSING_CLAUSE",
+              "DEVIATION",
+              "COMPLIANCE_ISSUE",
+              "AMBIGUOUS_LANGUAGE",
+              "UNFAIR_TERMS",
+              "DATA_PROTECTION",
+              "INTELLECTUAL_PROPERTY",
+              "LIABILITY",
+              "TERMINATION",
+              "OTHER"
+            ],
+            "description": "Type of risk"
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "LOW",
+              "MEDIUM",
+              "HIGH"
+            ],
+            "description": "Severity of risk"
+          },
+          "description": {
+            "type": "string",
+            "example": "Description of the risk"
+          },
+          "suggestedResolution": {
+            "type": "string",
+            "example": "Suggested resolution"
+          },
+          "isReviewed": {
+            "type": "boolean",
+            "example": false
+          },
+          "isResolved": {
+            "type": "boolean",
+            "example": false
+          },
+          "reviewerComments": {
+            "type": "string",
+            "example": "Reviewer comments"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "OPEN",
+              "RESOLVED",
+              "IGNORED"
+            ]
+          },
+          "notes": {
+            "type": "string",
+            "example": "Some notes"
+          },
+          "analysisId": {
+            "type": "string",
+            "example": "analysis-uuid"
+          },
+          "confidence": {
+            "type": "number",
+            "example": 0.95
+          },
+          "contractId": {
+            "type": "string",
+            "example": "contract-uuid"
+          },
+          "clauseId": {
+            "type": "string",
+            "example": "clause-uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2024-06-01T12:00:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2024-06-01T12:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "severity",
+          "description",
+          "isReviewed",
+          "isResolved",
+          "status",
+          "notes",
+          "contractId",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "ClauseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "clause-uuid",
+            "description": "Clause ID"
+          },
+          "number": {
+            "type": "string",
+            "example": "1.1",
+            "description": "Clause number"
+          },
+          "text": {
+            "type": "string",
+            "example": "Clause text",
+            "description": "Text of the clause"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "TERMINATION",
+              "CONFIDENTIALITY",
+              "INDEMNIFICATION",
+              "LIABILITY",
+              "INTELLECTUAL_PROPERTY",
+              "GOVERNING_LAW",
+              "DISPUTE_RESOLUTION",
+              "FORCE_MAJEURE",
+              "ASSIGNMENT",
+              "NOTICES",
+              "SEVERABILITY",
+              "ENTIRE_AGREEMENT",
+              "AMENDMENT",
+              "WAIVER",
+              "COUNTERPARTS",
+              "HEADINGS",
+              "DEFINITIONS",
+              "PAYMENT",
+              "TERM",
+              "OTHER"
+            ]
+          },
+          "isReviewed": {
+            "type": "boolean",
+            "example": false
+          },
+          "isApproved": {
+            "type": "boolean",
+            "example": false
+          },
+          "suggestedText": {
+            "type": "string",
+            "example": "Suggested text"
+          },
+          "contractId": {
+            "type": "string",
+            "example": "contract-uuid"
+          },
+          "analysisId": {
+            "type": "string",
+            "example": "analysis-uuid"
+          },
+          "startIndex": {
+            "type": "number",
+            "example": 0
+          },
+          "endIndex": {
+            "type": "number",
+            "example": 10
+          },
+          "title": {
+            "type": "string",
+            "example": "Title"
+          },
+          "classification": {
+            "type": "string",
+            "example": "Classification"
+          },
+          "riskLevel": {
+            "type": "string",
+            "enum": [
+              "HIGH",
+              "MEDIUM",
+              "LOW"
+            ]
+          },
+          "riskJustification": {
+            "type": "string",
+            "example": "Justification"
+          },
+          "entities": {
+            "type": "string",
+            "example": "Entity1,Entity2"
+          },
+          "amounts": {
+            "type": "string",
+            "example": "100,200"
+          },
+          "dates": {
+            "type": "string",
+            "example": "2024-06-01,2024-07-01"
+          },
+          "legalReferences": {
+            "type": "string",
+            "example": "Section 1.1,Section 2.1"
+          },
+          "obligation": {
+            "type": "string",
+            "example": "Obligation"
+          },
+          "confidence": {
+            "type": "number",
+            "example": 0.95
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2024-06-01T12:00:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2024-06-01T12:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "number",
+          "text",
+          "isReviewed",
+          "isApproved",
+          "contractId",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "AnalysisResultDto": {
+        "type": "object",
+        "properties": {
+          "summaries": {
+            "description": "Array of contract summaries",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SummaryDto"
+            }
+          },
+          "riskFlags": {
+            "description": "Array of contract risk flags",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RiskFlagDto"
+            }
+          },
+          "clauses": {
+            "description": "Array of contract clauses",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ClauseDto"
+            }
+          }
+        },
+        "required": [
+          "summaries",
+          "riskFlags",
+          "clauses"
+        ]
+      },
       "UpdateRiskFlagDto": {
         "type": "object",
         "properties": {
@@ -2340,6 +2694,10 @@
         "required": [
           "status"
         ]
+      },
+      "IngestContractDto": {
+        "type": "object",
+        "properties": {}
       },
       "CreateRuleDto": {
         "type": "object",

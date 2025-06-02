@@ -17,56 +17,22 @@
           <mat-card-title>Overview</mat-card-title>
         </mat-card-header>
         <mat-card-content class="mt-4">
-          <div class="grid grid-cols-2 gap-6">
-            <div>
-              <h3 class="text-lg font-medium mb-2">Contract Details</h3>
-              <div class="space-y-2">
-                <p><span class="font-medium">Title:</span> {{ analysis.analysis.summary.title }}</p>
-                <p><span class="font-medium">Value:</span> {{ analysis.analysis.summary.value | currency }}</p>
-                <p><span class="font-medium">Effective Date:</span> {{ analysis.analysis.summary.effectiveDate | date }}</p>
-                <p><span class="font-medium">Expiration Date:</span> {{ analysis.analysis.summary.expirationDate | date }}</p>
-              </div>
-            </div>
-            <div>
-              <h3 class="text-lg font-medium mb-2">Parties</h3>
-              <ul class="list-disc list-inside space-y-1">
-                <li *ngFor="let party of analysis.analysis.summary.parties">{{ party }}</li>
-              </ul>
+          <div *ngIf="summary; else noSummary">
+            <div class="space-y-2">
+              <p><span class="font-medium">Type:</span> {{ summary.type }}</p>
+              <p><span class="font-medium">Title:</span> {{ summary.title || summary.id }}</p>
+              <p><span class="font-medium">Text:</span> {{ summary.text }}</p>
+              <p><span class="font-medium">Reviewed:</span> {{ summary.isReviewed ? 'Yes' : 'No' }}</p>
+              <p *ngIf="summary.reviewerComments"><span class="font-medium">Reviewer Comments:</span> {{ summary.reviewerComments }}</p>
             </div>
           </div>
+          <ng-template #noSummary>
+            <div class="text-gray-400">No summary available.</div>
+          </ng-template>
         </mat-card-content>
       </mat-card>
 
       <mat-accordion>
-        <mat-expansion-panel>
-          <mat-expansion-panel-header>
-            <mat-panel-title>Key Terms</mat-panel-title>
-          </mat-expansion-panel-header>
-          <div class="grid grid-cols-1 gap-4 mt-4">
-            <div *ngFor="let term of analysis.analysis.summary.keyTerms" class="border-b pb-4">
-              <h4 class="font-medium">{{ term.term }}</h4>
-              <p class="text-gray-600 mt-1">{{ term.description }}</p>
-            </div>
-          </div>
-        </mat-expansion-panel>
-
-        <mat-expansion-panel>
-          <mat-expansion-panel-header>
-            <mat-panel-title>Party Obligations</mat-panel-title>
-          </mat-expansion-panel-header>
-          <div class="space-y-6 mt-4">
-            <div *ngFor="let party of analysis.analysis.summary.obligations">
-              <h4 class="font-medium mb-2">{{ party.party }}</h4>
-              <mat-list>
-                <mat-list-item *ngFor="let obligation of party.obligations">
-                  <mat-icon matListItemIcon>check_circle</mat-icon>
-                  <span matListItemTitle>{{ obligation }}</span>
-                </mat-list-item>
-              </mat-list>
-            </div>
-          </div>
-        </mat-expansion-panel>
-
         <mat-expansion-panel>
           <mat-expansion-panel-header>
             <mat-panel-title>Risk Summary</mat-panel-title>
@@ -91,16 +57,6 @@
                 </p>
                 <p class="text-sm text-gray-600">Low Risk Items</p>
               </div>
-            </div>
-            <mat-divider></mat-divider>
-            <div>
-              <h4 class="font-medium mb-2">Recommendations</h4>
-              <mat-list>
-                <mat-list-item *ngFor="let recommendation of analysis.analysis.summary.recommendations">
-                  <mat-icon matListItemIcon>lightbulb</mat-icon>
-                  <span matListItemTitle>{{ recommendation }}</span>
-                </mat-list-item>
-              </mat-list>
             </div>
           </div>
         </mat-expansion-panel>

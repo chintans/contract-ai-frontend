@@ -17,7 +17,7 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
-import { ContractControllerHybridIngestRequest } from '../model/contractControllerHybridIngestRequest';
+import { AnalysisResultDto } from '../model/analysisResultDto';
 // @ts-ignore
 import { UpdateRiskFlagDto } from '../model/updateRiskFlagDto';
 
@@ -42,7 +42,7 @@ export class ContractsService extends BaseService implements ContractsServiceInt
 
     /**
      * Analyze a contract using AI
-     * @param id The ID of the contract to analyze
+     * @param id Contract ID
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -78,7 +78,7 @@ export class ContractsService extends BaseService implements ContractsServiceInt
             }
         }
 
-        let localVarPath = `/api/contracts/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}/analyze`;
+        let localVarPath = `/api/contracts/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}/analyze`;
         const { basePath, withCredentials } = this.configuration;
         return this.httpClient.request<any>('post', `${basePath}${localVarPath}`,
             {
@@ -95,7 +95,7 @@ export class ContractsService extends BaseService implements ContractsServiceInt
 
     /**
      * Ask a question about the contract
-     * @param id The ID of the contract to ask question for
+     * @param id Contract ID
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -131,7 +131,7 @@ export class ContractsService extends BaseService implements ContractsServiceInt
             }
         }
 
-        let localVarPath = `/api/contracts/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}/qna`;
+        let localVarPath = `/api/contracts/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}/qna`;
         const { basePath, withCredentials } = this.configuration;
         return this.httpClient.request<any>('post', `${basePath}${localVarPath}`,
             {
@@ -225,7 +225,7 @@ export class ContractsService extends BaseService implements ContractsServiceInt
 
     /**
      * Export contract analysis
-     * @param id The ID of the contract to export
+     * @param id Contract ID
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -261,7 +261,7 @@ export class ContractsService extends BaseService implements ContractsServiceInt
             }
         }
 
-        let localVarPath = `/api/contracts/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}/export`;
+        let localVarPath = `/api/contracts/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}/export`;
         const { basePath, withCredentials } = this.configuration;
         return this.httpClient.request<any>('get', `${basePath}${localVarPath}`,
             {
@@ -327,7 +327,7 @@ export class ContractsService extends BaseService implements ContractsServiceInt
 
     /**
      * Get a contract by id
-     * @param id The ID of the contract to get
+     * @param id Contract ID
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -363,7 +363,7 @@ export class ContractsService extends BaseService implements ContractsServiceInt
             }
         }
 
-        let localVarPath = `/api/contracts/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
+        let localVarPath = `/api/contracts/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}`;
         const { basePath, withCredentials } = this.configuration;
         return this.httpClient.request<any>('get', `${basePath}${localVarPath}`,
             {
@@ -380,14 +380,14 @@ export class ContractsService extends BaseService implements ContractsServiceInt
 
     /**
      * Get full contract analysis
-     * @param id The ID of the contract to get analysis for
+     * @param id Contract ID
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public contractControllerGetAnalysis(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
-    public contractControllerGetAnalysis(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
-    public contractControllerGetAnalysis(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
-    public contractControllerGetAnalysis(id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public contractControllerGetAnalysis(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<AnalysisResultDto>;
+    public contractControllerGetAnalysis(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AnalysisResultDto>>;
+    public contractControllerGetAnalysis(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AnalysisResultDto>>;
+    public contractControllerGetAnalysis(id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling contractControllerGetAnalysis.');
         }
@@ -395,6 +395,7 @@ export class ContractsService extends BaseService implements ContractsServiceInt
         let localVarHeaders = this.defaultHeaders;
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'application/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
             localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
@@ -416,9 +417,9 @@ export class ContractsService extends BaseService implements ContractsServiceInt
             }
         }
 
-        let localVarPath = `/api/contracts/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}/analysis`;
+        let localVarPath = `/api/contracts/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}/analysis`;
         const { basePath, withCredentials } = this.configuration;
-        return this.httpClient.request<any>('get', `${basePath}${localVarPath}`,
+        return this.httpClient.request<AnalysisResultDto>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -433,7 +434,7 @@ export class ContractsService extends BaseService implements ContractsServiceInt
 
     /**
      * Get chat history
-     * @param id The ID of the contract to get chat history for
+     * @param id Contract ID
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -469,7 +470,7 @@ export class ContractsService extends BaseService implements ContractsServiceInt
             }
         }
 
-        let localVarPath = `/api/contracts/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}/chat`;
+        let localVarPath = `/api/contracts/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}/chat`;
         const { basePath, withCredentials } = this.configuration;
         return this.httpClient.request<any>('get', `${basePath}${localVarPath}`,
             {
@@ -486,7 +487,7 @@ export class ContractsService extends BaseService implements ContractsServiceInt
 
     /**
      * Get contract Q&amp;A
-     * @param id The ID of the contract to get Q&amp;A for
+     * @param id Contract ID
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -522,7 +523,7 @@ export class ContractsService extends BaseService implements ContractsServiceInt
             }
         }
 
-        let localVarPath = `/api/contracts/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}/qna`;
+        let localVarPath = `/api/contracts/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}/qna`;
         const { basePath, withCredentials } = this.configuration;
         return this.httpClient.request<any>('get', `${basePath}${localVarPath}`,
             {
@@ -539,7 +540,7 @@ export class ContractsService extends BaseService implements ContractsServiceInt
 
     /**
      * Get contract reviews
-     * @param id The ID of the contract to get reviews for
+     * @param id Contract ID
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -575,7 +576,7 @@ export class ContractsService extends BaseService implements ContractsServiceInt
             }
         }
 
-        let localVarPath = `/api/contracts/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}/reviews`;
+        let localVarPath = `/api/contracts/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}/reviews`;
         const { basePath, withCredentials } = this.configuration;
         return this.httpClient.request<any>('get', `${basePath}${localVarPath}`,
             {
@@ -592,7 +593,7 @@ export class ContractsService extends BaseService implements ContractsServiceInt
 
     /**
      * Get contract risks
-     * @param id The ID of the contract to get risks for
+     * @param id Contract ID
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -628,7 +629,7 @@ export class ContractsService extends BaseService implements ContractsServiceInt
             }
         }
 
-        let localVarPath = `/api/contracts/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}/risks`;
+        let localVarPath = `/api/contracts/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}/risks`;
         const { basePath, withCredentials } = this.configuration;
         return this.httpClient.request<any>('get', `${basePath}${localVarPath}`,
             {
@@ -645,7 +646,7 @@ export class ContractsService extends BaseService implements ContractsServiceInt
 
     /**
      * Get contract summaries
-     * @param id The ID of the contract to get summary for
+     * @param id Contract ID
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -681,7 +682,7 @@ export class ContractsService extends BaseService implements ContractsServiceInt
             }
         }
 
-        let localVarPath = `/api/contracts/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}/summary`;
+        let localVarPath = `/api/contracts/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}/summary`;
         const { basePath, withCredentials } = this.configuration;
         return this.httpClient.request<any>('get', `${basePath}${localVarPath}`,
             {
@@ -697,21 +698,25 @@ export class ContractsService extends BaseService implements ContractsServiceInt
     }
 
     /**
-     * Ingest a contract into the hybrid search index
-     * @param id The ID of the contract to ingest
-     * @param contractControllerHybridIngestRequest 
+     * Ingest a contract using hybrid AI
+     * @param id Contract ID
+     * @param body Contract ingestion data
+     * @param body2 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public contractControllerHybridIngest(id: string, contractControllerHybridIngestRequest: ContractControllerHybridIngestRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
-    public contractControllerHybridIngest(id: string, contractControllerHybridIngestRequest: ContractControllerHybridIngestRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
-    public contractControllerHybridIngest(id: string, contractControllerHybridIngestRequest: ContractControllerHybridIngestRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
-    public contractControllerHybridIngest(id: string, contractControllerHybridIngestRequest: ContractControllerHybridIngestRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public contractControllerHybridIngest(id: string, body: object, body2: object, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
+    public contractControllerHybridIngest(id: string, body: object, body2: object, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
+    public contractControllerHybridIngest(id: string, body: object, body2: object, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
+    public contractControllerHybridIngest(id: string, body: object, body2: object, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling contractControllerHybridIngest.');
         }
-        if (contractControllerHybridIngestRequest === null || contractControllerHybridIngestRequest === undefined) {
-            throw new Error('Required parameter contractControllerHybridIngestRequest was null or undefined when calling contractControllerHybridIngest.');
+        if (body === null || body === undefined) {
+            throw new Error('Required parameter body was null or undefined when calling contractControllerHybridIngest.');
+        }
+        if (body2 === null || body2 === undefined) {
+            throw new Error('Required parameter body2 was null or undefined when calling contractControllerHybridIngest.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -747,12 +752,12 @@ export class ContractsService extends BaseService implements ContractsServiceInt
             }
         }
 
-        let localVarPath = `/api/contracts/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}/hybrid-ingest`;
+        let localVarPath = `/api/contracts/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}/hybrid-ingest`;
         const { basePath, withCredentials } = this.configuration;
         return this.httpClient.request<any>('post', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: contractControllerHybridIngestRequest,
+                body: body2,
                 responseType: <any>responseType_,
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
@@ -764,26 +769,22 @@ export class ContractsService extends BaseService implements ContractsServiceInt
     }
 
     /**
-     * Hybrid semantic &amp; vector search for contract clauses
-     * @param id The ID of the contract to search
-     * @param q The search query to find relevant clauses
+     * Search contract clauses using hybrid AI
+     * @param q Search query
+     * @param id Contract ID
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public contractControllerHybridSearch(id: string, q: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
-    public contractControllerHybridSearch(id: string, q: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
-    public contractControllerHybridSearch(id: string, q: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
-    public contractControllerHybridSearch(id: string, q: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
-        if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling contractControllerHybridSearch.');
-        }
+    public contractControllerHybridSearch(q: string, id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
+    public contractControllerHybridSearch(q: string, id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
+    public contractControllerHybridSearch(q: string, id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
+    public contractControllerHybridSearch(q: string, id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (q === null || q === undefined) {
             throw new Error('Required parameter q was null or undefined when calling contractControllerHybridSearch.');
         }
-
-        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
-        localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-          <any>q, 'q');
+        if (id === null || id === undefined) {
+            throw new Error('Required parameter id was null or undefined when calling contractControllerHybridSearch.');
+        }
 
         let localVarHeaders = this.defaultHeaders;
 
@@ -809,12 +810,11 @@ export class ContractsService extends BaseService implements ContractsServiceInt
             }
         }
 
-        let localVarPath = `/api/contracts/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}/hybrid-search`;
+        let localVarPath = `/api/contracts/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}/hybrid-search`;
         const { basePath, withCredentials } = this.configuration;
         return this.httpClient.request<any>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                params: localVarQueryParameters,
                 responseType: <any>responseType_,
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
@@ -827,7 +827,7 @@ export class ContractsService extends BaseService implements ContractsServiceInt
 
     /**
      * Delete a contract
-     * @param id The ID of the contract to delete
+     * @param id Contract ID
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -863,7 +863,7 @@ export class ContractsService extends BaseService implements ContractsServiceInt
             }
         }
 
-        let localVarPath = `/api/contracts/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
+        let localVarPath = `/api/contracts/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}`;
         const { basePath, withCredentials } = this.configuration;
         return this.httpClient.request<any>('delete', `${basePath}${localVarPath}`,
             {
@@ -880,7 +880,7 @@ export class ContractsService extends BaseService implements ContractsServiceInt
 
     /**
      * Submit a chat question
-     * @param id The ID of the contract to submit chat for
+     * @param id Contract ID
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -916,7 +916,7 @@ export class ContractsService extends BaseService implements ContractsServiceInt
             }
         }
 
-        let localVarPath = `/api/contracts/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}/chat`;
+        let localVarPath = `/api/contracts/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}/chat`;
         const { basePath, withCredentials } = this.configuration;
         return this.httpClient.request<any>('post', `${basePath}${localVarPath}`,
             {
@@ -933,7 +933,7 @@ export class ContractsService extends BaseService implements ContractsServiceInt
 
     /**
      * Update a contract
-     * @param id The ID of the contract to update
+     * @param id Contract ID
      * @param body 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -982,7 +982,7 @@ export class ContractsService extends BaseService implements ContractsServiceInt
             }
         }
 
-        let localVarPath = `/api/contracts/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
+        let localVarPath = `/api/contracts/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}`;
         const { basePath, withCredentials } = this.configuration;
         return this.httpClient.request<any>('patch', `${basePath}${localVarPath}`,
             {
@@ -1000,8 +1000,8 @@ export class ContractsService extends BaseService implements ContractsServiceInt
 
     /**
      * Update risk flag status
-     * @param id The ID of the contract to update risk flag for
-     * @param riskId The ID of the risk flag to update
+     * @param id Contract ID
+     * @param riskId Risk ID
      * @param updateRiskFlagDto 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -1053,7 +1053,7 @@ export class ContractsService extends BaseService implements ContractsServiceInt
             }
         }
 
-        let localVarPath = `/api/contracts/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}/risk-flags/${this.configuration.encodeParam({name: "riskId", value: riskId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
+        let localVarPath = `/api/contracts/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}/risk-flags/${this.configuration.encodeParam({name: "riskId", value: riskId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}`;
         const { basePath, withCredentials } = this.configuration;
         return this.httpClient.request<any>('patch', `${basePath}${localVarPath}`,
             {

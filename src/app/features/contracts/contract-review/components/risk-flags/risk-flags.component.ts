@@ -38,8 +38,8 @@ export class RiskFlagsComponent implements OnInit, OnChanges {
   @Input() contractId: string | null = null;
   analysis$: Observable<ContractAnalysis | null>;
   filteredRisks$: Observable<ContractAnalysis['analysis']['riskFlags']>;
-  selectedSeverity = 'all';
-  selectedStatus = 'all';
+  selectedSeverity: 'all' | 'HIGH' | 'MEDIUM' | 'LOW' = 'all';
+  selectedStatus: 'all' | 'OPEN' | 'RESOLVED' | 'IGNORED' = 'all';
 
   constructor(
     private contractAnalysisService: ContractAnalysisService,
@@ -87,14 +87,14 @@ export class RiskFlagsComponent implements OnInit, OnChanges {
 
   private filterRisks(risks: ContractAnalysis['analysis']['riskFlags']): ContractAnalysis['analysis']['riskFlags'] {
     return risks.filter(risk => {
-      const matchesSeverity = this.selectedSeverity === 'all' || risk.type === this.selectedSeverity;
+      const matchesSeverity = this.selectedSeverity === 'all' || risk.severity === this.selectedSeverity;
       const matchesStatus = this.selectedStatus === 'all' || risk.status === this.selectedStatus;
       return matchesSeverity && matchesStatus;
     });
   }
 
-  getRiskTypeClass(type: 'high' | 'medium' | 'low'): string {
-    return `risk-${type}`;
+  getRiskTypeClass(severity: 'HIGH' | 'MEDIUM' | 'LOW'): string {
+    return `risk-${severity.toLowerCase()}`;
   }
 
   async addNotes(risk: ContractAnalysis['analysis']['riskFlags'][0]): Promise<void> {

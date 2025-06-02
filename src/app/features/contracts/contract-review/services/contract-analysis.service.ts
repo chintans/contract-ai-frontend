@@ -2,6 +2,10 @@ import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, Observable, of, firstValueFrom, map } from 'rxjs';
 import { ContractsService, FilesService } from '@api/api';
 import { UpdateRiskFlagDto } from '@models/updateRiskFlagDto';
+import { AnalysisResultDto } from '@models/analysisResultDto';
+import { SummaryDto } from '@models/summaryDto';
+import { RiskFlagDto } from '@models/riskFlagDto';
+import { ClauseDto } from '@models/clauseDto';
 
 export interface ContractAnalysis {
   contractId: string;
@@ -9,26 +13,9 @@ export interface ContractAnalysis {
   uploadDate: Date;
   status: 'analyzing' | 'completed' | 'error';
   analysis: {
-    summary: {
-      title: string;
-      parties: string[];
-      effectiveDate: Date;
-      expirationDate: Date;
-      value: number;
-      keyTerms: { term: string; description: string }[];
-      obligations: { party: string; obligations: string[] }[];
-      recommendations: string[];
-    };
-    riskFlags: {
-      id: string;
-      type: 'high' | 'medium' | 'low';
-      category: string;
-      description: string;
-      clause: string;
-      recommendation: string;
-      status: 'OPEN' | 'RESOLVED' | 'IGNORED';
-      notes?: string;
-    }[];
+    summaries: SummaryDto[];
+    riskFlags: RiskFlagDto[];
+    clauses: ClauseDto[];
   };
 }
 
@@ -52,17 +39,9 @@ export class ContractAnalysisService {
       uploadDate: new Date(),
       status: 'analyzing',
       analysis: {
-        summary: {
-          title: '',
-          parties: [],
-          effectiveDate: new Date(),
-          expirationDate: new Date(),
-          value: 0,
-          keyTerms: [],
-          obligations: [],
-          recommendations: []
-        },
-        riskFlags: []
+        summaries: [],
+        riskFlags: [],
+        clauses: []
       }
     });
     try {
@@ -76,7 +55,7 @@ export class ContractAnalysisService {
       // Trigger analysis
       await firstValueFrom(this.contractsService.contractControllerAnalyzeContract(contractId));
       // Fetch analysis result
-      const analysisRes = await firstValueFrom(this.contractsService.contractControllerGetAnalysis(contractId)) as any;
+      const analysisRes = await firstValueFrom(this.contractsService.contractControllerGetAnalysis(contractId));
       // Map backend data to ContractAnalysis
       const mapped = this.mapBackendToContractAnalysis(analysisRes, file.name);
       this.currentAnalysis.next(mapped);
@@ -87,17 +66,9 @@ export class ContractAnalysisService {
         uploadDate: new Date(),
         status: 'error',
         analysis: {
-          summary: {
-            title: '',
-            parties: [],
-            effectiveDate: new Date(),
-            expirationDate: new Date(),
-            value: 0,
-            keyTerms: [],
-            obligations: [],
-            recommendations: []
-          },
-          riskFlags: []
+          summaries: [],
+          riskFlags: [],
+          clauses: []
         }
       });
       throw err;
@@ -165,25 +136,16 @@ export class ContractAnalysisService {
   }
 
   // Helper to map backend data to ContractAnalysis interface
-  private mapBackendToContractAnalysis(data: any, fileName: string): ContractAnalysis {
-    // This mapping should be updated to match backend response structure
+  private mapBackendToContractAnalysis(data: AnalysisResultDto, fileName: string): ContractAnalysis {
     return {
-      contractId: data.id || data.contractId || '',
+      contractId: (data as any).id || (data as any).contractId || '',
       fileName: fileName,
-      uploadDate: data.uploadDate ? new Date(data.uploadDate) : new Date(),
-      status: data.status || 'completed',
+      uploadDate: (data as any).uploadDate ? new Date((data as any).uploadDate) : new Date(),
+      status: (data as any).status || 'completed',
       analysis: {
-        summary: {
-          title: data.summary?.title || '',
-          parties: data.summary?.parties || [],
-          effectiveDate: data.summary?.effectiveDate ? new Date(data.summary.effectiveDate) : new Date(),
-          expirationDate: data.summary?.expirationDate ? new Date(data.summary.expirationDate) : new Date(),
-          value: data.summary?.value || 0,
-          keyTerms: data.summary?.keyTerms || [],
-          obligations: data.summary?.obligations || [],
-          recommendations: data.summary?.recommendations || []
-        },
-        riskFlags: data.riskFlags || []
+        summaries: data.summaries || [],
+        riskFlags: data.riskFlags || [],
+        clauses: data.clauses || []
       }
     };
   }

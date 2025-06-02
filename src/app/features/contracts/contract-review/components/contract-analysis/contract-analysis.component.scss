@@ -37,4 +37,26 @@ mat-expansion-panel {
       margin-bottom: 0;
     }
   }
+}
+
+.scrollable-list {
+  max-height: 420px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.scrollable-list > div {
+  background: #fff;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  margin-bottom: 0.5rem;
+  padding: 1rem;
+}
+
+.scrollable-list::-webkit-scrollbar {
+  width: 8px;
+}
+.scrollable-list::-webkit-scrollbar-thumb {
+  background: #e5e7eb;
+  border-radius: 4px;
 } 

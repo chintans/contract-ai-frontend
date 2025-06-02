@@ -8,7 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { NgxFileDropModule, FileSystemFileEntry, NgxFileDropEntry } from 'ngx-file-drop';
 import { ContractAnalysisService } from '../../services/contract-analysis.service';
-
+import { firstValueFrom } from 'rxjs';
 @Component({
   selector: 'app-contract-upload',
   standalone: true,
@@ -78,7 +78,7 @@ export class ContractUploadComponent {
     this.emitUploadData();
     try {
       await this.contractAnalysisService.uploadContract(this.selectedFile!, this.contractType);
-      const analysis = await this.contractAnalysisService.getCurrentAnalysis().toPromise();
+      const analysis = await firstValueFrom(this.contractAnalysisService.getCurrentAnalysis());
       this.isUploading = false;
       this.emitUploadData(analysis?.contractId, analysis?.status);
     } catch (err: any) {

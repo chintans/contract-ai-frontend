@@ -11,7 +11,7 @@ import { HttpHeaders }                                       from '@angular/comm
 
 import { Observable }                                        from 'rxjs';
 
-import { ContractControllerHybridIngestRequest } from '../model/models';
+import { AnalysisResultDto } from '../model/models';
 import { UpdateRiskFlagDto } from '../model/models';
 
 
@@ -26,14 +26,14 @@ export interface ContractsServiceInterface {
     /**
      * Analyze a contract using AI
      * 
-     * @param id The ID of the contract to analyze
+     * @param id Contract ID
      */
     contractControllerAnalyzeContract(id: string, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
      * Ask a question about the contract
      * 
-     * @param id The ID of the contract to ask question for
+     * @param id Contract ID
      */
     contractControllerAskQuestion(id: string, extraHttpRequestParams?: any): Observable<{}>;
 
@@ -48,7 +48,7 @@ export interface ContractsServiceInterface {
     /**
      * Export contract analysis
      * 
-     * @param id The ID of the contract to export
+     * @param id Contract ID
      */
     contractControllerExportAnalysis(id: string, extraHttpRequestParams?: any): Observable<{}>;
 
@@ -61,86 +61,87 @@ export interface ContractsServiceInterface {
     /**
      * Get a contract by id
      * 
-     * @param id The ID of the contract to get
+     * @param id Contract ID
      */
     contractControllerFindOne(id: string, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
      * Get full contract analysis
      * 
-     * @param id The ID of the contract to get analysis for
+     * @param id Contract ID
      */
-    contractControllerGetAnalysis(id: string, extraHttpRequestParams?: any): Observable<{}>;
+    contractControllerGetAnalysis(id: string, extraHttpRequestParams?: any): Observable<AnalysisResultDto>;
 
     /**
      * Get chat history
      * 
-     * @param id The ID of the contract to get chat history for
+     * @param id Contract ID
      */
     contractControllerGetChat(id: string, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
      * Get contract Q&amp;A
      * 
-     * @param id The ID of the contract to get Q&amp;A for
+     * @param id Contract ID
      */
     contractControllerGetContractQnA(id: string, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
      * Get contract reviews
      * 
-     * @param id The ID of the contract to get reviews for
+     * @param id Contract ID
      */
     contractControllerGetContractReviews(id: string, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
      * Get contract risks
      * 
-     * @param id The ID of the contract to get risks for
+     * @param id Contract ID
      */
     contractControllerGetContractRisks(id: string, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
      * Get contract summaries
      * 
-     * @param id The ID of the contract to get summary for
+     * @param id Contract ID
      */
     contractControllerGetContractSummary(id: string, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
-     * Ingest a contract into the hybrid search index
+     * Ingest a contract using hybrid AI
      * 
-     * @param id The ID of the contract to ingest
-     * @param contractControllerHybridIngestRequest 
+     * @param id Contract ID
+     * @param body Contract ingestion data
+     * @param body2 
      */
-    contractControllerHybridIngest(id: string, contractControllerHybridIngestRequest: ContractControllerHybridIngestRequest, extraHttpRequestParams?: any): Observable<{}>;
+    contractControllerHybridIngest(id: string, body: object, body2: object, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
-     * Hybrid semantic &amp; vector search for contract clauses
+     * Search contract clauses using hybrid AI
      * 
-     * @param id The ID of the contract to search
-     * @param q The search query to find relevant clauses
+     * @param q Search query
+     * @param id Contract ID
      */
-    contractControllerHybridSearch(id: string, q: string, extraHttpRequestParams?: any): Observable<{}>;
+    contractControllerHybridSearch(q: string, id: string, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
      * Delete a contract
      * 
-     * @param id The ID of the contract to delete
+     * @param id Contract ID
      */
     contractControllerRemove(id: string, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
      * Submit a chat question
      * 
-     * @param id The ID of the contract to submit chat for
+     * @param id Contract ID
      */
     contractControllerSubmitChat(id: string, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
      * Update a contract
      * 
-     * @param id The ID of the contract to update
+     * @param id Contract ID
      * @param body 
      */
     contractControllerUpdate(id: string, body: object, extraHttpRequestParams?: any): Observable<{}>;
@@ -148,8 +149,8 @@ export interface ContractsServiceInterface {
     /**
      * Update risk flag status
      * 
-     * @param id The ID of the contract to update risk flag for
-     * @param riskId The ID of the risk flag to update
+     * @param id Contract ID
+     * @param riskId Risk ID
      * @param updateRiskFlagDto 
      */
     contractControllerUpdateRiskFlag(id: string, riskId: string, updateRiskFlagDto: UpdateRiskFlagDto, extraHttpRequestParams?: any): Observable<{}>;
