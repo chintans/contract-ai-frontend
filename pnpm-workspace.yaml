@@ -1,6 +1,9 @@
 onlyBuiltDependencies:
   - '@nestjs/core'
   - '@openapitools/openapi-generator-cli'
+  - '@parcel/watcher'
   - cypress
   - esbuild
+  - lmdb
+  - msgpackr-extract
   - nx
