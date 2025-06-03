@@ -1,12 +1,12 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { TemplateVersion } from './template-version.model';
 import { DiffViewerComponent } from '../version-control/diff-viewer.component';
 
 @Component({
   selector: 'app-diff-version-dialog',
   standalone: true,
-  imports: [CommonModule, DiffViewerComponent],
+  imports: [DiffViewerComponent],
   templateUrl: './diff-version-dialog.component.html',
   styleUrls: ['./diff-version-dialog.component.scss']
 })

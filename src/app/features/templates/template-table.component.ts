@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Output, Input, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 
 export interface Jurisdiction {
   country?: string;
@@ -19,7 +19,7 @@ export interface Template {
 @Component({
   selector: 'app-template-table',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './template-table.component.html',
   styleUrls: ['./template-table.component.scss']
 })

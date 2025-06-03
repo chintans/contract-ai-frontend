@@ -3,9 +3,11 @@
   <div class="enforcement-section">
     <label class="section-label" id="enforcement-label">Enforcement Level</label>
     <mat-radio-group formControlName="enforcement" aria-labelledby="enforcement-label" data-testid="enforcement-group">
-      <mat-radio-button *ngFor="let type of enforcements" [value]="type" [attr.aria-label]="type" [attr.data-testid]="'enforcement-' + type">
-        {{type}}
-      </mat-radio-button>
+      @for (type of enforcements; track type) {
+        <mat-radio-button [value]="type" [attr.aria-label]="type" [attr.data-testid]="'enforcement-' + type">
+          {{type}}
+        </mat-radio-button>
+      }
     </mat-radio-group>
   </div>
 
@@ -15,123 +17,137 @@
       <mat-label id="severity-label">Severity</mat-label>
       <mat-select formControlName="severity" aria-labelledby="severity-label" data-testid="severity-select">
         @for (level of severityLevels; track level) {
-            <mat-option [value]="level" [attr.aria-label]="level" [attr.data-testid]="'severity-' + level">{{level}}</mat-option>
-        }                  
+          <mat-option [value]="level" [attr.aria-label]="level" [attr.data-testid]="'severity-' + level">{{level}}</mat-option>
+        }
       </mat-select>
     </mat-form-field>
   </div>
 
   <!-- Similarity Settings -->
-  <div class="similarity-section" *ngIf="showSimilarityControls()">
-    <mat-form-field>
-      <mat-label id="similarity-threshold-label">Similarity Threshold (%)</mat-label>
-      <input matInput type="number" formControlName="similarityThreshold"
-             min="0" max="100"
-             matTooltip="Exact text match = 100%. Lower this if you permit paraphrasing."
-             aria-labelledby="similarity-threshold-label"
-             data-testid="similarity-threshold-input">
-    </mat-form-field>
-
-    <mat-form-field>
-      <mat-label id="allowed-deviation-label">Allowed Deviation (%)</mat-label>
-      <input matInput type="number" formControlName="deviationAllowedPct"
-             min="0" max="100"
-             aria-labelledby="allowed-deviation-label"
-             data-testid="allowed-deviation-input">
-    </mat-form-field>
-  </div>
-
-  <!-- Patterns -->
-  <div class="patterns-section" *ngIf="showPatternControls()">
-    <!-- Forbidden Patterns -->
-    <mat-form-field class="full-width">
-      <mat-label id="forbidden-patterns-label">Forbidden Patterns</mat-label>
-      <mat-chip-grid #forbiddenChipGrid aria-labelledby="forbidden-patterns-label" data-testid="forbidden-patterns-grid">
-        <mat-chip-row *ngFor="let pattern of forbiddenPatterns()"
-                     (removed)="removePattern('forbidden', pattern)"
-                     [attr.data-testid]="'forbidden-pattern-' + pattern">
-          {{pattern}}
-          <button matChipRemove aria-label="Remove pattern">
-            <mat-icon>cancel</mat-icon>
-          </button>
-        </mat-chip-row>
-      </mat-chip-grid>
-      <input placeholder="Add pattern..."
-             [matChipInputFor]="forbiddenChipGrid"
-             (matChipInputTokenEnd)="addPattern('forbidden', $event)"
-             aria-label="Add forbidden pattern"
-             data-testid="add-forbidden-pattern-input">
-    </mat-form-field>
-
-    <!-- Required Patterns -->
-    <mat-form-field class="full-width">
-      <mat-label id="required-patterns-label">Required Patterns</mat-label>
-      <mat-chip-grid #requiredChipGrid aria-labelledby="required-patterns-label" data-testid="required-patterns-grid">
-        <mat-chip-row *ngFor="let pattern of requiredPatterns()"
-                     (removed)="removePattern('required', pattern)"
-                     [attr.data-testid]="'required-pattern-' + pattern">
-          {{pattern}}
-          <button matChipRemove aria-label="Remove pattern">
-            <mat-icon>cancel</mat-icon>
-          </button>
-        </mat-chip-row>
-      </mat-chip-grid>
-      <input placeholder="Add pattern..."
-             [matChipInputFor]="requiredChipGrid"
-             (matChipInputTokenEnd)="addPattern('required', $event)"
-             aria-label="Add required pattern"
-             data-testid="add-required-pattern-input">
-    </mat-form-field>
-  </div>
-
-  <!-- Additional Settings -->
-  <div class="additional-settings">
-    <mat-form-field>
-      <mat-label id="statutory-reference-label">Statutory Reference</mat-label>
-      <input matInput formControlName="statutoryReference" aria-labelledby="statutory-reference-label" data-testid="statutory-reference-input">
-    </mat-form-field>
-
-    <mat-form-field>
-      <mat-label id="score-weight-label">Score Weight</mat-label>
-      <input matInput type="number" formControlName="scoreWeight" min="0" aria-labelledby="score-weight-label" data-testid="score-weight-input">
-    </mat-form-field>
-
-    <mat-checkbox formControlName="autoSuggest" aria-label="Enable Auto-Suggest" data-testid="auto-suggest-checkbox">
-      Enable Auto-Suggest
-    </mat-checkbox>
-  </div>
-
-  <!-- Condition Section -->
-  <div class="condition-section mt-4">
-    <label class="font-semibold">Condition (optional)</label>
-    <div>
-      <span class="font-medium">If:</span>
-      <div formArrayName="conditionIf">
-        <div *ngFor="let group of conditionIfArray.controls; let i = index" [formGroupName]="i" class="flex gap-2 mb-2">
-          <input formControlName="key" placeholder="Field" class="border px-2 py-1 rounded" [attr.data-testid]="'condition-if-key-' + i" />
-          <input formControlName="value" placeholder="Value" class="border px-2 py-1 rounded" [attr.data-testid]="'condition-if-value-' + i" />
-          <button type="button" (click)="removeCondition('if', i)" [attr.data-testid]="'remove-condition-if-' + i">Remove</button>
+  @if (showSimilarityControls()) {
+    <div class="similarity-section">
+      <mat-form-field>
+        <mat-label id="similarity-threshold-label">Similarity Threshold (%)</mat-label>
+        <input matInput type="number" formControlName="similarityThreshold"
+          min="0" max="100"
+          matTooltip="Exact text match = 100%. Lower this if you permit paraphrasing."
+          aria-labelledby="similarity-threshold-label"
+          data-testid="similarity-threshold-input">
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label id="allowed-deviation-label">Allowed Deviation (%)</mat-label>
+          <input matInput type="number" formControlName="deviationAllowedPct"
+            min="0" max="100"
+            aria-labelledby="allowed-deviation-label"
+            data-testid="allowed-deviation-input">
+          </mat-form-field>
         </div>
-      </div>
-      <button type="button" (click)="addCondition('if')" data-testid="add-condition-if-btn">Add If Condition</button>
-    </div>
-    <div class="mt-2">
-      <span class="font-medium">Unless:</span>
-      <div formArrayName="conditionUnless">
-        <div *ngFor="let group of conditionUnlessArray.controls; let i = index" [formGroupName]="i" class="flex gap-2 mb-2">
-          <input formControlName="key" placeholder="Field" class="border px-2 py-1 rounded" [attr.data-testid]="'condition-unless-key-' + i" />
-          <input formControlName="value" placeholder="Value" class="border px-2 py-1 rounded" [attr.data-testid]="'condition-unless-value-' + i" />
-          <button type="button" (click)="removeCondition('unless', i)" [attr.data-testid]="'remove-condition-unless-' + i">Remove</button>
-        </div>
-      </div>
-      <button type="button" (click)="addCondition('unless')" data-testid="add-condition-unless-btn">Add Unless Condition</button>
-    </div>
-  </div>
+      }
 
-  <!-- Validation Errors -->
-  <div class="validation-errors" *ngIf="validationErrors().length">
-    <p *ngFor="let error of validationErrors()" class="error-message" role="alert" data-testid="validation-error">
-      {{error}}
-    </p>
-  </div>
-</form> 
+      <!-- Patterns -->
+      @if (showPatternControls()) {
+        <div class="patterns-section">
+          <!-- Forbidden Patterns -->
+          <mat-form-field class="full-width">
+            <mat-label id="forbidden-patterns-label">Forbidden Patterns</mat-label>
+            <mat-chip-grid #forbiddenChipGrid aria-labelledby="forbidden-patterns-label" data-testid="forbidden-patterns-grid">
+              @for (pattern of forbiddenPatterns(); track pattern) {
+                <mat-chip-row
+                  (removed)="removePattern('forbidden', pattern)"
+                  [attr.data-testid]="'forbidden-pattern-' + pattern">
+                  {{pattern}}
+                  <button matChipRemove aria-label="Remove pattern">
+                    <mat-icon>cancel</mat-icon>
+                  </button>
+                </mat-chip-row>
+              }
+            </mat-chip-grid>
+            <input placeholder="Add pattern..."
+              [matChipInputFor]="forbiddenChipGrid"
+              (matChipInputTokenEnd)="addPattern('forbidden', $event)"
+              aria-label="Add forbidden pattern"
+              data-testid="add-forbidden-pattern-input">
+            </mat-form-field>
+            <!-- Required Patterns -->
+            <mat-form-field class="full-width">
+              <mat-label id="required-patterns-label">Required Patterns</mat-label>
+              <mat-chip-grid #requiredChipGrid aria-labelledby="required-patterns-label" data-testid="required-patterns-grid">
+                @for (pattern of requiredPatterns(); track pattern) {
+                  <mat-chip-row
+                    (removed)="removePattern('required', pattern)"
+                    [attr.data-testid]="'required-pattern-' + pattern">
+                    {{pattern}}
+                    <button matChipRemove aria-label="Remove pattern">
+                      <mat-icon>cancel</mat-icon>
+                    </button>
+                  </mat-chip-row>
+                }
+              </mat-chip-grid>
+              <input placeholder="Add pattern..."
+                [matChipInputFor]="requiredChipGrid"
+                (matChipInputTokenEnd)="addPattern('required', $event)"
+                aria-label="Add required pattern"
+                data-testid="add-required-pattern-input">
+              </mat-form-field>
+            </div>
+          }
+
+          <!-- Additional Settings -->
+          <div class="additional-settings">
+            <mat-form-field>
+              <mat-label id="statutory-reference-label">Statutory Reference</mat-label>
+              <input matInput formControlName="statutoryReference" aria-labelledby="statutory-reference-label" data-testid="statutory-reference-input">
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label id="score-weight-label">Score Weight</mat-label>
+              <input matInput type="number" formControlName="scoreWeight" min="0" aria-labelledby="score-weight-label" data-testid="score-weight-input">
+            </mat-form-field>
+
+            <mat-checkbox formControlName="autoSuggest" aria-label="Enable Auto-Suggest" data-testid="auto-suggest-checkbox">
+              Enable Auto-Suggest
+            </mat-checkbox>
+          </div>
+
+          <!-- Condition Section -->
+          <div class="condition-section mt-4">
+            <label class="font-semibold">Condition (optional)</label>
+            <div>
+              <span class="font-medium">If:</span>
+              <div formArrayName="conditionIf">
+                @for (group of conditionIfArray.controls; track group; let i = $index) {
+                  <div [formGroupName]="i" class="flex gap-2 mb-2">
+                    <input formControlName="key" placeholder="Field" class="border px-2 py-1 rounded" [attr.data-testid]="'condition-if-key-' + i" />
+                    <input formControlName="value" placeholder="Value" class="border px-2 py-1 rounded" [attr.data-testid]="'condition-if-value-' + i" />
+                    <button type="button" (click)="removeCondition('if', i)" [attr.data-testid]="'remove-condition-if-' + i">Remove</button>
+                  </div>
+                }
+              </div>
+              <button type="button" (click)="addCondition('if')" data-testid="add-condition-if-btn">Add If Condition</button>
+            </div>
+            <div class="mt-2">
+              <span class="font-medium">Unless:</span>
+              <div formArrayName="conditionUnless">
+                @for (group of conditionUnlessArray.controls; track group; let i = $index) {
+                  <div [formGroupName]="i" class="flex gap-2 mb-2">
+                    <input formControlName="key" placeholder="Field" class="border px-2 py-1 rounded" [attr.data-testid]="'condition-unless-key-' + i" />
+                    <input formControlName="value" placeholder="Value" class="border px-2 py-1 rounded" [attr.data-testid]="'condition-unless-value-' + i" />
+                    <button type="button" (click)="removeCondition('unless', i)" [attr.data-testid]="'remove-condition-unless-' + i">Remove</button>
+                  </div>
+                }
+              </div>
+              <button type="button" (click)="addCondition('unless')" data-testid="add-condition-unless-btn">Add Unless Condition</button>
+            </div>
+          </div>
+
+          <!-- Validation Errors -->
+          @if (validationErrors().length) {
+            <div class="validation-errors">
+              @for (error of validationErrors(); track error) {
+                <p class="error-message" role="alert" data-testid="validation-error">
+                  {{error}}
+                </p>
+              }
+            </div>
+          }
+        </form>

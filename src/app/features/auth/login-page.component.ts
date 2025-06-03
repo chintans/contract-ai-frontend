@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { AuthService } from '../../core/auth.service';
@@ -11,9 +11,8 @@ declare const google: any;
   selector: 'app-login-page',
   standalone: true,
   imports: [
-    CommonModule,    
     MatButtonModule
-  ],
+],
   templateUrl: './login-page.component.html',
   styleUrls: ['./login-page.component.scss']
 })

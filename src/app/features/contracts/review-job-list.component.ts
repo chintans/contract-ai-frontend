@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { Router } from '@angular/router';
 import { MaterialModule } from '../../shared/material.module';
 import { MatTableDataSource } from '@angular/material/table';
@@ -14,7 +14,7 @@ interface ReviewJob {
 @Component({
   selector: 'app-review-job-list',
   standalone: true,
-  imports: [CommonModule, MaterialModule],
+  imports: [MaterialModule],
   templateUrl: './review-job-list.component.html',
   styleUrls: ['./review-job-list.component.scss']
 })

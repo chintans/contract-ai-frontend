@@ -1,12 +1,14 @@
 <div class="risk-list" role="list" aria-label="Risk List">
-  <ng-container *ngIf="riskFlags$ | async as risks">
-    <ng-container *ngIf="selectedRiskIds$ | async as selectedIds">
-      <div *ngFor="let risk of risks" class="risk-list-item" role="listitem" [class.selected]="isSelected(risk.id, selectedIds)" (click)="toggleRisk(risk.id, selectedIds)">
-        <input type="checkbox" [checked]="isSelected(risk.id, selectedIds)" (click)="$event.stopPropagation(); toggleRisk(risk.id, selectedIds)" aria-label="Select risk" />
-        <span class="risk-type risk-{{ risk.type }}">{{ risk.type | titlecase }}</span>
-        <span class="risk-category">{{ risk.category }}</span>
-        <span class="risk-description">{{ risk.description }}</span>
-      </div>
-    </ng-container>
-  </ng-container>
-</div> 
+  @if (riskFlags$ | async; as risks) {
+    @if (selectedRiskIds$ | async; as selectedIds) {
+      @for (risk of risks; track risk) {
+        <div class="risk-list-item" role="listitem" [class.selected]="isSelected(risk.id, selectedIds)" (click)="toggleRisk(risk.id, selectedIds)">
+          <input type="checkbox" [checked]="isSelected(risk.id, selectedIds)" (click)="$event.stopPropagation(); toggleRisk(risk.id, selectedIds)" aria-label="Select risk" />
+          <span class="risk-type risk-{{ risk.type }}">{{ risk.type | titlecase }}</span>
+          <span class="risk-category">{{ risk.category }}</span>
+          <span class="risk-description">{{ risk.description }}</span>
+        </div>
+      }
+    }
+  }
+</div>

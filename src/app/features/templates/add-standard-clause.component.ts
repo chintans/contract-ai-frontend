@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 export interface NewStandardClause {
@@ -13,7 +13,7 @@ export interface NewStandardClause {
 @Component({
   selector: 'app-add-standard-clause',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './add-standard-clause.component.html',
   styleUrls: ['./add-standard-clause.component.scss']
 })

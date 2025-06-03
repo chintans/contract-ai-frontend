@@ -1,181 +1,197 @@
 <div class="p-6">
   <div class="max-w-4xl mx-auto">
-    <div *ngIf="analysis$ | async as analysis; else loading">
-      <div class="mb-6">
-        <div class="flex items-center justify-between">
-          <h2 class="text-2xl font-semibold">Contract Analysis</h2>
-          <button mat-raised-button color="primary" (click)="exportAnalysis()">
-            <mat-icon>download</mat-icon>
-            Export Analysis
-          </button>
+    @if (analysis$ | async; as analysis) {
+      <div>
+        <div class="mb-6">
+          <div class="flex items-center justify-between">
+            <h2 class="text-2xl font-semibold">Contract Analysis</h2>
+            <button mat-raised-button color="primary" (click)="exportAnalysis()">
+              <mat-icon>download</mat-icon>
+              Export Analysis
+            </button>
+          </div>
+          <p class="text-gray-600 mt-2">{{ analysis.fileName }}</p>
         </div>
-        <p class="text-gray-600 mt-2">{{ analysis.fileName }}</p>
+        <!-- Summaries Section -->
+        <mat-card class="mb-6">
+          <mat-card-header>
+            <mat-card-title>Summaries</mat-card-title>
+          </mat-card-header>
+          <mat-card-content class="mt-4">
+            @if (summaries.length) {
+              <div>
+                @for (summary of summaries; track summary) {
+                  <div class="mb-4 border-b pb-2">
+                    <div class="flex items-center justify-between">
+                      <span class="font-medium">Type: {{ summary.type }}</span>
+                      <span class="text-xs text-gray-500">ID: {{ summary.id }}</span>
+                    </div>
+                    @if (parseSummaryText(summary.text); as parsedSummary) {
+                      <app-contract-summary-details [summary]="parsedSummary"></app-contract-summary-details>
+                    } @else {
+                      <div class="mt-2 text-gray-700">{{ summary.text }}</div>
+                    }
+                    <div class="mt-1 text-xs text-gray-500">Reviewed: {{ summary.isReviewed ? 'Yes' : 'No' }}</div>
+                    @if (summary.reviewerComments) {
+                      <div class="mt-1 text-xs text-blue-600">Reviewer Comments: {{ summary.reviewerComments }}</div>
+                    }
+                  </div>
+                }
+              </div>
+            } @else {
+              <div class="text-gray-400">No summaries available.</div>
+            }
+          </mat-card-content>
+        </mat-card>
+        <!-- Risk Flags Section -->
+        <mat-card class="mb-6">
+          <mat-card-header>
+            <mat-card-title>Risk Flags</mat-card-title>
+          </mat-card-header>
+          <mat-card-content class="mt-4">
+            <div class="flex flex-wrap gap-4 mb-4">
+              <mat-form-field appearance="outline" class="w-48">
+                <mat-label>Search</mat-label>
+                <input matInput [(ngModel)]="riskFlagFilter" (ngModelChange)="onRiskFlagFilterChange()" placeholder="Type or description" />
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="w-36">
+                <mat-label>Severity</mat-label>
+                <select matNativeControl [(ngModel)]="riskFlagSeverity" (ngModelChange)="onRiskFlagFilterChange()">
+                  <option value="">All</option>
+                  <option value="HIGH">High</option>
+                  <option value="MEDIUM">Medium</option>
+                  <option value="LOW">Low</option>
+                </select>
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="w-36">
+                <mat-label>Status</mat-label>
+                <select matNativeControl [(ngModel)]="riskFlagStatus" (ngModelChange)="onRiskFlagFilterChange()">
+                  <option value="">All</option>
+                  <option value="OPEN">Open</option>
+                  <option value="CLOSED">Closed</option>
+                  <option value="REVIEWED">Reviewed</option>
+                </select>
+              </mat-form-field>
+            </div>
+            @if (filteredRiskFlags.length) {
+              <div>
+                <div class="scrollable-list" style="max-height: 420px; overflow-y: auto;">
+                  @for (risk of paginatedRiskFlags; track risk) {
+                    <div class="mb-4 border-b pb-2">
+                      <div class="flex items-center justify-between">
+                        <span class="font-medium">Type: {{ risk.type }}</span>
+                        <span class="text-xs text-gray-500">Severity: {{ risk.severity }}</span>
+                        <span class="text-xs text-gray-500">Status: {{ risk.status }}</span>
+                      </div>
+                      <div class="mt-2 text-gray-700">{{ risk.description }}</div>
+                      @if (risk.suggestedResolution) {
+                        <div class="mt-1 text-xs text-green-700">Suggested: {{ risk.suggestedResolution }}</div>
+                      }
+                      @if (risk.reviewerComments) {
+                        <div class="mt-1 text-xs text-blue-600">Reviewer Comments: {{ risk.reviewerComments }}</div>
+                      }
+                      <div class="mt-1 text-xs text-gray-500">Reviewed: {{ risk.isReviewed ? 'Yes' : 'No' }} | Resolved: {{ risk.isResolved ? 'Yes' : 'No' }}</div>
+                    </div>
+                  }
+                </div>
+                <div class="flex justify-end items-center gap-2 mt-2">
+                  <button mat-stroked-button color="primary" (click)="prevRiskFlagPage()" [disabled]="riskFlagPage === 1">Prev</button>
+                  <span class="text-xs">Page {{ riskFlagPage }} of {{ riskFlagTotalPages }}</span>
+                  <button mat-stroked-button color="primary" (click)="nextRiskFlagPage()" [disabled]="riskFlagPage === riskFlagTotalPages">Next</button>
+                </div>
+              </div>
+            } @else {
+              <div class="text-gray-400">No risk flags available.</div>
+            }
+          </mat-card-content>
+        </mat-card>
+        <!-- Clauses Section -->
+        <mat-card class="mb-6">
+          <mat-card-header>
+            <mat-card-title>Clauses</mat-card-title>
+          </mat-card-header>
+          <mat-card-content class="mt-4">
+            <div class="flex flex-wrap gap-4 mb-4">
+              <mat-form-field appearance="outline" class="w-48">
+                <mat-label>Search</mat-label>
+                <input matInput [(ngModel)]="clauseFilter" (ngModelChange)="onClauseFilterChange()" placeholder="Title or text" />
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="w-36">
+                <mat-label>Type</mat-label>
+                <select matNativeControl [(ngModel)]="clauseType" (ngModelChange)="onClauseFilterChange()">
+                  <option value="">All</option>
+                  <option value="TERMINATION">Termination</option>
+                  <option value="CONFIDENTIALITY">Confidentiality</option>
+                  <option value="INDEMNIFICATION">Indemnification</option>
+                  <option value="LIABILITY">Liability</option>
+                  <option value="INTELLECTUAL_PROPERTY">Intellectual Property</option>
+                  <option value="GOVERNING_LAW">Governing Law</option>
+                  <option value="DISPUTE_RESOLUTION">Dispute Resolution</option>
+                  <option value="FORCE_MAJEURE">Force Majeure</option>
+                  <option value="ASSIGNMENT">Assignment</option>
+                  <option value="NOTICES">Notices</option>
+                  <option value="SEVERABILITY">Severability</option>
+                  <option value="ENTIRE_AGREEMENT">Entire Agreement</option>
+                  <option value="AMENDMENT">Amendment</option>
+                  <option value="WAIVER">Waiver</option>
+                  <option value="COUNTERPARTS">Counterparts</option>
+                  <option value="HEADINGS">Headings</option>
+                  <option value="DEFINITIONS">Definitions</option>
+                  <option value="PAYMENT">Payment</option>
+                  <option value="TERM">Term</option>
+                  <option value="OTHER">Other</option>
+                </select>
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="w-36">
+                <mat-label>Risk Level</mat-label>
+                <select matNativeControl [(ngModel)]="clauseRiskLevel" (ngModelChange)="onClauseFilterChange()">
+                  <option value="">All</option>
+                  <option value="HIGH">High</option>
+                  <option value="MEDIUM">Medium</option>
+                  <option value="LOW">Low</option>
+                </select>
+              </mat-form-field>
+            </div>
+            @if (filteredClauses.length) {
+              <div>
+                <div class="scrollable-list" style="max-height: 420px; overflow-y: auto;">
+                  @for (clause of paginatedClauses; track clause) {
+                    <div class="mb-4 border-b pb-2">
+                      <div class="flex items-center justify-between">
+                        <span class="font-medium">Clause #{{ clause.number }}</span>
+                        <span class="text-xs text-gray-500">Type: {{ clause.type }}</span>
+                        <span class="text-xs text-gray-500">Risk Level: {{ clause.riskLevel }}</span>
+                      </div>
+                      <div class="mt-2 text-gray-700">{{ clause.title }}</div>
+                      <div class="mt-1 text-xs text-gray-500">{{ clause.text }}</div>
+                      @if (clause.suggestedText) {
+                        <div class="mt-1 text-xs text-green-700">Suggested: {{ clause.suggestedText }}</div>
+                      }
+                      @if (clause.classification) {
+                        <div class="mt-1 text-xs text-blue-600">Classification: {{ clause.classification }}</div>
+                      }
+                      <div class="mt-1 text-xs text-gray-500">Reviewed: {{ clause.isReviewed ? 'Yes' : 'No' }} | Approved: {{ clause.isApproved ? 'Yes' : 'No' }}</div>
+                    </div>
+                  }
+                </div>
+                <div class="flex justify-end items-center gap-2 mt-2">
+                  <button mat-stroked-button color="primary" (click)="prevClausePage()" [disabled]="clausePage === 1">Prev</button>
+                  <span class="text-xs">Page {{ clausePage }} of {{ clauseTotalPages }}</span>
+                  <button mat-stroked-button color="primary" (click)="nextClausePage()" [disabled]="clausePage === clauseTotalPages">Next</button>
+                </div>
+              </div>
+            } @else {
+              <div class="text-gray-400">No clauses available.</div>
+            }
+          </mat-card-content>
+        </mat-card>
       </div>
-
-      <!-- Summaries Section -->
-      <mat-card class="mb-6">
-        <mat-card-header>
-          <mat-card-title>Summaries</mat-card-title>
-        </mat-card-header>
-        <mat-card-content class="mt-4">
-          <div *ngIf="summaries.length; else noSummaries">
-            <div *ngFor="let summary of summaries" class="mb-4 border-b pb-2">
-              <div class="flex items-center justify-between">
-                <span class="font-medium">Type: {{ summary.type }}</span>
-                <span class="text-xs text-gray-500">ID: {{ summary.id }}</span>
-              </div>
-              <ng-container *ngIf="parseSummaryText(summary.text) as parsedSummary; else rawSummaryText">
-                <app-contract-summary-details [summary]="parsedSummary"></app-contract-summary-details>
-              </ng-container>
-              <ng-template #rawSummaryText>
-                <div class="mt-2 text-gray-700">{{ summary.text }}</div>
-              </ng-template>
-              <div class="mt-1 text-xs text-gray-500">Reviewed: {{ summary.isReviewed ? 'Yes' : 'No' }}</div>
-              <div *ngIf="summary.reviewerComments" class="mt-1 text-xs text-blue-600">Reviewer Comments: {{ summary.reviewerComments }}</div>
-            </div>
-          </div>
-          <ng-template #noSummaries>
-            <div class="text-gray-400">No summaries available.</div>
-          </ng-template>
-        </mat-card-content>
-      </mat-card>
-
-      <!-- Risk Flags Section -->
-      <mat-card class="mb-6">
-        <mat-card-header>
-          <mat-card-title>Risk Flags</mat-card-title>
-        </mat-card-header>
-        <mat-card-content class="mt-4">
-          <div class="flex flex-wrap gap-4 mb-4">
-            <mat-form-field appearance="outline" class="w-48">
-              <mat-label>Search</mat-label>
-              <input matInput [(ngModel)]="riskFlagFilter" (ngModelChange)="onRiskFlagFilterChange()" placeholder="Type or description" />
-            </mat-form-field>
-            <mat-form-field appearance="outline" class="w-36">
-              <mat-label>Severity</mat-label>
-              <select matNativeControl [(ngModel)]="riskFlagSeverity" (ngModelChange)="onRiskFlagFilterChange()">
-                <option value="">All</option>
-                <option value="HIGH">High</option>
-                <option value="MEDIUM">Medium</option>
-                <option value="LOW">Low</option>
-              </select>
-            </mat-form-field>
-            <mat-form-field appearance="outline" class="w-36">
-              <mat-label>Status</mat-label>
-              <select matNativeControl [(ngModel)]="riskFlagStatus" (ngModelChange)="onRiskFlagFilterChange()">
-                <option value="">All</option>
-                <option value="OPEN">Open</option>
-                <option value="CLOSED">Closed</option>
-                <option value="REVIEWED">Reviewed</option>
-              </select>
-            </mat-form-field>
-          </div>
-          <div *ngIf="filteredRiskFlags.length; else noRiskFlags">
-            <div class="scrollable-list" style="max-height: 420px; overflow-y: auto;">
-              <div *ngFor="let risk of paginatedRiskFlags" class="mb-4 border-b pb-2">
-                <div class="flex items-center justify-between">
-                  <span class="font-medium">Type: {{ risk.type }}</span>
-                  <span class="text-xs text-gray-500">Severity: {{ risk.severity }}</span>
-                  <span class="text-xs text-gray-500">Status: {{ risk.status }}</span>
-                </div>
-                <div class="mt-2 text-gray-700">{{ risk.description }}</div>
-                <div *ngIf="risk.suggestedResolution" class="mt-1 text-xs text-green-700">Suggested: {{ risk.suggestedResolution }}</div>
-                <div *ngIf="risk.reviewerComments" class="mt-1 text-xs text-blue-600">Reviewer Comments: {{ risk.reviewerComments }}</div>
-                <div class="mt-1 text-xs text-gray-500">Reviewed: {{ risk.isReviewed ? 'Yes' : 'No' }} | Resolved: {{ risk.isResolved ? 'Yes' : 'No' }}</div>
-              </div>
-            </div>
-            <div class="flex justify-end items-center gap-2 mt-2">
-              <button mat-stroked-button color="primary" (click)="prevRiskFlagPage()" [disabled]="riskFlagPage === 1">Prev</button>
-              <span class="text-xs">Page {{ riskFlagPage }} of {{ riskFlagTotalPages }}</span>
-              <button mat-stroked-button color="primary" (click)="nextRiskFlagPage()" [disabled]="riskFlagPage === riskFlagTotalPages">Next</button>
-            </div>
-          </div>
-          <ng-template #noRiskFlags>
-            <div class="text-gray-400">No risk flags available.</div>
-          </ng-template>
-        </mat-card-content>
-      </mat-card>
-
-      <!-- Clauses Section -->
-      <mat-card class="mb-6">
-        <mat-card-header>
-          <mat-card-title>Clauses</mat-card-title>
-        </mat-card-header>
-        <mat-card-content class="mt-4">
-          <div class="flex flex-wrap gap-4 mb-4">
-            <mat-form-field appearance="outline" class="w-48">
-              <mat-label>Search</mat-label>
-              <input matInput [(ngModel)]="clauseFilter" (ngModelChange)="onClauseFilterChange()" placeholder="Title or text" />
-            </mat-form-field>
-            <mat-form-field appearance="outline" class="w-36">
-              <mat-label>Type</mat-label>
-              <select matNativeControl [(ngModel)]="clauseType" (ngModelChange)="onClauseFilterChange()">
-                <option value="">All</option>
-                <option value="TERMINATION">Termination</option>
-                <option value="CONFIDENTIALITY">Confidentiality</option>
-                <option value="INDEMNIFICATION">Indemnification</option>
-                <option value="LIABILITY">Liability</option>
-                <option value="INTELLECTUAL_PROPERTY">Intellectual Property</option>
-                <option value="GOVERNING_LAW">Governing Law</option>
-                <option value="DISPUTE_RESOLUTION">Dispute Resolution</option>
-                <option value="FORCE_MAJEURE">Force Majeure</option>
-                <option value="ASSIGNMENT">Assignment</option>
-                <option value="NOTICES">Notices</option>
-                <option value="SEVERABILITY">Severability</option>
-                <option value="ENTIRE_AGREEMENT">Entire Agreement</option>
-                <option value="AMENDMENT">Amendment</option>
-                <option value="WAIVER">Waiver</option>
-                <option value="COUNTERPARTS">Counterparts</option>
-                <option value="HEADINGS">Headings</option>
-                <option value="DEFINITIONS">Definitions</option>
-                <option value="PAYMENT">Payment</option>
-                <option value="TERM">Term</option>
-                <option value="OTHER">Other</option>
-              </select>
-            </mat-form-field>
-            <mat-form-field appearance="outline" class="w-36">
-              <mat-label>Risk Level</mat-label>
-              <select matNativeControl [(ngModel)]="clauseRiskLevel" (ngModelChange)="onClauseFilterChange()">
-                <option value="">All</option>
-                <option value="HIGH">High</option>
-                <option value="MEDIUM">Medium</option>
-                <option value="LOW">Low</option>
-              </select>
-            </mat-form-field>
-          </div>
-          <div *ngIf="filteredClauses.length; else noClauses">
-            <div class="scrollable-list" style="max-height: 420px; overflow-y: auto;">
-              <div *ngFor="let clause of paginatedClauses" class="mb-4 border-b pb-2">
-                <div class="flex items-center justify-between">
-                  <span class="font-medium">Clause #{{ clause.number }}</span>
-                  <span class="text-xs text-gray-500">Type: {{ clause.type }}</span>
-                  <span class="text-xs text-gray-500">Risk Level: {{ clause.riskLevel }}</span>
-                </div>
-                <div class="mt-2 text-gray-700">{{ clause.title }}</div>
-                <div class="mt-1 text-xs text-gray-500">{{ clause.text }}</div>
-                <div *ngIf="clause.suggestedText" class="mt-1 text-xs text-green-700">Suggested: {{ clause.suggestedText }}</div>
-                <div *ngIf="clause.classification" class="mt-1 text-xs text-blue-600">Classification: {{ clause.classification }}</div>
-                <div class="mt-1 text-xs text-gray-500">Reviewed: {{ clause.isReviewed ? 'Yes' : 'No' }} | Approved: {{ clause.isApproved ? 'Yes' : 'No' }}</div>
-              </div>
-            </div>
-            <div class="flex justify-end items-center gap-2 mt-2">
-              <button mat-stroked-button color="primary" (click)="prevClausePage()" [disabled]="clausePage === 1">Prev</button>
-              <span class="text-xs">Page {{ clausePage }} of {{ clauseTotalPages }}</span>
-              <button mat-stroked-button color="primary" (click)="nextClausePage()" [disabled]="clausePage === clauseTotalPages">Next</button>
-            </div>
-          </div>
-          <ng-template #noClauses>
-            <div class="text-gray-400">No clauses available.</div>
-          </ng-template>
-        </mat-card-content>
-      </mat-card>
-    </div>
-
-    <ng-template #loading>
+    } @else {
       <div class="text-center py-12">
         <mat-spinner diameter="48" class="mx-auto mb-4"></mat-spinner>
         <p class="text-gray-600">Analyzing contract...</p>
       </div>
-    </ng-template>
+    }
+
   </div>
-</div> 
+</div>

@@ -1,72 +1,78 @@
 <div class="p-6">
   <div class="max-w-4xl mx-auto">
-    <div *ngIf="analysis$ | async as analysis; else loading">
-      <div class="mb-6">
-        <div class="flex items-center justify-between">
-          <h2 class="text-2xl font-semibold">Risk Flags</h2>
-          <div class="flex gap-4">
-            <mat-form-field appearance="outline" class="w-48">
-              <mat-label>Filter by Severity</mat-label>
-              <mat-select [(ngModel)]="selectedSeverity">
-                <mat-option value="all">All</mat-option>
-                <mat-option value="HIGH">High</mat-option>
-                <mat-option value="MEDIUM">Medium</mat-option>
-                <mat-option value="LOW">Low</mat-option>
-              </mat-select>
-            </mat-form-field>
-            <mat-form-field appearance="outline" class="w-48">
-              <mat-label>Filter by Status</mat-label>
-              <mat-select [(ngModel)]="selectedStatus">
-                <mat-option value="all">All</mat-option>
-                <mat-option value="OPEN">Open</mat-option>
-                <mat-option value="RESOLVED">Resolved</mat-option>
-                <mat-option value="IGNORED">Ignored</mat-option>
-              </mat-select>
-            </mat-form-field>
+    @if (analysis$ | async; as analysis) {
+      <div>
+        <div class="mb-6">
+          <div class="flex items-center justify-between">
+            <h2 class="text-2xl font-semibold">Risk Flags</h2>
+            <div class="flex gap-4">
+              <mat-form-field appearance="outline" class="w-48">
+                <mat-label>Filter by Severity</mat-label>
+                <mat-select [(ngModel)]="selectedSeverity">
+                  <mat-option value="all">All</mat-option>
+                  <mat-option value="HIGH">High</mat-option>
+                  <mat-option value="MEDIUM">Medium</mat-option>
+                  <mat-option value="LOW">Low</mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="w-48">
+                <mat-label>Filter by Status</mat-label>
+                <mat-select [(ngModel)]="selectedStatus">
+                  <mat-option value="all">All</mat-option>
+                  <mat-option value="OPEN">Open</mat-option>
+                  <mat-option value="RESOLVED">Resolved</mat-option>
+                  <mat-option value="IGNORED">Ignored</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
           </div>
         </div>
+        <div class="grid grid-cols-1 gap-4">
+          @for (risk of filteredRisks$ | async; track risk) {
+            <mat-card>
+              <mat-card-header>
+                <div [ngClass]="getRiskTypeClass(risk.severity)" class="w-2 h-2 rounded-full mt-2 mr-2"></div>
+                <mat-card-title class="text-lg">Risk: {{ risk.type }}</mat-card-title>
+                @if (risk.clauseId) {
+                  <mat-card-subtitle>Clause: {{ risk.clauseId }}</mat-card-subtitle>
+                }
+              </mat-card-header>
+              <mat-card-content class="mt-4">
+                <p class="text-gray-700">{{ risk.description }}</p>
+                @if (risk.notes) {
+                  <p class="text-gray-600 mt-2">
+                    <strong>Notes:</strong> {{ risk.notes }}
+                  </p>
+                }
+              </mat-card-content>
+              <mat-card-actions align="end">
+                <button mat-button (click)="addNotes(risk)">
+                  <mat-icon>note_add</mat-icon>
+                  Add Notes
+                </button>
+                <button mat-button
+                  [color]="risk.status === 'RESOLVED' ? 'accent' : 'primary'"
+                  (click)="updateRiskStatus(risk, risk.status === 'RESOLVED' ? 'OPEN' : 'RESOLVED')">
+                  <mat-icon>{{ risk.status === 'RESOLVED' ? 'undo' : 'check' }}</mat-icon>
+                  {{ risk.status === 'RESOLVED' ? 'Reopen' : 'Mark Resolved' }}
+                </button>
+                <button mat-button
+                  color="warn"
+                  (click)="updateRiskStatus(risk, risk.status === 'IGNORED' ? 'OPEN' : 'IGNORED')">
+                  <mat-icon>{{ risk.status === 'IGNORED' ? 'visibility' : 'visibility_off' }}</mat-icon>
+                  {{ risk.status === 'IGNORED' ? 'Unignore' : 'Ignore' }}
+                </button>
+              </mat-card-actions>
+            </mat-card>
+          }
+        </div>
       </div>
-
-      <div class="grid grid-cols-1 gap-4">
-        <mat-card *ngFor="let risk of filteredRisks$ | async">
-          <mat-card-header>
-            <div [ngClass]="getRiskTypeClass(risk.severity)" class="w-2 h-2 rounded-full mt-2 mr-2"></div>
-            <mat-card-title class="text-lg">Risk: {{ risk.type }}</mat-card-title>
-            <mat-card-subtitle *ngIf="risk.clauseId">Clause: {{ risk.clauseId }}</mat-card-subtitle>
-          </mat-card-header>
-          <mat-card-content class="mt-4">
-            <p class="text-gray-700">{{ risk.description }}</p>
-            <p *ngIf="risk.notes" class="text-gray-600 mt-2">
-              <strong>Notes:</strong> {{ risk.notes }}
-            </p>
-          </mat-card-content>
-          <mat-card-actions align="end">
-            <button mat-button (click)="addNotes(risk)">
-              <mat-icon>note_add</mat-icon>
-              Add Notes
-            </button>
-            <button mat-button
-                    [color]="risk.status === 'RESOLVED' ? 'accent' : 'primary'"
-                    (click)="updateRiskStatus(risk, risk.status === 'RESOLVED' ? 'OPEN' : 'RESOLVED')">
-              <mat-icon>{{ risk.status === 'RESOLVED' ? 'undo' : 'check' }}</mat-icon>
-              {{ risk.status === 'RESOLVED' ? 'Reopen' : 'Mark Resolved' }}
-            </button>
-            <button mat-button
-                    color="warn"
-                    (click)="updateRiskStatus(risk, risk.status === 'IGNORED' ? 'OPEN' : 'IGNORED')">
-              <mat-icon>{{ risk.status === 'IGNORED' ? 'visibility' : 'visibility_off' }}</mat-icon>
-              {{ risk.status === 'IGNORED' ? 'Unignore' : 'Ignore' }}
-            </button>
-          </mat-card-actions>
-        </mat-card>
-      </div>
-    </div>
-
-    <ng-template #loading>
+    } @else {
       <div class="text-center py-12">
         <mat-spinner diameter="48" class="mx-auto mb-4"></mat-spinner>
         <p class="text-gray-600">Loading risk flags...</p>
       </div>
-    </ng-template>
+    }
+
   </div>
-</div> 
+</div>

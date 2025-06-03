@@ -1,11 +1,15 @@
 <div class="event-timeline" role="list" aria-label="Event Timeline">
-  <ng-container *ngIf="auditEvents$ | async as events">
-    <div *ngFor="let event of events" class="event-timeline-item" role="listitem">
-      <span class="event-timestamp">{{ event.timestamp | date:'short' }}</span>
-      <span class="event-actor">{{ event.actor }}</span>
-      <span class="event-action">{{ event.action }}</span>
-      <span class="event-detail">{{ event.detail }}</span>
-    </div>
-    <div *ngIf="events.length === 0" class="event-timeline-empty">No events yet.</div>
-  </ng-container>
-</div> 
+  @if (auditEvents$ | async; as events) {
+    @for (event of events; track event) {
+      <div class="event-timeline-item" role="listitem">
+        <span class="event-timestamp">{{ event.timestamp | date:'short' }}</span>
+        <span class="event-actor">{{ event.actor }}</span>
+        <span class="event-action">{{ event.action }}</span>
+        <span class="event-detail">{{ event.detail }}</span>
+      </div>
+    }
+    @if (events.length === 0) {
+      <div class="event-timeline-empty">No events yet.</div>
+    }
+  }
+</div>

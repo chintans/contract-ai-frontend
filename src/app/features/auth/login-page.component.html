@@ -1,4 +1,6 @@
 <div class="login-form">
   <div id="googleBtn" class="mt-4"></div>
-  <p *ngIf="error()" class="error" role="alert">{{ error() }}</p>
+  @if (error()) {
+    <p class="error" role="alert">{{ error() }}</p>
+  }
 </div>

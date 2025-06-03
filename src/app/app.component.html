@@ -4,8 +4,12 @@
   </button>
   <span>Contract Review AI</span>
   <span class="flex-grow"></span>
-  <button *ngIf="isLoggedIn()" mat-button (click)="logout()">Logout</button>
-  <a *ngIf="!isLoggedIn()" mat-button routerLink="/login">Login</a>
+  @if (isLoggedIn()) {
+    <button mat-button (click)="logout()">Logout</button>
+  }
+  @if (!isLoggedIn()) {
+    <a mat-button routerLink="/login">Login</a>
+  }
 </mat-toolbar>
 
 <mat-sidenav-container>
@@ -50,4 +54,4 @@
   <mat-sidenav-content>
     <router-outlet></router-outlet>
   </mat-sidenav-content>
-</mat-sidenav-container> 
+</mat-sidenav-container>

@@ -1,5 +1,5 @@
 import { Component, Output, EventEmitter, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -13,7 +13,6 @@ import { firstValueFrom } from 'rxjs';
   selector: 'app-contract-upload',
   standalone: true,
   imports: [
-    CommonModule,
     FormsModule,
     MatFormFieldModule,
     MatInputModule,
@@ -21,7 +20,7 @@ import { firstValueFrom } from 'rxjs';
     MatButtonModule,
     MatProgressBarModule,
     NgxFileDropModule
-  ],
+],
   templateUrl: './contract-upload.component.html',
   styleUrls: ['./contract-upload.component.scss']
 })

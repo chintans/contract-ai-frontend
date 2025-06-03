@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MaterialModule } from '../../shared/material.module';
@@ -11,7 +11,7 @@ import { MatCardModule } from '@angular/material/card';
 @Component({
   selector: 'app-contract-create-wizard',
   standalone: true,
-  imports: [CommonModule, FormsModule, MaterialModule, MatStepperModule, MatInputModule, MatFormFieldModule, MatCardModule],
+  imports: [FormsModule, MaterialModule, MatStepperModule, MatInputModule, MatFormFieldModule, MatCardModule],
   templateUrl: './contract-create-wizard.component.html',
   styleUrls: ['./contract-create-wizard.component.scss']
 })

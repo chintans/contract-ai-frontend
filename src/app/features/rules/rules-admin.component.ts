@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -13,14 +13,13 @@ import { RuleDialogComponent } from './rule-dialog.component';
   selector: 'app-rules-admin',
   standalone: true,
   imports: [
-    CommonModule,
     MatCardModule,
     MatButtonModule,
     MatIconModule,
     MatDividerModule,
     MatDialogModule,
     RulePreviewComponent
-  ],
+],
   templateUrl: './rules-admin.component.html',
   styleUrls: ['./rules-admin.component.scss']
 })

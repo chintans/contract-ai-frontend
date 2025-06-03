@@ -1,5 +1,7 @@
-<div class="autosave-toolbar" role="toolbar" aria-label="Draft Edits" *ngIf="(unsavedCount$ | async) ?? 0 > 0">
-  <span class="unsaved-count">{{ (unsavedCount$ | async) ?? 0 }} unsaved edits</span>
-  <button type="button" class="toolbar-btn save" (click)="saveAll()">Save All</button>
-  <button type="button" class="toolbar-btn discard" (click)="discardAll()">Discard All</button>
-</div> 
+@if ((unsavedCount$ | async) ?? 0 > 0) {
+  <div class="autosave-toolbar" role="toolbar" aria-label="Draft Edits">
+    <span class="unsaved-count">{{ (unsavedCount$ | async) ?? 0 }} unsaved edits</span>
+    <button type="button" class="toolbar-btn save" (click)="saveAll()">Save All</button>
+    <button type="button" class="toolbar-btn discard" (click)="discardAll()">Discard All</button>
+  </div>
+}

@@ -1,5 +1,5 @@
 import { Component, ViewChild, AfterViewInit, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { MatStepperModule, MatStepper } from '@angular/material/stepper';
 import { MatButtonModule } from '@angular/material/button';
@@ -18,7 +18,6 @@ import { LegalQAComponent } from './components/legal-qa/legal-qa.component';
   selector: 'app-contract-review',
   standalone: true,
   imports: [
-    CommonModule,
     RouterModule,
     MatStepperModule,
     MatButtonModule,
@@ -30,7 +29,7 @@ import { LegalQAComponent } from './components/legal-qa/legal-qa.component';
     RiskFlagsComponent,
     ContractSummaryComponent,
     LegalQAComponent
-  ],
+],
   templateUrl: './contract-review.component.html',
   styleUrls: ['./contract-review.component.scss']
 })

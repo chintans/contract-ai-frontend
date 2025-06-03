@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, ViewChild, AfterViewInit, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { Router } from '@angular/router';
 import { ContractDataService, ContractListItem } from './contract-data.service';
 import { MaterialModule } from '../../shared/material.module';
@@ -10,7 +10,7 @@ import { MatSort } from '@angular/material/sort';
 @Component({
   selector: 'app-contract-list-page',
   standalone: true,
-  imports: [CommonModule, MaterialModule],
+  imports: [MaterialModule],
   templateUrl: './contract-list-page.component.html',
   styleUrls: ['./contract-list-page.component.scss']
 })

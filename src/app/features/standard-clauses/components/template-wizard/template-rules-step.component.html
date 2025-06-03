@@ -8,9 +8,11 @@
 
   <nav class="sticky top-0 bg-white z-10 py-2 mb-4" aria-label="Clause navigation">
     <ul class="flex gap-2 flex-wrap">
-      <li *ngFor="let clause of clauses(); let i = index">
-        <a [href]="'#clause-title-' + i" class="text-blue-600 underline px-2" tabindex="0">Clause {{i + 1}}</a>
-      </li>
+      @for (clause of clauses(); track clause; let i = $index) {
+        <li>
+          <a [href]="'#clause-title-' + i" class="text-blue-600 underline px-2" tabindex="0">Clause {{i + 1}}</a>
+        </li>
+      }
     </ul>
   </nav>
 
@@ -18,42 +20,52 @@
     <button type="button" class="px-3 py-1 rounded bg-gray-100 border" (click)="onBatchApplyRule(ruleTemplates[0].rule)" [attr.aria-label]="'Apply Strict rule to selected'">Apply Strict</button>
     <button type="button" class="px-3 py-1 rounded bg-gray-100 border" (click)="onBatchApplyRule(ruleTemplates[1].rule)" [attr.aria-label]="'Apply Lenient rule to selected'">Apply Lenient</button>
     <span class="ml-4">Batch apply to selected clauses:</span>
-    <button *ngFor="let template of ruleTemplates" type="button" class="px-2 py-1 rounded bg-blue-100 border ml-2" (click)="onApplyTemplate(template.name)" [attr.aria-label]="'Apply ' + template.name + ' template to selected'">{{template.name}}</button>
+    @for (template of ruleTemplates; track template) {
+      <button type="button" class="px-2 py-1 rounded bg-blue-100 border ml-2" (click)="onApplyTemplate(template.name)" [attr.aria-label]="'Apply ' + template.name + ' template to selected'">{{template.name}}</button>
+    }
     <button type="button" class="ml-4 px-2 py-1 rounded bg-red-100 border" (click)="clearAutosave()" [attr.aria-label]="'Clear autosaved rules'">Clear Autosave</button>
   </div>
 
   <div class="clauses-list">
-    <div *ngFor="let clause of clauses(); let i = index" class="clause-item" tabindex="0" [attr.aria-labelledby]="'clause-title-' + i">
-      <div class="clause-header flex items-center gap-2">
-        <input type="checkbox" [checked]="selectedClauseIndexes().has(i)" (change)="onClauseSelect(i, $event)" [attr.aria-label]="'Select clause ' + (i + 1) + ' for batch actions'">
-        <h3 id="clause-title-{{i}}">{{clause.title}}</h3>
-        <span class="clause-number">#{{i + 1}}</span>
-        <mat-icon *ngIf="clauseHasErrors(clause.id)" color="warn" aria-label="Rule invalid">error</mat-icon>
-      </div>
-      <div class="clause-body mb-2">
-        <pre class="clause-text">{{clause.text}}</pre>
-      </div>
-      <div class="rule-configuration flex flex-col md:flex-row gap-4">
-        <div class="editor-section flex-1">
-          <app-rule-editor
-            [rule]="clause.rule"
-            (ruleChange)="onRuleChange(clause.id, $event)">
-          </app-rule-editor>
-          <div class="simulation-preview mt-2 p-2 bg-gray-50 rounded" *ngIf="clauseSimResults()[clause.id]">
-            <strong>Simulation:</strong>
-            <span [ngClass]="{ 'text-green-600': clauseSimResults()[clause.id].result === 'PASS', 'text-red-600': clauseSimResults()[clause.id].result === 'FAIL', 'text-yellow-600': clauseSimResults()[clause.id].result === 'FLAGGED' }">
-              {{ clauseSimResults()[clause.id].result }} - {{ clauseSimResults()[clause.id].message }}
-            </span>
+    @for (clause of clauses(); track clause; let i = $index) {
+      <div class="clause-item" tabindex="0" [attr.aria-labelledby]="'clause-title-' + i">
+        <div class="clause-header flex items-center gap-2">
+          <input type="checkbox" [checked]="selectedClauseIndexes().has(i)" (change)="onClauseSelect(i, $event)" [attr.aria-label]="'Select clause ' + (i + 1) + ' for batch actions'">
+          <h3 id="clause-title-{{i}}">{{clause.title}}</h3>
+          <span class="clause-number">#{{i + 1}}</span>
+          @if (clauseHasErrors(clause.id)) {
+            <mat-icon color="warn" aria-label="Rule invalid">error</mat-icon>
+          }
+        </div>
+        <div class="clause-body mb-2">
+          <pre class="clause-text">{{clause.text}}</pre>
+        </div>
+        <div class="rule-configuration flex flex-col md:flex-row gap-4">
+          <div class="editor-section flex-1">
+            <app-rule-editor
+              [rule]="clause.rule"
+              (ruleChange)="onRuleChange(clause.id, $event)">
+            </app-rule-editor>
+            @if (clauseSimResults()[clause.id]) {
+              <div class="simulation-preview mt-2 p-2 bg-gray-50 rounded">
+                <strong>Simulation:</strong>
+                <span [ngClass]="{ 'text-green-600': clauseSimResults()[clause.id].result === 'PASS', 'text-red-600': clauseSimResults()[clause.id].result === 'FAIL', 'text-yellow-600': clauseSimResults()[clause.id].result === 'FLAGGED' }">
+                  {{ clauseSimResults()[clause.id].result }} - {{ clauseSimResults()[clause.id].message }}
+                </span>
+              </div>
+            }
+          </div>
+          <div class="preview-section flex-1">
+            <app-rule-preview
+              [rule]="clause.rule"
+              [clauseText]="clause.text">
+            </app-rule-preview>
           </div>
         </div>
-        <div class="preview-section flex-1">
-          <app-rule-preview
-            [rule]="clause.rule"
-            [clauseText]="clause.text">
-          </app-rule-preview>
-        </div>
+        @if (i < clauses().length - 1) {
+          <mat-divider></mat-divider>
+        }
       </div>
-      <mat-divider *ngIf="i < clauses().length - 1"></mat-divider>
-    </div>
+    }
   </div>
-</div> 
+</div>

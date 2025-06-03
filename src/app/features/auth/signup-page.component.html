@@ -17,6 +17,8 @@
   </mat-form-field>
   <button mat-raised-button color="primary" type="submit">Sign Up</button>
   <div id="googleSignupBtn" class="mt-4"></div>
-  <p *ngIf="error()" class="error">{{ error() }}</p>
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
   <a routerLink="/login">Already have an account?</a>
 </form>

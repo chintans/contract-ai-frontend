@@ -1,21 +1,22 @@
 <div class="p-6" role="main">
   <div class="max-w-4xl mx-auto">
-    <div *ngIf="analysis$ | async as analysis; else loading">
-      <div class="mb-6">
-        <div class="flex items-center justify-between">
-          <h2 class="text-2xl font-semibold" id="legal-qa-title">Legal Q&A</h2>
-          <p class="text-gray-600" aria-label="Current file name">{{ analysis.fileName }}</p>
+    @if (analysis$ | async; as analysis) {
+      <div>
+        <div class="mb-6">
+          <div class="flex items-center justify-between">
+            <h2 class="text-2xl font-semibold" id="legal-qa-title">Legal Q&A</h2>
+            <p class="text-gray-600" aria-label="Current file name">{{ analysis.fileName }}</p>
+          </div>
         </div>
-      </div>
-
-      <mat-card role="region" aria-labelledby="legal-qa-title">
-        <mat-card-header>
-          <mat-card-title id="qa-assistant-title">Legal Q&A Assistant</mat-card-title>
-          <mat-card-subtitle id="qa-assistant-subtitle">Ask questions about your contract</mat-card-subtitle>
-        </mat-card-header>
-        <mat-card-content>
-          <div class="h-[400px] overflow-y-auto mb-4 p-4" role="log" aria-label="Chat messages" aria-live="polite">
-            <div *ngFor="let message of messages; let i = index" class="mb-4">
+        <mat-card role="region" aria-labelledby="legal-qa-title">
+          <mat-card-header>
+            <mat-card-title id="qa-assistant-title">Legal Q&A Assistant</mat-card-title>
+            <mat-card-subtitle id="qa-assistant-subtitle">Ask questions about your contract</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="h-[400px] overflow-y-auto mb-4 p-4" role="log" aria-label="Chat messages" aria-live="polite">
+              @for (message of messages; track message; let i = $index) {
+                <div class="mb-4">
               <div [ngClass]="{
                 'flex items-start': true,
                 'justify-end': message.role === 'user',
@@ -26,69 +27,72 @@
                   'bg-blue-100': message.role === 'user',
                   'bg-gray-100': message.role === 'assistant'
                 }"
-                [attr.role]="message.role === 'assistant' ? 'article' : 'comment'"
-                [attr.aria-label]="message.role === 'assistant' ? 'Assistant response' : 'Your message'"
-                [id]="'message-' + i">
-                  <p class="text-sm">{{ message.content }}</p>
-                  <p class="text-xs text-gray-500 mt-1" aria-label="Message timestamp">
-                    {{ message.timestamp | date:'short' }}
-                  </p>
+                      [attr.role]="message.role === 'assistant' ? 'article' : 'comment'"
+                      [attr.aria-label]="message.role === 'assistant' ? 'Assistant response' : 'Your message'"
+                      [id]="'message-' + i">
+                      <p class="text-sm">{{ message.content }}</p>
+                      <p class="text-xs text-gray-500 mt-1" aria-label="Message timestamp">
+                        {{ message.timestamp | date:'short' }}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              }
+              @if (isLoading) {
+                <div class="flex justify-center my-4" role="status" aria-label="Loading response">
+                  <mat-spinner diameter="30"></mat-spinner>
+                </div>
+              }
             </div>
-            <div *ngIf="isLoading" class="flex justify-center my-4" role="status" aria-label="Loading response">
-              <mat-spinner diameter="30"></mat-spinner>
+          </mat-card-content>
+          <mat-divider></mat-divider>
+          <div class="p-4">
+            <form (ngSubmit)="sendMessage()" #qaForm="ngForm" class="flex gap-2" role="form" aria-label="Question input form">
+              <mat-form-field appearance="outline" class="flex-grow">
+                <mat-label>Ask a question</mat-label>
+                <input matInput
+                  aria-label="Type your question here"
+                  [(ngModel)]="currentQuestion"
+                  name="question"
+                  placeholder="e.g., What are the key obligations?"
+                  [disabled]="isLoading"
+                  [attr.aria-describedby]="'qa-assistant-subtitle'">
+                </mat-form-field>
+                <button mat-raised-button
+                  color="primary"
+                  type="submit"
+                  [disabled]="!currentQuestion || isLoading"
+                  aria-label="Send question">
+                  <mat-icon aria-hidden="true">send</mat-icon>
+                </button>
+              </form>
             </div>
-          </div>
-        </mat-card-content>
-        <mat-divider></mat-divider>
-        <div class="p-4">
-          <form (ngSubmit)="sendMessage()" #qaForm="ngForm" class="flex gap-2" role="form" aria-label="Question input form">
-            <mat-form-field appearance="outline" class="flex-grow">
-              <mat-label>Ask a question</mat-label>
-              <input matInput
-                     aria-label="Type your question here"
-                     [(ngModel)]="currentQuestion"
-                     name="question"
-                     placeholder="e.g., What are the key obligations?"
-                     [disabled]="isLoading"
-                     [attr.aria-describedby]="'qa-assistant-subtitle'">
-            </mat-form-field>
-            <button mat-raised-button
-                    color="primary"
-                    type="submit"
-                    [disabled]="!currentQuestion || isLoading"
-                    aria-label="Send question">
-              <mat-icon aria-hidden="true">send</mat-icon>
-            </button>
-          </form>
-        </div>
-      </mat-card>
-
-      <mat-card class="mt-6" role="region" aria-labelledby="suggested-questions-title">
-        <mat-card-header>
-          <mat-card-title id="suggested-questions-title">Suggested Questions</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <div class="grid grid-cols-2 gap-4 p-4" role="list">
-            <button mat-stroked-button
-                    *ngFor="let question of suggestedQuestions"
+          </mat-card>
+          <mat-card class="mt-6" role="region" aria-labelledby="suggested-questions-title">
+            <mat-card-header>
+              <mat-card-title id="suggested-questions-title">Suggested Questions</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <div class="grid grid-cols-2 gap-4 p-4" role="list">
+                @for (question of suggestedQuestions; track question) {
+                  <button mat-stroked-button
                     (click)="askSuggestedQuestion(question)"
                     [disabled]="isLoading"
                     role="listitem"
                     [attr.aria-label]="'Ask: ' + question">
-              {{ question }}
-            </button>
-          </div>
-        </mat-card-content>
-      </mat-card>
-    </div>
+                    {{ question }}
+                  </button>
+                }
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      } @else {
+        <div class="text-center py-12" role="status" aria-live="polite">
+          <mat-spinner diameter="48" class="mx-auto mb-4"></mat-spinner>
+          <p class="text-gray-600">Loading contract data...</p>
+        </div>
+      }
 
-    <ng-template #loading>
-      <div class="text-center py-12" role="status" aria-live="polite">
-        <mat-spinner diameter="48" class="mx-auto mb-4"></mat-spinner>
-        <p class="text-gray-600">Loading contract data...</p>
-      </div>
-    </ng-template>
+    </div>
   </div>
-</div> 

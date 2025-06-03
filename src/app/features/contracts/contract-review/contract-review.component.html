@@ -1,6 +1,6 @@
 <main id="main-content" class="container mx-auto p-4" role="main" aria-label="Contract Review Main Content">
   <h1 class="text-2xl font-bold mb-6">Contract Review</h1>
-  
+
   <mat-stepper [selectedIndex]="currentStepIndex" [linear]="true" [disableRipple]="true" #stepper aria-label="Contract Review Steps">
     <mat-step label="Upload Contract">
       <section role="region" aria-labelledby="upload-contract-label">
@@ -11,25 +11,33 @@
     <mat-step label="Analysis">
       <section role="region" aria-labelledby="analysis-label">
         <span id="analysis-label" class="sr-only">Analysis</span>
-        <app-contract-analysis *ngIf="currentStepIndex === 1" [contractId]="contractId()"></app-contract-analysis>
+        @if (currentStepIndex === 1) {
+          <app-contract-analysis [contractId]="contractId()"></app-contract-analysis>
+        }
       </section>
     </mat-step>
     <mat-step label="Risk Flags">
       <section role="region" aria-labelledby="risk-flags-label">
         <span id="risk-flags-label" class="sr-only">Risk Flags</span>
-        <app-risk-flags *ngIf="currentStepIndex === 2" [contractId]="contractId()"></app-risk-flags>
+        @if (currentStepIndex === 2) {
+          <app-risk-flags [contractId]="contractId()"></app-risk-flags>
+        }
       </section>
     </mat-step>
     <mat-step label="Summary">
       <section role="region" aria-labelledby="summary-label">
         <span id="summary-label" class="sr-only">Summary</span>
-        <app-contract-summary *ngIf="currentStepIndex === 3" [contractId]="contractId()"></app-contract-summary>
+        @if (currentStepIndex === 3) {
+          <app-contract-summary [contractId]="contractId()"></app-contract-summary>
+        }
       </section>
     </mat-step>
     <mat-step label="Legal Q&A">
       <section role="region" aria-labelledby="legal-qa-label">
         <span id="legal-qa-label" class="sr-only">Legal Q&amp;A</span>
-        <app-legal-qa *ngIf="currentStepIndex === 4" [contractId]="contractId()"></app-legal-qa>
+        @if (currentStepIndex === 4) {
+          <app-legal-qa [contractId]="contractId()"></app-legal-qa>
+        }
       </section>
     </mat-step>
   </mat-stepper>
@@ -46,12 +54,14 @@
       data-cy="next-btn"
       [disabled]="!isCurrentStepValid() || !hasNext()"
       aria-label="Go to next step"
-    >
+      >
       <span>Next</span>
       <mat-icon aria-hidden="true">arrow_forward</mat-icon>
     </button>
   </div>
-  <div *ngIf="stepError()" class="text-red-600 mt-2 text-center" role="alert">
-    {{ stepError() }}
-  </div>
-</main> 
+  @if (stepError()) {
+    <div class="text-red-600 mt-2 text-center" role="alert">
+      {{ stepError() }}
+    </div>
+  }
+</main>

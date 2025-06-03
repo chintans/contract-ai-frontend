@@ -6,26 +6,30 @@
     </button>
   </div>
   <mat-card>
-    <mat-table [dataSource]="dataSource" class="mat-elevation-z2" *ngIf="jobs.length">
-      <ng-container matColumnDef="fileName">
-        <mat-header-cell *matHeaderCellDef>File</mat-header-cell>
-        <mat-cell *matCellDef="let j">{{ j.fileName }}</mat-cell>
-      </ng-container>
-      <ng-container matColumnDef="createdAt">
-        <mat-header-cell *matHeaderCellDef>Received</mat-header-cell>
-        <mat-cell *matCellDef="let j">{{ j.createdAt }}</mat-cell>
-      </ng-container>
-      <ng-container matColumnDef="status">
-        <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
-        <mat-cell *matCellDef="let j">{{ j.status || 'Pending' }}</mat-cell>
-      </ng-container>
-      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-      <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="open(row)" class="row-hover"></mat-row>
-    </mat-table>
-    <div *ngIf="!jobs.length" class="empty-state">
-      <mat-icon color="disabled" fontSize="48">description</mat-icon>
-      <p>No contracts received for review.</p>
-      <button mat-stroked-button color="primary" (click)="addForReview()">Add for Review</button>
-    </div>
+    @if (jobs.length) {
+      <mat-table [dataSource]="dataSource" class="mat-elevation-z2">
+        <ng-container matColumnDef="fileName">
+          <mat-header-cell *matHeaderCellDef>File</mat-header-cell>
+          <mat-cell *matCellDef="let j">{{ j.fileName }}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="createdAt">
+          <mat-header-cell *matHeaderCellDef>Received</mat-header-cell>
+          <mat-cell *matCellDef="let j">{{ j.createdAt }}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="status">
+          <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+          <mat-cell *matCellDef="let j">{{ j.status || 'Pending' }}</mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="open(row)" class="row-hover"></mat-row>
+      </mat-table>
+    }
+    @if (!jobs.length) {
+      <div class="empty-state">
+        <mat-icon color="disabled" fontSize="48">description</mat-icon>
+        <p>No contracts received for review.</p>
+        <button mat-stroked-button color="primary" (click)="addForReview()">Add for Review</button>
+      </div>
+    }
   </mat-card>
 </div>

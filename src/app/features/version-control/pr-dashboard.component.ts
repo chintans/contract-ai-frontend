@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { MatCardModule } from '@angular/material/card';
 
 interface PullRequest {
@@ -14,7 +14,7 @@ interface PullRequest {
 @Component({
   selector: 'app-pr-dashboard',
   standalone: true,
-  imports: [CommonModule, MatCardModule],
+  imports: [MatCardModule],
   templateUrl: './pr-dashboard.component.html',
   styleUrls: ['./pr-dashboard.component.scss']
 })

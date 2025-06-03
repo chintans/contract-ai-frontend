@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 
 interface VersionItem {
   id: string;
@@ -10,7 +10,7 @@ interface VersionItem {
 @Component({
   selector: 'app-version-timeline',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './version-timeline.component.html',
   styleUrls: ['./version-timeline.component.scss']
 })

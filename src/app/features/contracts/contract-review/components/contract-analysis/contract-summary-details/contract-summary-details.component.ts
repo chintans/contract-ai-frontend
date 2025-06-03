@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 
 export interface Party {
   name: string;
@@ -66,7 +66,7 @@ export interface ContractSummary {
 @Component({
   selector: 'app-contract-summary-details',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './contract-summary-details.component.html',
   styleUrls: ['./contract-summary-details.component.scss']
 })

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -17,7 +17,6 @@ import { RuleValidationService } from '../../services/rule-validation.service';
   selector: 'app-rule-editor',
   standalone: true,
   imports: [
-    CommonModule,
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
@@ -29,7 +28,7 @@ import { RuleValidationService } from '../../services/rule-validation.service';
     MatButtonModule,
     MatTooltipModule,
     MatCheckboxModule
-  ],
+],
   templateUrl: './rule-editor.component.html',
   styleUrls: ['./rule-editor.component.scss']
 })

@@ -1,77 +1,78 @@
 <div class="p-6">
   <div class="max-w-4xl mx-auto">
-    <div *ngIf="analysis$ | async as analysis; else loading">
-      <div class="mb-6">
-        <div class="flex items-center justify-between">
-          <h2 class="text-2xl font-semibold">Contract Summary</h2>
-          <button mat-raised-button color="primary" (click)="exportAnalysis()">
-            <mat-icon>download</mat-icon>
-            Export Summary
-          </button>
+    @if (analysis$ | async; as analysis) {
+      <div>
+        <div class="mb-6">
+          <div class="flex items-center justify-between">
+            <h2 class="text-2xl font-semibold">Contract Summary</h2>
+            <button mat-raised-button color="primary" (click)="exportAnalysis()">
+              <mat-icon>download</mat-icon>
+              Export Summary
+            </button>
+          </div>
+          <p class="text-gray-600 mt-2">{{ analysis.fileName }}</p>
         </div>
-        <p class="text-gray-600 mt-2">{{ analysis.fileName }}</p>
+        <mat-card class="mb-6">
+          <mat-card-header>
+            <mat-card-title>Overview</mat-card-title>
+          </mat-card-header>
+          <mat-card-content class="mt-4">
+            @if (summary) {
+              <div>
+                <div class="space-y-2">
+                  <p><span class="font-medium">Type:</span> {{ summary.type }}</p>
+                  <p><span class="font-medium">Title:</span> {{ summary.title || summary.id }}</p>
+                  <p><span class="font-medium">Text:</span> {{ summary.text }}</p>
+                  <p><span class="font-medium">Reviewed:</span> {{ summary.isReviewed ? 'Yes' : 'No' }}</p>
+                  @if (summary.reviewerComments) {
+                    <p><span class="font-medium">Reviewer Comments:</span> {{ summary.reviewerComments }}</p>
+                  }
+                </div>
+              </div>
+            } @else {
+              <div class="text-gray-400">No summary available.</div>
+            }
+          </mat-card-content>
+        </mat-card>
+        @if (summary) {
+          <app-contract-summary-details [summary]="summary"></app-contract-summary-details>
+        }
+        <mat-accordion>
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>Risk Summary</mat-panel-title>
+            </mat-expansion-panel-header>
+            <div class="space-y-4 mt-4">
+              <div class="grid grid-cols-3 gap-4">
+                <div class="text-center p-4 bg-red-50 rounded-lg">
+                  <p class="text-2xl font-bold text-red-600">
+                    {{ getHighRiskCount(analysis) }}
+                  </p>
+                  <p class="text-sm text-gray-600">High Risk Items</p>
+                </div>
+                <div class="text-center p-4 bg-yellow-50 rounded-lg">
+                  <p class="text-2xl font-bold text-yellow-600">
+                    {{ getMediumRiskCount(analysis) }}
+                  </p>
+                  <p class="text-sm text-gray-600">Medium Risk Items</p>
+                </div>
+                <div class="text-center p-4 bg-green-50 rounded-lg">
+                  <p class="text-2xl font-bold text-green-600">
+                    {{ getLowRiskCount(analysis) }}
+                  </p>
+                  <p class="text-sm text-gray-600">Low Risk Items</p>
+                </div>
+              </div>
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
       </div>
-
-      <mat-card class="mb-6">
-        <mat-card-header>
-          <mat-card-title>Overview</mat-card-title>
-        </mat-card-header>
-        <mat-card-content class="mt-4">
-          <div *ngIf="summary; else noSummary">
-            <div class="space-y-2">
-              <p><span class="font-medium">Type:</span> {{ summary.type }}</p>
-              <p><span class="font-medium">Title:</span> {{ summary.title || summary.id }}</p>
-              <p><span class="font-medium">Text:</span> {{ summary.text }}</p>
-              <p><span class="font-medium">Reviewed:</span> {{ summary.isReviewed ? 'Yes' : 'No' }}</p>
-              <p *ngIf="summary.reviewerComments"><span class="font-medium">Reviewer Comments:</span> {{ summary.reviewerComments }}</p>
-            </div>
-          </div>
-          <ng-template #noSummary>
-            <div class="text-gray-400">No summary available.</div>
-          </ng-template>
-        </mat-card-content>
-      </mat-card>
-
-      <ng-container *ngIf="summary">
-        <app-contract-summary-details [summary]="summary"></app-contract-summary-details>
-      </ng-container>
-
-      <mat-accordion>
-        <mat-expansion-panel>
-          <mat-expansion-panel-header>
-            <mat-panel-title>Risk Summary</mat-panel-title>
-          </mat-expansion-panel-header>
-          <div class="space-y-4 mt-4">
-            <div class="grid grid-cols-3 gap-4">
-              <div class="text-center p-4 bg-red-50 rounded-lg">
-                <p class="text-2xl font-bold text-red-600">
-                  {{ getHighRiskCount(analysis) }}
-                </p>
-                <p class="text-sm text-gray-600">High Risk Items</p>
-              </div>
-              <div class="text-center p-4 bg-yellow-50 rounded-lg">
-                <p class="text-2xl font-bold text-yellow-600">
-                  {{ getMediumRiskCount(analysis) }}
-                </p>
-                <p class="text-sm text-gray-600">Medium Risk Items</p>
-              </div>
-              <div class="text-center p-4 bg-green-50 rounded-lg">
-                <p class="text-2xl font-bold text-green-600">
-                  {{ getLowRiskCount(analysis) }}
-                </p>
-                <p class="text-sm text-gray-600">Low Risk Items</p>
-              </div>
-            </div>
-          </div>
-        </mat-expansion-panel>
-      </mat-accordion>
-    </div>
-
-    <ng-template #loading>
+    } @else {
       <div class="text-center py-12">
         <mat-spinner diameter="48" class="mx-auto mb-4"></mat-spinner>
         <p class="text-gray-600">Loading contract summary...</p>
       </div>
-    </ng-template>
+    }
+
   </div>
-</div> 
+</div>

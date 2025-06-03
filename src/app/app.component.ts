@@ -5,7 +5,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { CommonModule } from '@angular/common';
+
 import { AuthService } from './core/auth.service';
 import { MatExpansionModule } from '@angular/material/expansion';
 
@@ -15,7 +15,6 @@ import { MatExpansionModule } from '@angular/material/expansion';
   styleUrls: ['./app.component.scss'],
   standalone: true,
   imports: [
-    CommonModule,
     RouterOutlet,
     RouterLink,
     RouterLinkActive,
@@ -25,7 +24,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
     MatIconModule,
     MatButtonModule,
     MatExpansionModule
-  ]
+]
 })
 export class AppComponent {
   private auth = inject(AuthService);

@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { RouterModule } from '@angular/router';
 import { finalize } from 'rxjs';
 import { STANDARD_CLAUSE_SERVICE_TOKEN } from '../standard-clause-service.token';
@@ -8,7 +8,7 @@ import { IStandardClauseService, StandardClause } from '../models/standard-claus
 @Component({
   selector: 'app-standard-clause-list',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [RouterModule],
   templateUrl: './standard-clause-list.component.html'
 })
 export class StandardClauseListComponent implements OnInit {

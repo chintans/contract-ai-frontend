@@ -1,7 +1,7 @@
 <div class="p-6">
   <div class="max-w-3xl mx-auto">
     <h2 class="text-2xl font-semibold mb-6">Upload Contract</h2>
-    
+
     <mat-form-field appearance="fill" class="w-full mb-6">
       <mat-label>Contract Type</mat-label>
       <mat-select data-cy="contract-type-select" [(ngModel)]="contractType" required (selectionChange)="onContractTypeChange()">
@@ -21,7 +21,7 @@
         (onFileOver)="fileOver($event)"
         (onFileLeave)="fileLeave()"
         accept=".pdf,.doc,.docx"
-      >
+        >
         <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
           <div class="upload-area" [class.drag-over]="isDragging">
             <div class="space-y-4">
@@ -40,19 +40,23 @@
       </ngx-file-drop>
     </div>
 
-    <div *ngIf="selectedFile" class="file-info">
-      <div>
-        <p class="font-medium">{{ selectedFile.name }}</p>
-        <p class="text-sm text-gray-500">{{ formatFileSize(selectedFile.size) }}</p>
+    @if (selectedFile) {
+      <div class="file-info">
+        <div>
+          <p class="font-medium">{{ selectedFile.name }}</p>
+          <p class="text-sm text-gray-500">{{ formatFileSize(selectedFile.size) }}</p>
+        </div>
+        <button mat-icon-button color="warn" (click)="removeFile()">
+          <span class="material-icons">close</span>
+        </button>
       </div>
-      <button mat-icon-button color="warn" (click)="removeFile()">
-        <span class="material-icons">close</span>
-      </button>
-    </div>
+    }
 
-    <div *ngIf="isUploading" class="progress-bar">
-      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-      <p class="text-sm text-gray-600 mt-2">Analyzing contract...</p>
-    </div>
+    @if (isUploading) {
+      <div class="progress-bar">
+        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+        <p class="text-sm text-gray-600 mt-2">Analyzing contract...</p>
+      </div>
+    }
   </div>
-</div> 
+</div>

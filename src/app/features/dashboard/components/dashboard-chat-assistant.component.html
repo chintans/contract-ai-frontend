@@ -1,10 +1,16 @@
 <aside role="complementary" class="p-8 text-base text-gray-600 h-full flex flex-col">
-  <div class="flex-1 overflow-y-auto" *ngIf="chatMessages$ | async as messages">
-    <div *ngFor="let msg of messages" class="mb-4 p-3 rounded bg-gray-100 flex flex-col gap-1">
-      <span class="font-semibold text-primary-700">{{ msg.sender }}:</span>
-      <span class="text-gray-800">{{ msg.message }}</span>
-      <span class="text-xs text-gray-400 self-end">{{ msg.timestamp | date:'shortTime' }}</span>
+  @if (chatMessages$ | async; as messages) {
+    <div class="flex-1 overflow-y-auto">
+      @for (msg of messages; track msg) {
+        <div class="mb-4 p-3 rounded bg-gray-100 flex flex-col gap-1">
+          <span class="font-semibold text-primary-700">{{ msg.sender }}:</span>
+          <span class="text-gray-800">{{ msg.message }}</span>
+          <span class="text-xs text-gray-400 self-end">{{ msg.timestamp | date:'shortTime' }}</span>
+        </div>
+      }
+      @if (messages.length === 0) {
+        <div class="text-center text-gray-400">No messages yet.</div>
+      }
     </div>
-    <div *ngIf="messages.length === 0" class="text-center text-gray-400">No messages yet.</div>
-  </div>
-</aside> 
+  }
+</aside>

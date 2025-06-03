@@ -20,202 +20,241 @@
   </div>
 
   <form class="w-full" autocomplete="off">
-    <div *ngIf="step() === 0" class="grid grid-cols-1 md:grid-cols-2 gap-8">
-      <!-- Meta Step -->
-      <div>
-        <h3 class="text-xl font-semibold mb-4">Template Meta</h3>
-        <div class="mb-6">
-          <label class="block mb-1 font-medium" for="template-name">Name</label>
-          <input id="template-name" class="w-full border px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500" [(ngModel)]="meta().name" name="name" aria-label="Template Name" aria-required="true" [attr.aria-invalid]="!meta().name ? 'true' : 'false'" />
-          <div *ngIf="metaTouched() && !meta().name" class="text-red-600 text-sm mt-1" role="alert" aria-live="assertive">Name is required</div>
-        </div>
-        <div class="mb-6">
-          <label class="block mb-1 font-medium" for="contract-type">Contract Type</label>
-          <select id="contract-type" class="w-full border px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500" [(ngModel)]="meta().contractType" name="contractType" aria-label="Contract Type" aria-required="true" [attr.aria-invalid]="!meta().contractType ? 'true' : 'false'">
-            <option value="" disabled>Select contract type</option>
-            <option value="MSA">Master Services Agreement (MSA)</option>
-            <option value="NDA">Non-Disclosure Agreement (NDA)</option>
-            <option value="Employment">Employment</option>
-            <option value="SaaS">SaaS Subscription</option>
-            <option value="Sales">Sales Contract</option>
-          </select>
-          <div *ngIf="metaTouched() && !meta().contractType" class="text-red-600 text-sm mt-1" role="alert" aria-live="assertive">Contract type is required</div>
-        </div>
-        <div class="mb-6">
-          <label class="block mb-1 font-medium" for="country">Jurisdiction</label>
-          <div class="flex flex-col gap-2">
-            <select id="country" class="border px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500" [(ngModel)]="meta().country" name="country" aria-label="Country" aria-required="true" [attr.aria-invalid]="!meta().country ? 'true' : 'false'" (change)="onCountryChange()">
-              <option value="" disabled>Select country</option>
-              <option value="India">India</option>
-              <option value="USA">USA</option>
+    @if (step() === 0) {
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Meta Step -->
+        <div>
+          <h3 class="text-xl font-semibold mb-4">Template Meta</h3>
+          <div class="mb-6">
+            <label class="block mb-1 font-medium" for="template-name">Name</label>
+            <input id="template-name" class="w-full border px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500" [(ngModel)]="meta().name" name="name" aria-label="Template Name" aria-required="true" [attr.aria-invalid]="!meta().name ? 'true' : 'false'" />
+            @if (metaTouched() && !meta().name) {
+              <div class="text-red-600 text-sm mt-1" role="alert" aria-live="assertive">Name is required</div>
+            }
+          </div>
+          <div class="mb-6">
+            <label class="block mb-1 font-medium" for="contract-type">Contract Type</label>
+            <select id="contract-type" class="w-full border px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500" [(ngModel)]="meta().contractType" name="contractType" aria-label="Contract Type" aria-required="true" [attr.aria-invalid]="!meta().contractType ? 'true' : 'false'">
+              <option value="" disabled>Select contract type</option>
+              <option value="MSA">Master Services Agreement (MSA)</option>
+              <option value="NDA">Non-Disclosure Agreement (NDA)</option>
+              <option value="Employment">Employment</option>
+              <option value="SaaS">SaaS Subscription</option>
+              <option value="Sales">Sales Contract</option>
             </select>
-            <div *ngIf="metaTouched() && !meta().country" class="text-red-600 text-sm mt-1" role="alert" aria-live="assertive">Country is required</div>
-            <select id="state" class="border px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500" [(ngModel)]="meta().state" name="state" aria-label="State" [disabled]="!meta().country" aria-required="true" [attr.aria-invalid]="!meta().state && meta().country ? 'true' : 'false'">
-              <option value="" disabled>Select state</option>
-              <ng-container *ngIf="meta().country === 'India'">
-                <option *ngFor="let s of indiaStates" [value]="s">{{ s }}</option>
-              </ng-container>
-              <ng-container *ngIf="meta().country === 'USA'">
-                <option *ngFor="let s of usaStates" [value]="s">{{ s }}</option>
-              </ng-container>
-            </select>
-            <div *ngIf="metaTouched() && meta().country && !meta().state" class="text-red-600 text-sm mt-1" role="alert" aria-live="assertive">State is required</div>
-            <select id="city" class="border px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500" [(ngModel)]="meta().city" name="city" aria-label="City" [disabled]="!meta().state" aria-required="true" [attr.aria-invalid]="!meta().city && meta().state ? 'true' : 'false'">
-              <option value="" disabled>Select city</option>
-              <option *ngFor="let c of getCities(meta().country, meta().state)" [value]="c">{{ c }}</option>
-            </select>
-            <div *ngIf="metaTouched() && meta().state && !meta().city" class="text-red-600 text-sm mt-1" role="alert" aria-live="assertive">City is required</div>
+            @if (metaTouched() && !meta().contractType) {
+              <div class="text-red-600 text-sm mt-1" role="alert" aria-live="assertive">Contract type is required</div>
+            }
+          </div>
+          <div class="mb-6">
+            <label class="block mb-1 font-medium" for="country">Jurisdiction</label>
+            <div class="flex flex-col gap-2">
+              <select id="country" class="border px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500" [(ngModel)]="meta().country" name="country" aria-label="Country" aria-required="true" [attr.aria-invalid]="!meta().country ? 'true' : 'false'" (change)="onCountryChange()">
+                <option value="" disabled>Select country</option>
+                <option value="India">India</option>
+                <option value="USA">USA</option>
+              </select>
+              @if (metaTouched() && !meta().country) {
+                <div class="text-red-600 text-sm mt-1" role="alert" aria-live="assertive">Country is required</div>
+              }
+              <select id="state" class="border px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500" [(ngModel)]="meta().state" name="state" aria-label="State" [disabled]="!meta().country" aria-required="true" [attr.aria-invalid]="!meta().state && meta().country ? 'true' : 'false'">
+                <option value="" disabled>Select state</option>
+                @if (meta().country === 'India') {
+                  @for (s of indiaStates; track s) {
+                    <option [value]="s">{{ s }}</option>
+                  }
+                }
+                @if (meta().country === 'USA') {
+                  @for (s of usaStates; track s) {
+                    <option [value]="s">{{ s }}</option>
+                  }
+                }
+              </select>
+              @if (metaTouched() && meta().country && !meta().state) {
+                <div class="text-red-600 text-sm mt-1" role="alert" aria-live="assertive">State is required</div>
+              }
+              <select id="city" class="border px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500" [(ngModel)]="meta().city" name="city" aria-label="City" [disabled]="!meta().state" aria-required="true" [attr.aria-invalid]="!meta().city && meta().state ? 'true' : 'false'">
+                <option value="" disabled>Select city</option>
+                @for (c of getCities(meta().country, meta().state); track c) {
+                  <option [value]="c">{{ c }}</option>
+                }
+              </select>
+              @if (metaTouched() && meta().state && !meta().city) {
+                <div class="text-red-600 text-sm mt-1" role="alert" aria-live="assertive">City is required</div>
+              }
+            </div>
+          </div>
+          <div class="mb-6 flex items-center gap-2">
+            <label class="inline-flex items-center font-medium" for="is-global">
+              <input id="is-global" type="checkbox" [(ngModel)]="meta().isGlobal" name="isGlobal" aria-label="Global Template" />
+              <span class="ml-2">Global</span>
+            </label>
+            <span class="ml-1 cursor-pointer relative group" tabindex="0" aria-label="What does Global mean?" aria-describedby="global-tooltip">
+              <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              <span id="global-tooltip" class="absolute left-6 top-0 z-10 hidden group-hover:block group-focus:block bg-white border border-gray-300 rounded shadow-lg px-3 py-2 text-xs text-gray-700 w-64">
+                Global templates are not restricted to a specific country or jurisdiction. Use this for contracts that are intended for international or cross-border use.
+              </span>
+            </span>
           </div>
         </div>
-        <div class="mb-6 flex items-center gap-2">
-          <label class="inline-flex items-center font-medium" for="is-global">
-            <input id="is-global" type="checkbox" [(ngModel)]="meta().isGlobal" name="isGlobal" aria-label="Global Template" />
-            <span class="ml-2">Global</span>
-          </label>
-          <span class="ml-1 cursor-pointer relative group" tabindex="0" aria-label="What does Global mean?" aria-describedby="global-tooltip">
-            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-            <span id="global-tooltip" class="absolute left-6 top-0 z-10 hidden group-hover:block group-focus:block bg-white border border-gray-300 rounded shadow-lg px-3 py-2 text-xs text-gray-700 w-64">
-              Global templates are not restricted to a specific country or jurisdiction. Use this for contracts that are intended for international or cross-border use.
-            </span>
-          </span>
-        </div>
+        <div class="hidden md:block"></div>
       </div>
-      <div class="hidden md:block"></div>
-    </div>
+    }
 
-    <div *ngIf="step() === 1">
-      <!-- Clause Library Step -->
-      <h3 class="text-xl font-semibold mb-4">Clause Library</h3>
-      <p class="text-gray-500 mb-4">Add standard clauses to your template or create new ones.</p>
-      
-      <!-- Error Alert -->
-      <div *ngIf="error()" class="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert" aria-live="assertive">
-        <span class="block sm:inline">{{ error() }}</span>
-        <button 
-          class="absolute top-0 bottom-0 right-0 px-4 py-3"
-          (click)="error.set(null)"
-          aria-label="Dismiss error message">
-          <span class="sr-only">Dismiss</span>
-          <svg class="h-6 w-6 text-red-500" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-            <title>Close</title>
-            <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/>
-          </svg>
+    @if (step() === 1) {
+      <div>
+        <!-- Clause Library Step -->
+        <h3 class="text-xl font-semibold mb-4">Clause Library</h3>
+        <p class="text-gray-500 mb-4">Add standard clauses to your template or create new ones.</p>
+        <!-- Error Alert -->
+        @if (error()) {
+          <div class="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert" aria-live="assertive">
+            <span class="block sm:inline">{{ error() }}</span>
+            <button
+              class="absolute top-0 bottom-0 right-0 px-4 py-3"
+              (click)="error.set(null)"
+              aria-label="Dismiss error message">
+              <span class="sr-only">Dismiss</span>
+              <svg class="h-6 w-6 text-red-500" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                <title>Close</title>
+                <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/>
+              </svg>
+            </button>
+          </div>
+        }
+        <!-- Add New Clause Button -->
+        <div class="mb-6 flex justify-end">
+          <button
+            type="button"
+            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
+            (click)="onAddNewClause()"
+            aria-label="Add new standard clause"
+            >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+              <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+            </svg>
+            Add New Standard Clause
+          </button>
+        </div>
+        <!-- Loading State -->
+        @if (isLoadingClauses()) {
+          <div class="flex justify-center items-center py-12" aria-busy="true" aria-live="polite">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          </div>
+        }
+        <!-- Empty State -->
+        @if (!isLoadingClauses() && standardClauses().length === 0) {
+          <div class="text-center py-12 bg-gray-50 rounded-lg" aria-live="polite">
+            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+            </svg>
+            <h3 class="mt-2 text-sm font-medium text-gray-900">No standard clauses</h3>
+            <p class="mt-1 text-sm text-gray-500">Get started by creating a new standard clause.</p>
+          </div>
+        }
+        <!-- Clause List -->
+        @if (!isLoadingClauses() && standardClauses().length > 0) {
+          <div class="space-y-4">
+            @for (clause of standardClauses(); track clause) {
+              <app-standard-clause-card
+                [clause]="clause"
+              ></app-standard-clause-card>
+            }
+          </div>
+        }
+        <!-- Add Clause Dialog -->
+        @if (showAddClauseDialog()) {
+          <app-add-standard-clause
+            [contractType]="meta().contractType"
+            (save)="onClauseSaved($event)"
+            (cancel)="onClauseCancel()"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Add Standard Clause Dialog"
+          ></app-add-standard-clause>
+        }
+      </div>
+    }
+
+    @if (step() === 2) {
+      <div>
+        <!-- Rules Step -->
+        <h3 class="text-xl font-semibold mb-4">Rules</h3>
+        <p class="text-gray-500 mb-4">Edit enforcement, allowed deviation, and forbidden patterns for each clause.</p>
+        <app-template-rules-step
+          [clausesData]="clausesForRules()"
+          (rulesChange)="onRulesChange($event)"
+          (onBack)="prevStep()"
+          (onNext)="nextStep()"
+        ></app-template-rules-step>
+      </div>
+    }
+
+    @if (step() === 3) {
+      <div>
+        <!-- Review & Activate Step -->
+        <h3 class="text-xl font-semibold mb-4">Review & Activate</h3>
+        <div class="border rounded p-4 bg-gray-50">
+          <div class="mb-2"><strong>Name:</strong> {{ meta().name }}</div>
+          <div class="mb-2"><strong>Contract Type:</strong> {{ meta().contractType }}</div>
+          <div class="mb-2"><strong>Jurisdiction:</strong> {{ formatMetaJurisdiction() }}</div>
+          <div class="mb-2"><strong>Clauses:</strong> {{ standardClauses().length }}</div>
+          <!-- Review Summary -->
+          <div class="mt-4">
+            <h4 class="font-semibold mb-2">Clauses & Rules Summary</h4>
+            <ul class="divide-y divide-gray-200">
+              @for (clause of clauses(); track clause) {
+                <li class="py-2">
+                  <div class="font-medium">{{ clause.title }} <span class="text-xs text-gray-500">({{ clause.clauseType }})</span></div>
+                  <div class="text-sm text-gray-700 mt-1">{{ clause.body | slice:0:120 }}@if (clause.body.length > 120) {
+                    <span>...</span>
+                  }</div>
+                  <div class="text-xs text-gray-600 mt-1">
+                    @if (clauseRules()[clause.clauseId]; as rule) {
+                      <span class="inline-block mr-2"><strong>Enforcement:</strong> {{ rule?.enforcement }}</span>
+                      <span class="inline-block mr-2"><strong>Severity:</strong> {{ rule?.severity }}</span>
+                      <span class="inline-block mr-2"><strong>Allowed Deviation:</strong> {{ rule?.deviationAllowedPct }}%</span>
+                      @if (rule?.forbiddenPatterns?.length) {
+                        <span class="inline-block"><strong>Forbidden Patterns:</strong> {{ rule?.forbiddenPatterns?.join(', ') }}</span>
+                      }
+                    }
+                    @if (!clauseRules()[clause.clauseId]) {
+                      <span class="italic text-gray-400">No rule set</span>
+                    }
+                  </div>
+                </li>
+              }
+            </ul>
+          </div>
+        </div>
+        <!-- Activation Feedback -->
+        @if (isActivating()) {
+          <div class="mt-4 flex items-center gap-2 text-blue-600">
+            <span class="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></span>
+            Activating template...
+          </div>
+        }
+        @if (activateError()) {
+          <div class="mt-4 text-red-600" role="alert" aria-live="assertive">{{ activateError() }}</div>
+        }
+        @if (activateSuccess()) {
+          <div class="mt-4 text-green-600" role="status" aria-live="polite">Template activated successfully!</div>
+        }
+        <button
+          type="button"
+          class="mt-6 px-6 py-3 rounded-lg bg-green-600 text-white text-lg font-semibold"
+          (click)="onActivateTemplate()"
+          [disabled]="isActivating() || activateSuccess()"
+          aria-label="Activate template"
+          >
+          Activate Template
         </button>
       </div>
-
-      <!-- Add New Clause Button -->
-      <div class="mb-6 flex justify-end">
-        <button 
-          type="button" 
-          class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
-          (click)="onAddNewClause()"
-          aria-label="Add new standard clause"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-            <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
-          </svg>
-          Add New Standard Clause
-        </button>
-      </div>
-
-      <!-- Loading State -->
-      <div *ngIf="isLoadingClauses()" class="flex justify-center items-center py-12" aria-busy="true" aria-live="polite">
-        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-      </div>
-
-      <!-- Empty State -->
-      <div *ngIf="!isLoadingClauses() && standardClauses().length === 0" class="text-center py-12 bg-gray-50 rounded-lg" aria-live="polite">
-        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
-        </svg>
-        <h3 class="mt-2 text-sm font-medium text-gray-900">No standard clauses</h3>
-        <p class="mt-1 text-sm text-gray-500">Get started by creating a new standard clause.</p>
-      </div>
-
-      <!-- Clause List -->
-      <div *ngIf="!isLoadingClauses() && standardClauses().length > 0" class="space-y-4">
-        <app-standard-clause-card
-          *ngFor="let clause of standardClauses()"
-          [clause]="clause"
-        ></app-standard-clause-card>
-      </div>
-
-      <!-- Add Clause Dialog -->
-      <app-add-standard-clause
-        *ngIf="showAddClauseDialog()"
-        [contractType]="meta().contractType"
-        (save)="onClauseSaved($event)"
-        (cancel)="onClauseCancel()"
-        role="dialog"
-        aria-modal="true"
-        aria-label="Add Standard Clause Dialog"
-      ></app-add-standard-clause>
-    </div>
-
-    <div *ngIf="step() === 2">
-      <!-- Rules Step -->
-      <h3 class="text-xl font-semibold mb-4">Rules</h3>
-      <p class="text-gray-500 mb-4">Edit enforcement, allowed deviation, and forbidden patterns for each clause.</p>
-      
-      <app-template-rules-step
-        [clausesData]="clausesForRules()"
-        (rulesChange)="onRulesChange($event)"
-        (onBack)="prevStep()"
-        (onNext)="nextStep()"
-      ></app-template-rules-step>
-    </div>
-
-    <div *ngIf="step() === 3">
-      <!-- Review & Activate Step -->
-      <h3 class="text-xl font-semibold mb-4">Review & Activate</h3>
-      <div class="border rounded p-4 bg-gray-50">
-        <div class="mb-2"><strong>Name:</strong> {{ meta().name }}</div>
-        <div class="mb-2"><strong>Contract Type:</strong> {{ meta().contractType }}</div>
-        <div class="mb-2"><strong>Jurisdiction:</strong> {{ formatMetaJurisdiction() }}</div>
-        <div class="mb-2"><strong>Clauses:</strong> {{ standardClauses().length }}</div>
-        <!-- Review Summary -->
-        <div class="mt-4">
-          <h4 class="font-semibold mb-2">Clauses & Rules Summary</h4>
-          <ul class="divide-y divide-gray-200">
-            <li *ngFor="let clause of clauses()" class="py-2">
-              <div class="font-medium">{{ clause.title }} <span class="text-xs text-gray-500">({{ clause.clauseType }})</span></div>
-              <div class="text-sm text-gray-700 mt-1">{{ clause.body | slice:0:120 }}<span *ngIf="clause.body.length > 120">...</span></div>
-              <div class="text-xs text-gray-600 mt-1">
-                <ng-container *ngIf="clauseRules()[clause.clauseId] as rule">
-                  <span class="inline-block mr-2"><strong>Enforcement:</strong> {{ rule?.enforcement }}</span>
-                  <span class="inline-block mr-2"><strong>Severity:</strong> {{ rule?.severity }}</span>
-                  <span class="inline-block mr-2"><strong>Allowed Deviation:</strong> {{ rule?.deviationAllowedPct }}%</span>
-                  <span class="inline-block" *ngIf="rule?.forbiddenPatterns?.length"><strong>Forbidden Patterns:</strong> {{ rule?.forbiddenPatterns?.join(', ') }}</span>
-                </ng-container>
-                <ng-container *ngIf="!clauseRules()[clause.clauseId]">
-                  <span class="italic text-gray-400">No rule set</span>
-                </ng-container>
-              </div>
-            </li>
-          </ul>
-        </div>
-      </div>
-      <!-- Activation Feedback -->
-      <div *ngIf="isActivating()" class="mt-4 flex items-center gap-2 text-blue-600">
-        <span class="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></span>
-        Activating template...
-      </div>
-      <div *ngIf="activateError()" class="mt-4 text-red-600" role="alert" aria-live="assertive">{{ activateError() }}</div>
-      <div *ngIf="activateSuccess()" class="mt-4 text-green-600" role="status" aria-live="polite">Template activated successfully!</div>
-      <button
-        type="button"
-        class="mt-6 px-6 py-3 rounded-lg bg-green-600 text-white text-lg font-semibold"
-        (click)="onActivateTemplate()"
-        [disabled]="isActivating() || activateSuccess()"
-        aria-label="Activate template"
-      >
-        Activate Template
-      </button>
-    </div>
+    }
 
     <div class="mt-10 flex flex-col md:flex-row justify-between gap-4">
       <button type="button" class="px-6 py-3 rounded-lg bg-gray-200 text-lg font-medium" (click)="prevStep()" [disabled]="step() === 0" aria-label="Back to previous step">Back</button>
       <button type="button" class="px-6 py-3 rounded-lg bg-blue-600 text-white text-lg font-semibold" (click)="nextStep()" [disabled]="step() === 3" aria-label="Next step">Next</button>
     </div>
   </form>
-</div> 
+</div>

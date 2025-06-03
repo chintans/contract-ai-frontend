@@ -1,74 +1,79 @@
-<div *ngIf="summary" class="contract-summary-details">
-  <section class="mb-6">
-    <h3 class="text-lg font-semibold mb-2">Contract Snapshot</h3>
-    <div><strong>Contract Type:</strong> {{ summary.snapshot.contractType }}</div>
-    <div><strong>Effective Date:</strong> {{ summary.snapshot.effectiveDate }}</div>
-    <div><strong>Initial Term:</strong> {{ summary.snapshot.initialTerm.value }} {{ summary.snapshot.initialTerm.unit }}</div>
-    <div><strong>Renewal:</strong> {{ summary.snapshot.renewal.type }}</div>
-    <div><strong>Governing Law:</strong> {{ summary.snapshot.governingLaw }}</div>
-    <div class="mt-2">
-      <strong>Parties:</strong>
+@if (summary) {
+  <div class="contract-summary-details">
+    <section class="mb-6">
+      <h3 class="text-lg font-semibold mb-2">Contract Snapshot</h3>
+      <div><strong>Contract Type:</strong> {{ summary.snapshot.contractType }}</div>
+      <div><strong>Effective Date:</strong> {{ summary.snapshot.effectiveDate }}</div>
+      <div><strong>Initial Term:</strong> {{ summary.snapshot.initialTerm.value }} {{ summary.snapshot.initialTerm.unit }}</div>
+      <div><strong>Renewal:</strong> {{ summary.snapshot.renewal.type }}</div>
+      <div><strong>Governing Law:</strong> {{ summary.snapshot.governingLaw }}</div>
+      <div class="mt-2">
+        <strong>Parties:</strong>
+        <ul class="ml-4 list-disc">
+          @for (party of summary.snapshot.parties; track party) {
+            <li>
+              {{ party.name }} ({{ party.alias }}) – Role: {{ party.role }}
+            </li>
+          }
+        </ul>
+      </div>
+    </section>
+    <section class="mb-6">
+      <h3 class="text-lg font-semibold mb-2">Key Terms</h3>
+      <div><strong>Deliverables:</strong> {{ summary.keyTerms.deliverables }}</div>
+      <div><strong>Payment:</strong> {{ formattedAmount }}</div>
+      <div><strong>Schedule:</strong> {{ summary.keyTerms.payment.schedule }}</div>
+      <div><strong>Milestones:</strong> {{ summary.keyTerms.milestones }}</div>
+      <div><strong>Termination Triggers:</strong> {{ summary.keyTerms.terminationTriggers }}</div>
+      <div><strong>Liability Caps:</strong> {{ summary.keyTerms.liabilityCaps }}</div>
+    </section>
+    <section class="mb-6">
+      <h3 class="text-lg font-semibold mb-2">Obligations By Party</h3>
       <ul class="ml-4 list-disc">
-        <li *ngFor="let party of summary.snapshot.parties">
-          {{ party.name }} ({{ party.alias }}) – Role: {{ party.role }}
-        </li>
+        @for (obligation of summary.obligationsByParty; track obligation) {
+          <li>
+            <strong>{{ obligation.party }}:</strong> {{ obligation.text }}
+          </li>
+        }
       </ul>
-    </div>
-  </section>
-
-  <section class="mb-6">
-    <h3 class="text-lg font-semibold mb-2">Key Terms</h3>
-    <div><strong>Deliverables:</strong> {{ summary.keyTerms.deliverables }}</div>
-    <div><strong>Payment:</strong> {{ formattedAmount }}</div>
-    <div><strong>Schedule:</strong> {{ summary.keyTerms.payment.schedule }}</div>
-    <div><strong>Milestones:</strong> {{ summary.keyTerms.milestones }}</div>
-    <div><strong>Termination Triggers:</strong> {{ summary.keyTerms.terminationTriggers }}</div>
-    <div><strong>Liability Caps:</strong> {{ summary.keyTerms.liabilityCaps }}</div>
-  </section>
-
-  <section class="mb-6">
-    <h3 class="text-lg font-semibold mb-2">Obligations By Party</h3>
-    <ul class="ml-4 list-disc">
-      <li *ngFor="let obligation of summary.obligationsByParty">
-        <strong>{{ obligation.party }}:</strong> {{ obligation.text }}
-      </li>
-    </ul>
-  </section>
-
-  <section class="mb-6">
-    <h3 class="text-lg font-semibold mb-2">Critical Dates</h3>
-    <ul class="ml-4 list-disc">
-      <li *ngFor="let date of summary.criticalDates">
-        <strong>{{ date.description }}</strong> (Clause {{ date.clauseRef }}): {{ date.date }}
-      </li>
-    </ul>
-  </section>
-
-  <section class="mb-6">
-    <h3 class="text-lg font-semibold mb-2">Noteworthy Clauses</h3>
-    <ul class="ml-4 list-disc">
-      <li *ngFor="let clause of summary.noteworthyClauses">
-        <strong>Clause {{ clause.clauseRef }}:</strong> {{ clause.summary }}
-      </li>
-    </ul>
-  </section>
-
-  <section class="mb-6">
-    <h3 class="text-lg font-semibold mb-2">Risks</h3>
-    <ul class="ml-4 list-disc">
-      <li *ngFor="let risk of summary.risks">
-        <span>{{ risk.description }}</span>
-        <span class="ml-2 text-xs text-gray-500">(Severity: {{ risk.severity }}, Clause {{ risk.clauseRef }})</span>
-      </li>
-    </ul>
-  </section>
-
-  <section class="mb-6">
-    <h3 class="text-lg font-semibold mb-2">Abstract</h3>
-    <div>{{ summary.abstract }}</div>
-  </section>
-
-  <section>
-    <div class="text-xs text-gray-500">Generated At: {{ formattedDate }}</div>
-  </section>
-</div> 
+    </section>
+    <section class="mb-6">
+      <h3 class="text-lg font-semibold mb-2">Critical Dates</h3>
+      <ul class="ml-4 list-disc">
+        @for (date of summary.criticalDates; track date) {
+          <li>
+            <strong>{{ date.description }}</strong> (Clause {{ date.clauseRef }}): {{ date.date }}
+          </li>
+        }
+      </ul>
+    </section>
+    <section class="mb-6">
+      <h3 class="text-lg font-semibold mb-2">Noteworthy Clauses</h3>
+      <ul class="ml-4 list-disc">
+        @for (clause of summary.noteworthyClauses; track clause) {
+          <li>
+            <strong>Clause {{ clause.clauseRef }}:</strong> {{ clause.summary }}
+          </li>
+        }
+      </ul>
+    </section>
+    <section class="mb-6">
+      <h3 class="text-lg font-semibold mb-2">Risks</h3>
+      <ul class="ml-4 list-disc">
+        @for (risk of summary.risks; track risk) {
+          <li>
+            <span>{{ risk.description }}</span>
+            <span class="ml-2 text-xs text-gray-500">(Severity: {{ risk.severity }}, Clause {{ risk.clauseRef }})</span>
+          </li>
+        }
+      </ul>
+    </section>
+    <section class="mb-6">
+      <h3 class="text-lg font-semibold mb-2">Abstract</h3>
+      <div>{{ summary.abstract }}</div>
+    </section>
+    <section>
+      <div class="text-xs text-gray-500">Generated At: {{ formattedDate }}</div>
+    </section>
+  </div>
+}
