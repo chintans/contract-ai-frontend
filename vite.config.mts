@@ -1,6 +1,7 @@
 /// <reference types="vitest" />
 
 import angular from '@analogjs/vite-plugin-angular';
+import tsconfigPaths from 'vite-tsconfig-paths';
 
 import { defineConfig } from 'vite';
 
@@ -9,7 +10,7 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [
       angular(),
-      
+      tsconfigPaths(),
     ],
     test: {
       globals: true,

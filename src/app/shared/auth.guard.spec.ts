@@ -11,7 +11,7 @@ describe('authGuard', () => {
         { provide: AuthService, useValue: { isAuthenticated: () => true } }
       ]
     });
-    const result = authGuard({} as any, {} as any);
+    const result = TestBed.runInInjectionContext(() => authGuard({} as any, {} as any));
     expect(result).toBeTrue();
   });
 
@@ -23,7 +23,7 @@ describe('authGuard', () => {
         { provide: AuthService, useValue: { isAuthenticated: () => false } }
       ]
     });
-    const result = authGuard({} as any, {} as any);
+    const result = TestBed.runInInjectionContext(() => authGuard({} as any, {} as any));
     expect(result).toBeFalse();
     expect(navigate).toHaveBeenCalledWith(['/login']);
   });

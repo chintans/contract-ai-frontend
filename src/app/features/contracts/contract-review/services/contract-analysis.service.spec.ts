@@ -1,8 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { of, firstValueFrom } from 'rxjs';
 import { ContractAnalysisService } from './contract-analysis.service';
-import { ContractsService } from '../../../services/api/services/ContractsService';
-import { HybridReviewService } from '../../../services/api/services/HybridReviewService';
+import { ContractsService, HybridReviewService } from '@api/api';
 
 describe('ContractAnalysisService', () => {
   let service: ContractAnalysisService;
