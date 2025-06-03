@@ -11,6 +11,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ContractAnalysisService, ContractAnalysis } from '../../services/contract-analysis.service';
 import { Observable } from 'rxjs';
 import { firstValueFrom } from 'rxjs';
+import { ContractSummaryDetailsComponent } from '../contract-analysis/contract-summary-details/contract-summary-details.component';
 
 @Component({
   selector: 'app-contract-summary',
@@ -23,7 +24,8 @@ import { firstValueFrom } from 'rxjs';
     MatIconModule,
     MatButtonModule,
     MatExpansionModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    ContractSummaryDetailsComponent
   ],
   templateUrl: './contract-summary.component.html',
   styleUrls: ['./contract-summary.component.scss']
