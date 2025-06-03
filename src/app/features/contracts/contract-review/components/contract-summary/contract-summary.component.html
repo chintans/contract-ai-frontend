@@ -32,6 +32,10 @@
         </mat-card-content>
       </mat-card>
 
+      <ng-container *ngIf="summary">
+        <app-contract-summary-details [summary]="summary"></app-contract-summary-details>
+      </ng-container>
+
       <mat-accordion>
         <mat-expansion-panel>
           <mat-expansion-panel-header>
