@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { StandardClauseFormDialogComponent } from './standard-clause-form-dialog.component';
 import { CreateStandardClauseDto } from '../standard-clauses/models/standard-clause.model';
+import { STANDARD_CLAUSE_SERVICE_TOKEN } from '../standard-clauses/standard-clause-service.token';
 
 const clause: CreateStandardClauseDto = {
   name: 'Test',
@@ -19,7 +20,8 @@ describe('StandardClauseFormDialogComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RouterTestingModule, StandardClauseFormDialogComponent]
+      imports: [RouterTestingModule, StandardClauseFormDialogComponent],
+      providers: [{ provide: STANDARD_CLAUSE_SERVICE_TOKEN, useValue: {} }]
     }).compileComponents();
     fixture = TestBed.createComponent(StandardClauseFormDialogComponent);
     component = fixture.componentInstance;
