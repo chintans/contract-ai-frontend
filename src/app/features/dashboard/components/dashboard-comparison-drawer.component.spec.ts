@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { describe, expect, it } from 'vitest'
 import { DashboardComparisonDrawerComponent } from './dashboard-comparison-drawer.component';
 
 describe('DashboardComparisonDrawerComponent', () => {
@@ -18,6 +19,6 @@ describe('DashboardComparisonDrawerComponent', () => {
   });
 
   it('should be closed by default', () => {
-    expect(component.isOpen()).toBeFalse();
+    expect(component.isOpen()).toBe(false);
   });
 });

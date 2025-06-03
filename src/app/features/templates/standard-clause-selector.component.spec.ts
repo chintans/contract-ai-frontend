@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
+import { describe, expect, it, vi } from 'vitest'
 import { StandardClauseSelectorComponent } from './standard-clause-selector.component';
 import { StandardClause, IStandardClauseService } from '../standard-clauses/models/standard-clause.model';
 import { STANDARD_CLAUSE_SERVICE_TOKEN } from '../standard-clauses/standard-clause-service.token';
@@ -39,13 +40,13 @@ describe('StandardClauseSelectorComponent', () => {
   });
 
   it('should emit select on onSelect', () => {
-    const spy = spyOn(component.select, 'emit');
+    const spy = vi.spyOn(component.select, 'emit');
     component.onSelect(clauses[0]);
     expect(spy).toHaveBeenCalledWith(clauses[0]);
   });
 
   it('should emit cancel on onCancel', () => {
-    const spy = spyOn(component.cancel, 'emit');
+    const spy = vi.spyOn(component.cancel, 'emit');
     component.onCancel();
     expect(spy).toHaveBeenCalled();
   });

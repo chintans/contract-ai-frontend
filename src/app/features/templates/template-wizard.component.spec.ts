@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { describe, expect, it, vi } from 'vitest'
 import { TemplateWizardComponent } from './template-wizard.component';
 import { MockStandardClauseService } from '../standard-clauses/services/mock-standard-clause.service';
 import { of, throwError } from 'rxjs';
@@ -28,8 +29,8 @@ describe('TemplateWizardComponent', () => {
     fixture = TestBed.createComponent(TemplateWizardComponent);
     component = fixture.componentInstance;
     mockService = TestBed.inject(MockStandardClauseService);
-    spyOn(mockService, 'getByContractType').and.returnValue(of(mockClauses));
-    spyOn(mockService, 'create').and.returnValue(of(mockClauses[0]));
+    vi.spyOn(mockService, 'getByContractType').mockReturnValue(of(mockClauses));
+    vi.spyOn(mockService, 'create').mockReturnValue(of(mockClauses[0]));
   });
 
   it('should create', () => {
@@ -70,7 +71,7 @@ describe('TemplateWizardComponent', () => {
 
   it('should handle error when loading clauses fails', fakeAsync(() => {
     component.meta.update(m => ({ ...m, contractType: 'NDA' }));
-    (mockService.getByContractType as jasmine.Spy).and.returnValue(throwError(() => new Error('fail')));
+    vi.spyOn(mockService, 'getByContractType').mockReturnValue(throwError(() => new Error('fail')));
     component.loadStandardClauses();
     tick();
     expect(component.error()).toBe('Failed to load standard clauses. Please try again.');

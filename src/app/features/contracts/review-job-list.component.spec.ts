@@ -1,14 +1,16 @@
 import { TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
+import { describe, expect, it, vi } from 'vitest'
 import { ReviewJobListComponent } from './review-job-list.component';
 
 describe('ReviewJobListComponent', () => {
+  let router: Router;
   beforeEach(async () => {
-    const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     await TestBed.configureTestingModule({
       imports: [ReviewJobListComponent],
-      providers: [{ provide: Router, useValue: routerSpy }]
+      providers: [provideRouter([])]
     }).compileComponents();
+    router = TestBed.inject(Router);
   });
 
   it('should create', () => {

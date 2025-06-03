@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { describe, expect, it, vi } from 'vitest'
 import { DiffVersionDialogComponent } from './diff-version-dialog.component';
-import { TemplateVersion } from './template-version.model';
 
 describe('DiffVersionDialogComponent', () => {
   let fixture: ComponentFixture<DiffVersionDialogComponent>;
@@ -20,7 +20,7 @@ describe('DiffVersionDialogComponent', () => {
   });
 
   it('should emit close when close button clicked', () => {
-    const closeSpy = spyOn(component.close, 'emit');
+    const closeSpy = vi.spyOn(component.close, 'emit');
     fixture.nativeElement.querySelector('button').click();
     expect(closeSpy).toHaveBeenCalled();
   });

@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { RuleEditorComponent } from './rule-editor.component';
 import { Enforcement, Severity } from '../../models/rule.model';
+import { describe, expect, it, vi } from 'vitest'
 
 describe('RuleEditorComponent', () => {
   let fixture: ComponentFixture<RuleEditorComponent>;
@@ -20,7 +21,7 @@ describe('RuleEditorComponent', () => {
   });
 
   it('should emit ruleChange when form valid', fakeAsync(() => {
-    const spy = spyOn(component.ruleChange, 'emit');
+    const spy = vi.spyOn(component.ruleChange, 'emit');
     component.ruleForm.patchValue({
       enforcement: Enforcement.MUST_HAVE,
       severity: Severity.HIGH,

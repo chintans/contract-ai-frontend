@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
+import { describe, expect, it, vi } from 'vitest'
 import { DashboardMainPanelComponent } from './dashboard-main-panel.component';
 import { DashboardClausesListComponent } from './dashboard-clauses-list.component';
 import { DashboardAutosaveToolbarComponent } from './dashboard-autosave-toolbar.component';
@@ -26,7 +27,7 @@ describe('DashboardMainPanelComponent', () => {
     fixture = TestBed.createComponent(DashboardMainPanelComponent);
     component = fixture.componentInstance;
     store = TestBed.inject(MockStore);
-    spyOn(store, 'dispatch');
+    vi.spyOn(store, 'dispatch');
   });
 
   it('should create', () => {

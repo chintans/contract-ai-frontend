@@ -2,34 +2,34 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
+import { describe, expect, it, vi } from 'vitest'
 import { StandardClauseFormComponent } from './standard-clause-form.component';
 import { STANDARD_CLAUSE_SERVICE_TOKEN } from '../standard-clause-service.token';
 import { IStandardClauseService, StandardClause } from '../models/standard-clause.model';
-
+import { provideRouter } from '@angular/router';
 class MockService implements IStandardClauseService {
-  create = jasmine.createSpy().and.returnValue(of({} as StandardClause));
-  update = jasmine.createSpy().and.returnValue(of({} as StandardClause));
-  getAll() { return of([]); }
-  getOne() { return of({} as StandardClause); }
-  getByType() { return of([]); }
-  getByContractType() { return of([]); }
-  delete() { return of(); }
+  create = vi.fn().mockReturnValue(of({} as StandardClause));
+  update = vi.fn().mockReturnValue(of({} as StandardClause));
+  getAll = vi.fn().mockReturnValue(of([]));
+  getOne = vi.fn().mockReturnValue(of({} as StandardClause));
+  getByType = vi.fn().mockReturnValue(of([]));
+  getByContractType = vi.fn().mockReturnValue(of([]));
+  delete = vi.fn().mockReturnValue(of());
 }
 
 describe('StandardClauseFormComponent', () => {
   let fixture: ComponentFixture<StandardClauseFormComponent>;
   let component: StandardClauseFormComponent;
-  let router: jasmine.SpyObj<Router>;
   let service: MockService;
+  let router: Router;
 
   beforeEach(async () => {
-    router = jasmine.createSpyObj('Router', ['navigate']);
     service = new MockService();
     await TestBed.configureTestingModule({
       imports: [StandardClauseFormComponent, ReactiveFormsModule],
       providers: [
         FormBuilder,
-        { provide: Router, useValue: router },
+        provideRouter([]),
         { provide: ActivatedRoute, useValue: { snapshot: { paramMap: new Map() } } },
         { provide: STANDARD_CLAUSE_SERVICE_TOKEN, useValue: service }
       ]
@@ -37,6 +37,7 @@ describe('StandardClauseFormComponent', () => {
     fixture = TestBed.createComponent(StandardClauseFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+    router = TestBed.inject(Router);
     component.clauseForm.setValue({
       name: 'n',
       type: 't',
@@ -59,6 +60,7 @@ describe('StandardClauseFormComponent', () => {
 
   it('should navigate on cancel', () => {
     component.onCancel();
-    expect(router.navigate).toHaveBeenCalledWith(['/standard-clauses']);
+    const navigateSpy = vi.spyOn(router, 'navigate');
+    expect(navigateSpy).toHaveBeenCalledWith(['/standard-clauses']);
   });
 });

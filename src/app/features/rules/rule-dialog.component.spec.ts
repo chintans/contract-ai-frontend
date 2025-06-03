@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { describe, expect, it, vi } from 'vitest'
 import { RuleDialogComponent } from './rule-dialog.component';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Enforcement, Severity } from '../standard-clauses/models/rule.model';
@@ -6,10 +7,10 @@ import { Enforcement, Severity } from '../standard-clauses/models/rule.model';
 describe('RuleDialogComponent', () => {
   let fixture: ComponentFixture<RuleDialogComponent>;
   let component: RuleDialogComponent;
-  let dialogRefSpy: jasmine.SpyObj<MatDialogRef<RuleDialogComponent>>;
+  let dialogRefSpy: { close: ReturnType<typeof vi.fn> };
 
   beforeEach(async () => {
-    dialogRefSpy = jasmine.createSpyObj('MatDialogRef', ['close']);
+    dialogRefSpy = { close: vi.fn() };
     await TestBed.configureTestingModule({
       imports: [RuleDialogComponent],
       providers: [
@@ -33,7 +34,7 @@ describe('RuleDialogComponent', () => {
 
   it('isValid returns false when required fields missing', () => {
     component.rule = {} as any;
-    expect(component.isValid()).toBeFalse();
+    expect(component.isValid()).toBeFalsy();
   });
 
   it('isValid returns true when required fields present', () => {
@@ -43,7 +44,7 @@ describe('RuleDialogComponent', () => {
       enforcement: Enforcement.MUST_HAVE,
       severity: Severity.HIGH
     };
-    expect(component.isValid()).toBeTrue();
+    expect(component.isValid()).toBeTruthy();
   });
 
   it('save closes dialog with rule when valid', () => {

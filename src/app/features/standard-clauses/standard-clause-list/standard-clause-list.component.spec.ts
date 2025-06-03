@@ -1,9 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
-import { RouterTestingModule } from '@angular/router/testing';
+import { describe, expect, it, vi } from 'vitest'
 import { StandardClauseListComponent } from './standard-clause-list.component';
 import { STANDARD_CLAUSE_SERVICE_TOKEN } from '../standard-clause-service.token';
 import { IStandardClauseService, StandardClause } from '../models/standard-clause.model';
+import { provideRouter } from '@angular/router';
 
 const clauses: StandardClause[] = [
   { id: 1, name: 'Clause 1', type: 'A', text: 't1', jurisdiction: 'IN', allowedDeviations: 0, contractType: 'NDA', version: '1.0', createdAt: new Date(), updatedAt: new Date() },
@@ -11,14 +12,14 @@ const clauses: StandardClause[] = [
 ];
 
 class MockService implements IStandardClauseService {
-  getAll = jasmine.createSpy().and.returnValue(of(clauses));
-  getOne() { return of(clauses[0]); }
-  getByType() { return of(clauses); }
-  getByContractType() { return of(clauses); }
-  create() { return of(clauses[0]); }
-  update() { return of(clauses[0]); }
-  delete = jasmine.createSpy().and.returnValue(of(void 0));
-}
+  getAll = vi.fn().mockReturnValue(of(clauses));
+  getOne = vi.fn().mockReturnValue(of(clauses[0]));
+  getByType = vi.fn().mockReturnValue(of(clauses));
+  getByContractType = vi.fn().mockReturnValue(of(clauses));
+  create = vi.fn().mockReturnValue(of(clauses[0]));
+  update = vi.fn().mockReturnValue(of(clauses[0]));
+  delete = vi.fn().mockReturnValue(of(void 0));
+} 
 
 describe('StandardClauseListComponent', () => {
   let fixture: ComponentFixture<StandardClauseListComponent>;
@@ -28,14 +29,15 @@ describe('StandardClauseListComponent', () => {
   beforeEach(async () => {
     service = new MockService();
     await TestBed.configureTestingModule({
-      imports: [RouterTestingModule, StandardClauseListComponent],
+      imports: [StandardClauseListComponent],
       providers: [
+        provideRouter([]),
         { provide: STANDARD_CLAUSE_SERVICE_TOKEN, useValue: service }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(StandardClauseListComponent);
     component = fixture.componentInstance;
-    spyOn(window, 'confirm').and.returnValue(true);
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
     fixture.detectChanges();
   });
 

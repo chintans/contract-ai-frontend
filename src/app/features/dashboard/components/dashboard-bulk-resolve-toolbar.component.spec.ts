@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
+import { describe, expect, it, vi } from 'vitest'
 import { DashboardBulkResolveToolbarComponent } from './dashboard-bulk-resolve-toolbar.component';
 import { bulkResolveRisks, bulkChangeSeverity, bulkDeleteRisks } from '../store/dashboard.actions';
 import { initialState } from '../store/dashboard.reducer';
@@ -18,7 +19,7 @@ describe('DashboardBulkResolveToolbarComponent', () => {
     fixture = TestBed.createComponent(DashboardBulkResolveToolbarComponent);
     component = fixture.componentInstance;
     store = TestBed.inject(MockStore);
-    spyOn(store, 'dispatch');
+    vi.spyOn(store, 'dispatch');
   });
 
   it('should create', () => {

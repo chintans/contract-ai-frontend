@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { describe, expect, it, vi } from 'vitest'
 import { TemplateVersionDrawerComponent } from './template-version-drawer.component';
 import { TemplateVersion } from './template-version.model';
 
@@ -27,19 +28,19 @@ describe('TemplateVersionDrawerComponent', () => {
   });
 
   it('should emit activateVersion', () => {
-    const spy = spyOn(component.activateVersion, 'emit');
+    const spy = vi.spyOn(component.activateVersion, 'emit');
     fixture.nativeElement.querySelector('button.text-green-600:not([disabled])').click();
     expect(spy).toHaveBeenCalledWith('2');
   });
 
   it('should emit compareVersion', () => {
-    const spy = spyOn(component.compareVersion, 'emit');
+    const spy = vi.spyOn(component.compareVersion, 'emit');
     fixture.nativeElement.querySelector('button.text-blue-600').click();
     expect(spy).toHaveBeenCalledWith('1');
   });
 
   it('should emit close on overlay click', () => {
-    const spy = spyOn(component.close, 'emit');
+    const spy = vi.spyOn(component.close, 'emit');
     fixture.nativeElement.querySelector('div.flex-1').click();
     expect(spy).toHaveBeenCalled();
   });

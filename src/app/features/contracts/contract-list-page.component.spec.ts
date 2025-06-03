@@ -1,16 +1,16 @@
 import { TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
+import { provideRouter } from '@angular/router';
+import { describe, expect, it, vi } from 'vitest'
 import { ContractListPageComponent } from './contract-list-page.component';
 import { ContractDataService } from './contract-data.service';
 import { of } from 'rxjs';
 
 describe('ContractListPageComponent', () => {
   beforeEach(async () => {
-    const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     await TestBed.configureTestingModule({
       imports: [ContractListPageComponent],
       providers: [
-        { provide: Router, useValue: routerSpy },
+        provideRouter([]),
         {
           provide: ContractDataService,
           useValue: { listContracts: () => of([]) }

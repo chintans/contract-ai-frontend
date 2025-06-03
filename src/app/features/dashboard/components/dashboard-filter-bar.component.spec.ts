@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
+import { describe, expect, it, vi } from 'vitest'
 import { DashboardFilterBarComponent } from './dashboard-filter-bar.component';
 import { setFilters } from '../store/dashboard.actions';
 import { initialState } from '../store/dashboard.reducer';
@@ -17,7 +18,7 @@ describe('DashboardFilterBarComponent', () => {
     fixture = TestBed.createComponent(DashboardFilterBarComponent);
     component = fixture.componentInstance;
     store = TestBed.inject(MockStore);
-    spyOn(store, 'dispatch');
+    vi.spyOn(store, 'dispatch');
   });
 
   it('should create', () => {

@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { describe, expect, it, vi } from 'vitest'
 import { AddStandardClauseComponent } from './add-standard-clause.component';
 
 describe('AddStandardClauseComponent', () => {
@@ -19,7 +20,7 @@ describe('AddStandardClauseComponent', () => {
   });
 
   it('should emit save when form is valid and submitted', () => {
-    const saveSpy = spyOn(component.save, 'emit');
+    const saveSpy = vi.spyOn(component.save, 'emit');
     component.form.setValue({
       name: 'Clause',
       type: 'TYPE',
@@ -38,7 +39,7 @@ describe('AddStandardClauseComponent', () => {
   });
 
   it('should emit cancel on onCancel', () => {
-    const cancelSpy = spyOn(component.cancel, 'emit');
+    const cancelSpy = vi.spyOn(component.cancel, 'emit');
     component.onCancel();
     expect(cancelSpy).toHaveBeenCalled();
   });

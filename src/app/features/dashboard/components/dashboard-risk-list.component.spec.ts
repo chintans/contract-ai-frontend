@@ -3,6 +3,7 @@ import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { DashboardRiskListComponent } from './dashboard-risk-list.component';
 import { selectRisk, deselectRisk } from '../store/dashboard.actions';
 import { initialState } from '../store/dashboard.reducer';
+import { describe, expect, it, vi } from 'vitest'
 
 describe('DashboardRiskListComponent', () => {
   let fixture: ComponentFixture<DashboardRiskListComponent>;
@@ -17,7 +18,7 @@ describe('DashboardRiskListComponent', () => {
     fixture = TestBed.createComponent(DashboardRiskListComponent);
     component = fixture.componentInstance;
     store = TestBed.inject(MockStore);
-    spyOn(store, 'dispatch');
+    vi.spyOn(store, 'dispatch');
   });
 
   it('should create', () => {

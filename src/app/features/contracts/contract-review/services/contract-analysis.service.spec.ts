@@ -1,22 +1,19 @@
 import { TestBed } from '@angular/core/testing';
 import { of, firstValueFrom } from 'rxjs';
+import { describe, expect, it, vi } from 'vitest'
 import { ContractAnalysisService } from './contract-analysis.service';
-import { ContractsService } from '../../../services/api/services/ContractsService';
-import { HybridReviewService } from '../../../services/api/services/HybridReviewService';
+import { ContractsService } from '@api/api';
 
 describe('ContractAnalysisService', () => {
   let service: ContractAnalysisService;
-  let contractsSpy: jasmine.SpyObj<ContractsService>;
-  let hybridSpy: jasmine.SpyObj<HybridReviewService>;
+  let contractsSpy: { contractControllerExportAnalysis: ReturnType<typeof vi.fn> };
 
   beforeEach(() => {
-    contractsSpy = jasmine.createSpyObj('ContractsService', ['contractControllerExportAnalysis']);
-    hybridSpy = jasmine.createSpyObj('HybridReviewService', []);
+    contractsSpy = { contractControllerExportAnalysis: vi.fn() };
     TestBed.configureTestingModule({
       providers: [
         ContractAnalysisService,
         { provide: ContractsService, useValue: contractsSpy },
-        { provide: HybridReviewService, useValue: hybridSpy }
       ]
     });
     service = TestBed.inject(ContractAnalysisService);
@@ -45,13 +42,13 @@ describe('ContractAnalysisService', () => {
       analysis: { summary: { title: '', parties: [], effectiveDate: new Date(), expirationDate: new Date(), value: 0, keyTerms: [], obligations: [], recommendations: [] }, riskFlags: [] }
     });
     const blob = await firstValueFrom(service.exportAnalysis());
-    expect(blob instanceof Blob).toBeTrue();
+    expect(blob instanceof Blob).toBeTruthy();
     expect(contractsSpy.contractControllerExportAnalysis).not.toHaveBeenCalled();
   });
 
   it('exportAnalysis should delegate when contract id present', async () => {
     const expectedBlob = new Blob();
-    contractsSpy.contractControllerExportAnalysis.and.returnValue(of(expectedBlob));
+    contractsSpy.contractControllerExportAnalysis.mockReturnValue(of(expectedBlob as any));
     (service as any).currentAnalysis.next({
       contractId: '123',
       fileName: 'f',

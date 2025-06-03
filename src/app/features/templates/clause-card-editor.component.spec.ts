@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { describe, expect, it, vi } from 'vitest'
 import { ClauseCardEditorComponent } from './clause-card-editor.component';
 import { VersionedClause } from './template-version.model';
 
@@ -24,7 +25,7 @@ describe('ClauseCardEditorComponent', () => {
   });
 
   it('should emit save with clause data', () => {
-    const saveSpy = spyOn(component.save, 'emit');
+    const saveSpy = vi.spyOn(component.save, 'emit');
     const clause: VersionedClause = {
       clauseId: '1',
       clauseType: 'type',

@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { describe, expect, it, vi } from 'vitest'
 import { RuleDialogComponent } from './rule-dialog.component';
 import { ClauseRule } from './template-version.model';
 
@@ -28,13 +29,13 @@ describe('RuleDialogComponent', () => {
   });
 
   it('should emit save on form submit', () => {
-    const saveSpy = spyOn(component.save, 'emit');
+    const saveSpy = vi.spyOn(component.save, 'emit');
     fixture.nativeElement.querySelector('form').dispatchEvent(new Event('submit'));
     expect(saveSpy).toHaveBeenCalledWith(rule);
   });
 
   it('should emit cancel on cancel click', () => {
-    const cancelSpy = spyOn(component.cancel, 'emit');
+    const cancelSpy = vi.spyOn(component.cancel, 'emit');
     fixture.nativeElement.querySelector('button').click();
     expect(cancelSpy).toHaveBeenCalled();
   });

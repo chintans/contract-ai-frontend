@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
+import { provideRouter } from '@angular/router';
+import { describe, expect, it } from 'vitest'
 import { ContractCreateWizardComponent } from './contract-create-wizard.component';
 
 describe('ContractCreateWizardComponent', () => {
   beforeEach(async () => {
-    const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     await TestBed.configureTestingModule({
       imports: [ContractCreateWizardComponent],
-      providers: [{ provide: Router, useValue: routerSpy }]
+      providers: [provideRouter([])]
     }).compileComponents();
   });
 

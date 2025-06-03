@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
+import { describe, expect, it, vi } from 'vitest'
 import { RuleEditorComponent } from '../rule-editor/rule-editor.component';
 import { RulePreviewComponent } from '../rule-preview/rule-preview.component';
 import { TemplateRulesStepComponent } from './template-rules-step.component';
@@ -40,7 +41,7 @@ describe('TemplateRulesStepComponent', () => {
   });
 
   it('should emit rulesChange on rule change', () => {
-    const spy = spyOn(component.rulesChange, 'emit');
+    const spy = vi.spyOn(component.rulesChange, 'emit');
     const rule: ClauseRule = { enforcement: Enforcement.MUST_HAVE, severity: Severity.LOW, patterns: [] } as ClauseRule;
     component.onRuleChange('1', rule);
     expect(spy).toHaveBeenCalled();
