@@ -5,11 +5,13 @@
     "types": [
       "jasmine",
       "node",
-      "@types/jasmine"
-    ]
+      "@types/jasmine",
+      "vitest/globals"
+    ],
+    "target": "es2016"
   },
   "files": [
-    "src/polyfills.ts"
+    "src/test-setup.ts"
   ],
   "include": [
     "src/**/*.spec.ts",
@@ -19,4 +21,4 @@
   "exclude": [
     "node_modules/cypress"
   ]
-} 
+}
