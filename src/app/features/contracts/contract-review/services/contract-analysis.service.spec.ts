@@ -2,18 +2,21 @@ import { TestBed } from '@angular/core/testing';
 import { of, firstValueFrom } from 'rxjs';
 import { describe, expect, it, vi } from 'vitest'
 import { ContractAnalysisService } from './contract-analysis.service';
-import { ContractsService } from '@api/api';
+import { ContractsService, FilesService } from '@api/api';
 
 describe('ContractAnalysisService', () => {
   let service: ContractAnalysisService;
   let contractsSpy: { contractControllerExportAnalysis: ReturnType<typeof vi.fn> };
+  let filesSpy: { filesLocalControllerUploadFileV1: ReturnType<typeof vi.fn> };
 
   beforeEach(() => {
     contractsSpy = { contractControllerExportAnalysis: vi.fn() };
+    filesSpy = { filesLocalControllerUploadFileV1: vi.fn() };
     TestBed.configureTestingModule({
       providers: [
         ContractAnalysisService,
         { provide: ContractsService, useValue: contractsSpy },
+        { provide: FilesService, useValue: filesSpy },
       ]
     });
     service = TestBed.inject(ContractAnalysisService);
@@ -24,13 +27,13 @@ describe('ContractAnalysisService', () => {
       id: '1',
       uploadDate: '2024-01-01T00:00:00Z',
       status: 'completed',
-      summary: { title: 't', parties: ['p'] },
+      summaries: [{ title: 't', parties: ['p'] }],
       riskFlags: []
     } as any;
     const mapped = (service as any).mapBackendToContractAnalysis(data, 'f.doc');
     expect(mapped.contractId).toBe('1');
     expect(mapped.fileName).toBe('f.doc');
-    expect(mapped.analysis.summary.title).toBe('t');
+    expect(mapped.analysis.summaries[0].title).toBe('t');
   });
 
   it('exportAnalysis should return blob when no contract id', async () => {

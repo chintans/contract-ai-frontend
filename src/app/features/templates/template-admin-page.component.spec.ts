@@ -27,15 +27,15 @@ describe('TemplateAdminPageComponent', () => {
   });
 
   it('should navigate to new template on onNewTemplate', () => {
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true as any);
     component.onNewTemplate();
-    const navigateSpy = vi.spyOn(router, 'navigate');
     expect(navigateSpy).toHaveBeenCalledWith(['/templates/new']);
   });
 
   it('should navigate to edit template on onEditTemplate', () => {
     const template: Template = { id: '123', name: 'Test', contractType: 'NDA', jurisdiction: { isGlobal: true }, activeVersion: '1.0' };
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true as any);
     component.onEditTemplate(template);
-    const navigateSpy = vi.spyOn(router, 'navigate');
     expect(navigateSpy).toHaveBeenCalledWith(['/templates', '123']);
   });
 }); 

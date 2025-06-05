@@ -4,28 +4,27 @@ import { ContractAnalysisService } from '../../services/contract-analysis.servic
 import { of } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { Router, ActivatedRoute } from '@angular/router';
+import { vi } from 'vitest';
 
 describe('RiskFlagsComponent', () => {
-  let serviceSpy: jasmine.SpyObj<ContractAnalysisService>;
-  let dialogSpy: jasmine.SpyObj<MatDialog>;
+  let serviceSpy: { getCurrentAnalysis: ReturnType<typeof vi.fn>; updateRiskFlag: ReturnType<typeof vi.fn> };
+  let dialog: MatDialog;
 
   beforeEach(async () => {
-    serviceSpy = jasmine.createSpyObj('ContractAnalysisService', ['getCurrentAnalysis', 'updateRiskFlag']);
-    serviceSpy.getCurrentAnalysis.and.returnValue(of({ analysis: { riskFlags: [] } } as any));
-    dialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
-    dialogSpy.open.and.returnValue({ afterClosed: () => of('note') } as any);
-
+    serviceSpy = {
+      getCurrentAnalysis: vi.fn().mockReturnValue(of({ analysis: { riskFlags: [] } } as any)),
+      updateRiskFlag: vi.fn()
+    };
     await TestBed.configureTestingModule({
       imports: [RiskFlagsComponent, RiskFlagNotesDialogComponent],
       providers: [
         { provide: ContractAnalysisService, useValue: serviceSpy },
-        { provide: MatDialog, useValue: dialogSpy },
-        { provide: Router, useValue: { navigate: () => {} } },
+        { provide: Router, useValue: { navigate: vi.fn() } },
         { provide: ActivatedRoute, useValue: {} }
       ]
-    })
-      .overrideProvider(MatDialog, { useValue: dialogSpy })
-      .compileComponents();
+    }).compileComponents();
+    dialog = TestBed.inject(MatDialog);
+    vi.spyOn(dialog, 'open').mockReturnValue({ afterClosed: () => of('note') } as any);
   });
 
   it('should create', () => {
@@ -44,6 +43,6 @@ describe('RiskFlagsComponent', () => {
     const fixture = TestBed.createComponent(RiskFlagsComponent);
     const component = fixture.componentInstance;
     await component.addNotes({ id: '1', type: 'high', category: '', description: '', clause: '', recommendation: '', status: 'open' });
-    expect(dialogSpy.open).toHaveBeenCalled();
+    expect(dialog.open).toHaveBeenCalled();
   });
 });

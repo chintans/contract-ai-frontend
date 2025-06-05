@@ -5,6 +5,9 @@ import { of } from 'rxjs';
 import { Router, ActivatedRoute } from '@angular/router';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { FocusMonitor } from '@angular/cdk/a11y';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { vi } from 'vitest';
+import { QnAService } from '../../services/qna.service';
 
 class FocusMonitorStub {
   monitor() { return of(null); }
@@ -16,21 +19,23 @@ class AnnouncerStub {
 }
 
 describe('LegalQAComponent', () => {
-  let serviceSpy: jasmine.SpyObj<ContractAnalysisService>;
+  let serviceSpy: { getCurrentAnalysis: ReturnType<typeof vi.fn>; getAIResponse: ReturnType<typeof vi.fn> };
 
   beforeEach(async () => {
-    serviceSpy = jasmine.createSpyObj('ContractAnalysisService', ['getCurrentAnalysis', 'getAIResponse']);
-    serviceSpy.getCurrentAnalysis.and.returnValue(of({} as any));
-    serviceSpy.getAIResponse.and.resolveTo('answer');
+    serviceSpy = {
+      getCurrentAnalysis: vi.fn().mockReturnValue(of({} as any)),
+      getAIResponse: vi.fn().mockResolvedValue('answer')
+    };
 
     await TestBed.configureTestingModule({
-      imports: [LegalQAComponent],
+      imports: [LegalQAComponent, NoopAnimationsModule],
       providers: [
         { provide: ContractAnalysisService, useValue: serviceSpy },
-        { provide: Router, useValue: { navigate: () => {} } },
+        { provide: Router, useValue: { navigate: vi.fn() } },
         { provide: ActivatedRoute, useValue: {} },
         { provide: FocusMonitor, useClass: FocusMonitorStub },
-        { provide: LiveAnnouncer, useClass: AnnouncerStub }
+        { provide: LiveAnnouncer, useClass: AnnouncerStub },
+        { provide: QnAService, useValue: { askQuestion: vi.fn().mockReturnValue(of({ answer: 'a', confidence: 1 })), disconnect: vi.fn() } }
       ]
     }).compileComponents();
   });
