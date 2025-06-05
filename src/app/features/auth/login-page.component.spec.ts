@@ -3,8 +3,8 @@ import { provideMockStore } from '@ngrx/store/testing';
 import { LoginPageComponent } from './login-page.component';
 import { AuthService } from '../../core/auth.service';
 import { of } from 'rxjs';
-import { Router } from '@angular/router';
-import { vi } from 'vitest';
+import { ActivatedRoute, Router } from '@angular/router';
+import { vi, describe, it, expect, beforeEach } from 'vitest';
 
 class MockAuthService {
   loginWithGoogle = vi.fn().mockReturnValue(of({}));
