@@ -2,7 +2,7 @@ import { authGuard } from './auth.guard';
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { AuthService } from '../core/auth.service';
-import { vi } from 'vitest';
+import { vi, describe, it, expect } from 'vitest';
 
 describe('authGuard', () => {
   it('allows navigation when authenticated', () => {
@@ -13,7 +13,7 @@ describe('authGuard', () => {
       ]
     });
     const result = TestBed.runInInjectionContext(() => authGuard({} as any, {} as any));
-    expect(result).toBeTrue();
+    expect(result).toBe(true);
   });
 
   it('redirects to login when not authenticated', () => {
@@ -25,7 +25,7 @@ describe('authGuard', () => {
       ]
     });
     const result = TestBed.runInInjectionContext(() => authGuard({} as any, {} as any));
-    expect(result).toBeFalse();
+    expect(result).toBe(false);
     expect(navigate).toHaveBeenCalledWith(['/login']);
   });
 });

@@ -125,6 +125,7 @@ export class RuleEditorComponent {
   }
 
   private validateAndEmit() {
+    console.log('validateAndEmit');
     const ifObj: Record<string, string> = {};
     this.conditionIfArray.controls.forEach(ctrl => {
       if (ctrl.value.key) ifObj[ctrl.value.key] = ctrl.value.value;
@@ -133,6 +134,7 @@ export class RuleEditorComponent {
     this.conditionUnlessArray.controls.forEach(ctrl => {
       if (ctrl.value.key) unlessObj[ctrl.value.key] = ctrl.value.value;
     });
+    console.log('ifObj', ifObj);
     // Basic validation for duplicate keys and empty fields
     const errors: string[] = [];
     const allKeys = [...Object.keys(ifObj), ...Object.keys(unlessObj)];
@@ -141,9 +143,11 @@ export class RuleEditorComponent {
       if (keySet.has(key)) errors.push(`Duplicate condition key: ${key}`);
       keySet.add(key);
     }
+    console.log('errors', errors);
     if (Object.values(ifObj).some(v => !v) || Object.values(unlessObj).some(v => !v)) {
       errors.push('All condition fields must have both key and value.');
     }
+    console.log('errors', errors);
     this.validationErrors.set(errors);
     const ruleValue: ClauseRule = {
       ...this.ruleForm.value,
@@ -153,9 +157,13 @@ export class RuleEditorComponent {
         ? { if: Object.keys(ifObj).length ? ifObj : undefined, unless: Object.keys(unlessObj).length ? unlessObj : undefined }
         : undefined
     };
+    console.log('ruleValue', ruleValue);
     const validation = this.ruleValidationService.validateRule(ruleValue);
+    console.log('validation', validation);
     this.validationErrors.set([...errors, ...validation.errors]);
+    console.log('validationErrors', this.validationErrors());
     if (validation.isValid && errors.length === 0) {
+      console.log('=================ruleChange.emit=================');
       this.ruleChange.emit(ruleValue);
     }
   }

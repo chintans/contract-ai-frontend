@@ -16,7 +16,7 @@ import { environment } from '../../../environments/environment';
 
 type StateCities = Record<string, string[]>;
 type CountryStates = Record<string, StateCities>;
-const STANDARD_CLAUSE_SERVICE_TOKEN = new InjectionToken<IStandardClauseService>('StandardClauseService');
+export const STANDARD_CLAUSE_SERVICE_TOKEN = new InjectionToken<IStandardClauseService>('StandardClauseService');
 
 const standardClauseProvider: Provider = environment.mockData
   ? { provide: STANDARD_CLAUSE_SERVICE_TOKEN, useClass: MockStandardClauseService }

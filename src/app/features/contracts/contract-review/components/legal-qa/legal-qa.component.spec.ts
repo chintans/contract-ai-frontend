@@ -1,12 +1,12 @@
-import { TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { TestBed, fakeAsync, tick, waitForAsync } from '@angular/core/testing';
 import { LegalQAComponent } from './legal-qa.component';
 import { ContractAnalysisService } from '../../services/contract-analysis.service';
 import { of } from 'rxjs';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, provideRouter } from '@angular/router';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { FocusMonitor } from '@angular/cdk/a11y';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { vi } from 'vitest';
+import { vi, expect } from 'vitest';
 import { QnAService } from '../../services/qna.service';
 
 class FocusMonitorStub {
@@ -24,14 +24,14 @@ describe('LegalQAComponent', () => {
   beforeEach(async () => {
     serviceSpy = {
       getCurrentAnalysis: vi.fn().mockReturnValue(of({} as any)),
-      getAIResponse: vi.fn().mockResolvedValue('answer')
+      getAIResponse: vi.fn().mockResolvedValue('test')
     };
 
     await TestBed.configureTestingModule({
       imports: [LegalQAComponent, NoopAnimationsModule],
       providers: [
         { provide: ContractAnalysisService, useValue: serviceSpy },
-        { provide: Router, useValue: { navigate: vi.fn() } },
+        provideRouter([]),
         { provide: ActivatedRoute, useValue: {} },
         { provide: FocusMonitor, useClass: FocusMonitorStub },
         { provide: LiveAnnouncer, useClass: AnnouncerStub },
@@ -48,14 +48,18 @@ describe('LegalQAComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should send message', fakeAsync(() => {
+  it('should send message', waitForAsync(async () => {
     const fixture = TestBed.createComponent(LegalQAComponent);
     const component = fixture.componentInstance;
+    const qnaService = TestBed.inject(QnAService);
     component.questionInput = { nativeElement: { focus() {} } } as any;
+    component.contractId = 'contract-123';
     component.currentQuestion = 'test';
-    component.sendMessage();
-    tick();
-    expect(serviceSpy.getAIResponse).toHaveBeenCalledWith('test');
+    vi.spyOn(qnaService, 'askQuestion').mockReturnValue(of({ answer: 'answer', confidence: 1 }));
+    await component.sendMessage();    
+    expect(qnaService.askQuestion).toHaveBeenCalledWith('contract-123', 'test');
     expect(component.messages.length).toBe(2);
+    expect(component.messages[0].role).toBe('user');
+    expect(component.messages[1].role).toBe('assistant');
   }));
 });

@@ -2,9 +2,11 @@ import { TestBed } from '@angular/core/testing';
 import { ContractReviewComponent } from './contract-review.component';
 import { StepValidationService } from './services/step-validation.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { vi } from 'vitest';
-
+import { vi, describe, it, expect, beforeEach } from 'vitest';
+import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { of } from "rxjs";
+import { provideHttpClient } from '@angular/common/http';
+
 describe('ContractReviewComponent', () => {
   let stepSpy: { validateUpload: ReturnType<typeof vi.fn>; validateAnalysis: ReturnType<typeof vi.fn>; validateRiskFlags: ReturnType<typeof vi.fn>; validateSummary: ReturnType<typeof vi.fn>; validateQA: ReturnType<typeof vi.fn> };
 
@@ -21,7 +23,9 @@ describe('ContractReviewComponent', () => {
       providers: [
         { provide: StepValidationService, useValue: stepSpy },
         { provide: Router, useValue: { navigate: vi.fn() } },
-        { provide: ActivatedRoute, useValue: { url: of([]), parent: {} } }
+        { provide: ActivatedRoute, useValue: { url: of([]), parent: {} } },
+        provideHttpClient(),
+        provideHttpClientTesting()
       ]
     }).compileComponents();
   });

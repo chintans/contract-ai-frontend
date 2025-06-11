@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RuleEditorComponent } from './rule-editor.component';
 import { Enforcement, Severity } from '../../models/rule.model';
-import { describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi, beforeEach } from 'vitest'
 
 describe('RuleEditorComponent', () => {
   let fixture: ComponentFixture<RuleEditorComponent>;
@@ -26,8 +26,10 @@ describe('RuleEditorComponent', () => {
       enforcement: Enforcement.MUST_HAVE,
       severity: Severity.HIGH,
       similarityThreshold: 90,
-      scoreWeight: 1
+      scoreWeight: 1,
+      deviationAllowedPct: undefined
     });
+    fixture.detectChanges();    
     expect(spy).toHaveBeenCalled();
   });
 });

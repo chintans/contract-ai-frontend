@@ -1,10 +1,11 @@
-import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { describe, expect, it, vi } from 'vitest'
+import { ComponentFixture, TestBed, fakeAsync, tick, waitForAsync } from '@angular/core/testing';
+import { vi, expect } from 'vitest'
 import { TemplateWizardComponent } from './template-wizard.component';
-import { MockStandardClauseService } from '../standard-clauses/services/mock-standard-clause.service';
-import { of, throwError } from 'rxjs';
+import { defer, of, throwError } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { TemplatesService } from '../../services/templates.service';
+import { STANDARD_CLAUSE_SERVICE_TOKEN } from './template-wizard.component';
+import { IStandardClauseService } from '../standard-clauses/models/standard-clause.model';
 
 const mockClauses = [
   { id: 1, name: 'Clause 1', type: 'TypeA', text: 'Text 1', jurisdiction: 'IN', allowedDeviations: 0, version: '1.0', contractType: 'NDA', createdAt: new Date(), updatedAt: new Date(), severity: 'MEDIUM' },
@@ -13,25 +14,32 @@ const mockClauses = [
 
 describe('TemplateWizardComponent', () => {
   let component: TemplateWizardComponent;
-  let fixture: ComponentFixture<TemplateWizardComponent>;
-  let mockService: MockStandardClauseService;
+  let fixture: ComponentFixture<TemplateWizardComponent>;  
+  let mockService: IStandardClauseService;
 
-  beforeEach(async () => {
+  beforeEach(waitForAsync(async () => {
     const activatedRouteStub = { snapshot: { paramMap: { get: () => null } } };
-    const templatesServiceStub = { getOne: () => ({ subscribe: (cb: any) => cb({}) }) };
+    const templatesServiceStub = { getOne: () => ({ subscribe: (cb: any) => cb({}) }) };    
+    mockService = {
+      getByContractType: vi.fn().mockReturnValue(of(mockClauses)),
+      create: vi.fn().mockReturnValue(of(mockClauses[0])),
+      getAll: vi.fn().mockReturnValue(of(mockClauses)),
+      getOne: vi.fn().mockReturnValue(of(mockClauses[0])),
+      getByType: vi.fn().mockReturnValue(of(mockClauses)),
+      update: vi.fn().mockReturnValue(of(mockClauses[0])),
+      delete: vi.fn().mockReturnValue(of(mockClauses[0]))
+    };
     await TestBed.configureTestingModule({
       imports: [TemplateWizardComponent],
       providers: [
         { provide: ActivatedRoute, useValue: activatedRouteStub },
-        { provide: TemplatesService, useValue: templatesServiceStub }
+        { provide: TemplatesService, useValue: templatesServiceStub },
+        { provide: STANDARD_CLAUSE_SERVICE_TOKEN, useValue: mockService }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(TemplateWizardComponent);
-    component = fixture.componentInstance;
-    mockService = TestBed.inject(MockStandardClauseService);
-    vi.spyOn(mockService, 'getByContractType').mockReturnValue(of(mockClauses));
-    vi.spyOn(mockService, 'create').mockReturnValue(of(mockClauses[0]));
-  });
+    component = fixture.componentInstance;             
+  }));
 
   it('should create', () => {
     expect(component).toBeTruthy();
@@ -61,20 +69,44 @@ describe('TemplateWizardComponent', () => {
     expect(component.meta().name).toBe('Test Template');
   });
 
-  it('should load standard clauses on loadStandardClauses', fakeAsync(() => {
+  it('should load standard clauses on loadStandardClauses', fakeAsync(async () => {
     component.meta.update(m => ({ ...m, contractType: 'NDA' }));
     component.loadStandardClauses();
     tick();
     expect(component.standardClauses().length).toBe(2);
     expect(component.isLoadingClauses()).toBe(false);
-  }));
+    }));
 
-  it('should handle error when loading clauses fails', fakeAsync(() => {
+  it('should handle error when loading clauses fails', fakeAsync(async () => {
+    const activatedRouteStub = { snapshot: { paramMap: { get: () => null } } };
+    const templatesServiceStub = { getOne: () => ({ subscribe: (cb: any) => cb({}) }) };
+    const errorMockService = {
+      getByContractType: vi.fn().mockReturnValue(
+        defer(() => Promise.reject(new Error('fail')))
+      ),
+      create: vi.fn(),
+      getAll: vi.fn(),
+      getOne: vi.fn(),
+      getByType: vi.fn(),
+      update: vi.fn(),
+      delete: vi.fn()
+    };
+    await TestBed.resetTestingModule();
+    await TestBed.configureTestingModule({
+      imports: [TemplateWizardComponent],
+      providers: [
+        { provide: ActivatedRoute, useValue: activatedRouteStub },
+        { provide: TemplatesService, useValue: templatesServiceStub },
+        { provide: STANDARD_CLAUSE_SERVICE_TOKEN, useValue: errorMockService }
+      ]
+    }).compileComponents();
+    const fixture = TestBed.createComponent(TemplateWizardComponent);
+    const component = fixture.componentInstance;
     component.meta.update(m => ({ ...m, contractType: 'NDA' }));
-    vi.spyOn(mockService, 'getByContractType').mockReturnValue(throwError(() => new Error('fail')));
-    component.loadStandardClauses();
+    component.loadStandardClauses();    
     tick();
-    expect(component.error()).toBe('Failed to load standard clauses. Please try again.');
+    fixture.detectChanges();
     expect(component.isLoadingClauses()).toBe(false);
+    expect(component.error()).toBe('Failed to load standard clauses. Please try again.');    
   }));
 }); 

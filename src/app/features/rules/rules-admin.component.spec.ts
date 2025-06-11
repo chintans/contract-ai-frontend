@@ -4,7 +4,7 @@ import { RulesService, RuleWithMetadata } from './rules.service';
 import { MatDialog } from '@angular/material/dialog';
 import { of } from 'rxjs';
 import { Enforcement, Severity } from '../standard-clauses/models/rule.model';
-import { vi } from 'vitest';
+import { vi, describe, it, expect, beforeEach } from 'vitest';
 
 describe('RulesAdminComponent', () => {
   let fixture: ComponentFixture<RulesAdminComponent>;
@@ -59,14 +59,14 @@ describe('RulesAdminComponent', () => {
   });
 
   it('createRule opens dialog and creates rule on result', () => {
-    dialogSpy.open.and.returnValue({ afterClosed: () => of(rule) } as any);
+    dialogSpy.open.mockReturnValue({ afterClosed: () => of(rule) } as any);
     component.createRule();
     expect(dialogSpy.open).toHaveBeenCalled();
     expect(rulesServiceSpy.createRule).toHaveBeenCalledWith(rule);
   });
 
   it('editRule opens dialog and updates rule on result', () => {
-    dialogSpy.open.and.returnValue({ afterClosed: () => of({ name: 'New' }) } as any);
+    dialogSpy.open.mockReturnValue({ afterClosed: () => of({ name: 'New' }) } as any);
     component.editRule(rule);
     expect(dialogSpy.open).toHaveBeenCalled();
     expect(rulesServiceSpy.updateRule).toHaveBeenCalledWith(rule.id, { name: 'New' });

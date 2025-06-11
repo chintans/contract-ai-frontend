@@ -3,8 +3,8 @@ import { provideMockStore } from '@ngrx/store/testing';
 import { SignupPageComponent } from './signup-page.component';
 import { AuthService } from '../../core/auth.service';
 import { of } from 'rxjs';
-import { Router } from '@angular/router';
-import { vi } from 'vitest';
+import { Router, ActivatedRoute } from '@angular/router';
+import { vi, describe, it, expect, beforeEach } from 'vitest';
 
 class MockAuthService {
   signUp = vi.fn().mockReturnValue(of({}));
