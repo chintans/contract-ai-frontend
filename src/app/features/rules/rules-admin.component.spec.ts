@@ -4,12 +4,13 @@ import { RulesService, RuleWithMetadata } from './rules.service';
 import { MatDialog } from '@angular/material/dialog';
 import { of } from 'rxjs';
 import { Enforcement, Severity } from '../standard-clauses/models/rule.model';
+import { vi, describe, it, expect, beforeEach } from 'vitest';
 
 describe('RulesAdminComponent', () => {
   let fixture: ComponentFixture<RulesAdminComponent>;
   let component: RulesAdminComponent;
   let rulesServiceSpy: any;
-  let dialogSpy: jasmine.SpyObj<MatDialog>;
+  let dialogSpy: { open: ReturnType<typeof vi.fn> };
 
   const rule: RuleWithMetadata = {
     id: '1',
@@ -31,12 +32,12 @@ describe('RulesAdminComponent', () => {
 
   beforeEach(async () => {
     rulesServiceSpy = {
-      createRule: jasmine.createSpy('createRule'),
-      updateRule: jasmine.createSpy('updateRule'),
-      deleteRule: jasmine.createSpy('deleteRule'),
+      createRule: vi.fn(),
+      updateRule: vi.fn(),
+      deleteRule: vi.fn(),
       rules: () => [rule]
     };
-    dialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
+    dialogSpy = { open: vi.fn() };
 
     await TestBed.configureTestingModule({
       imports: [RulesAdminComponent],
@@ -58,27 +59,27 @@ describe('RulesAdminComponent', () => {
   });
 
   it('createRule opens dialog and creates rule on result', () => {
-    dialogSpy.open.and.returnValue({ afterClosed: () => of(rule) } as any);
+    dialogSpy.open.mockReturnValue({ afterClosed: () => of(rule) } as any);
     component.createRule();
     expect(dialogSpy.open).toHaveBeenCalled();
     expect(rulesServiceSpy.createRule).toHaveBeenCalledWith(rule);
   });
 
   it('editRule opens dialog and updates rule on result', () => {
-    dialogSpy.open.and.returnValue({ afterClosed: () => of({ name: 'New' }) } as any);
+    dialogSpy.open.mockReturnValue({ afterClosed: () => of({ name: 'New' }) } as any);
     component.editRule(rule);
     expect(dialogSpy.open).toHaveBeenCalled();
     expect(rulesServiceSpy.updateRule).toHaveBeenCalledWith(rule.id, { name: 'New' });
   });
 
   it('deleteRule calls service when confirmed', () => {
-    spyOn(window, 'confirm').and.returnValue(true);
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
     component.deleteRule(rule);
     expect(rulesServiceSpy.deleteRule).toHaveBeenCalledWith(rule.id);
   });
 
   it('deleteRule does nothing when not confirmed', () => {
-    spyOn(window, 'confirm').and.returnValue(false);
+    vi.spyOn(window, 'confirm').mockReturnValue(false);
     component.deleteRule(rule);
     expect(rulesServiceSpy.deleteRule).not.toHaveBeenCalled();
   });

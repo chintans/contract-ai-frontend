@@ -54,13 +54,14 @@ describe('StandardClauseFormComponent', () => {
   });
 
   it('should call create on submit', () => {
+    vi.spyOn(router, 'navigate').mockResolvedValue(true as any);
     component.onSubmit();
     expect(service.create).toHaveBeenCalled();
   });
 
   it('should navigate on cancel', () => {
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true as any);
     component.onCancel();
-    const navigateSpy = vi.spyOn(router, 'navigate');
     expect(navigateSpy).toHaveBeenCalledWith(['/standard-clauses']);
   });
 });

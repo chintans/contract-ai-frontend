@@ -1,32 +1,31 @@
-import { TestBed } from '@angular/core/testing';
-import { RiskFlagsComponent, RiskFlagNotesDialogComponent } from './risk-flags.component';
+import { TestBed, waitForAsync } from '@angular/core/testing';
+import { RiskFlagsComponent } from './risk-flags.component';
 import { ContractAnalysisService } from '../../services/contract-analysis.service';
 import { of } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { Router, ActivatedRoute } from '@angular/router';
+import { vi } from 'vitest';
 
 describe('RiskFlagsComponent', () => {
-  let serviceSpy: jasmine.SpyObj<ContractAnalysisService>;
-  let dialogSpy: jasmine.SpyObj<MatDialog>;
+  let serviceSpy: { getCurrentAnalysis: ReturnType<typeof vi.fn>; updateRiskFlag: ReturnType<typeof vi.fn> };
+  let dialog: MatDialog;
 
-  beforeEach(async () => {
-    serviceSpy = jasmine.createSpyObj('ContractAnalysisService', ['getCurrentAnalysis', 'updateRiskFlag']);
-    serviceSpy.getCurrentAnalysis.and.returnValue(of({ analysis: { riskFlags: [] } } as any));
-    dialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
-    dialogSpy.open.and.returnValue({ afterClosed: () => of('note') } as any);
-
+  beforeEach(waitForAsync(async () => {
+    serviceSpy = {
+      getCurrentAnalysis: vi.fn().mockReturnValue(of({ analysis: { riskFlags: [] } } as any)),
+      updateRiskFlag: vi.fn()
+    };
     await TestBed.configureTestingModule({
-      imports: [RiskFlagsComponent, RiskFlagNotesDialogComponent],
+      imports: [RiskFlagsComponent],
       providers: [
         { provide: ContractAnalysisService, useValue: serviceSpy },
-        { provide: MatDialog, useValue: dialogSpy },
-        { provide: Router, useValue: { navigate: () => {} } },
+        { provide: Router, useValue: { navigate: vi.fn() } },
         { provide: ActivatedRoute, useValue: {} }
       ]
-    })
-      .overrideProvider(MatDialog, { useValue: dialogSpy })
-      .compileComponents();
-  });
+    }).compileComponents();
+    dialog = TestBed.inject(MatDialog);
+    vi.spyOn(dialog, 'open').mockReturnValue({ afterClosed: () => of('note') } as any);
+  }));
 
   it('should create', () => {
     const fixture = TestBed.createComponent(RiskFlagsComponent);
@@ -37,13 +36,13 @@ describe('RiskFlagsComponent', () => {
   it('should get risk type class', () => {
     const fixture = TestBed.createComponent(RiskFlagsComponent);
     const component = fixture.componentInstance;
-    expect(component.getRiskTypeClass('high')).toBe('risk-high');
+    expect(component.getRiskTypeClass('HIGH')).toBe('risk-high');
   });
 
-  it('should add notes', async () => {
+  it('should add notes', waitForAsync(async () => {
     const fixture = TestBed.createComponent(RiskFlagsComponent);
     const component = fixture.componentInstance;
-    await component.addNotes({ id: '1', type: 'high', category: '', description: '', clause: '', recommendation: '', status: 'open' });
-    expect(dialogSpy.open).toHaveBeenCalled();
-  });
+    await component.addNotes({ id: '1', type: 'LEGAL', description: '', clauseId: '', status: 'OPEN', contractId: '1', createdAt: '', updatedAt: '', severity: 'HIGH', isReviewed: false, isResolved: false, notes: '' });
+    expect(dialog.open).toHaveBeenCalled();
+  }));
 });
